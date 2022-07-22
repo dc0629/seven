@@ -84,7 +84,7 @@ public class SaticScheduleTask {
     //每天早上7点早安
     @Scheduled(cron = "0 0 7 * * ?")
     private void goodMorning() {
-        String content = getContent("http://api.tianapi.com/zaoan/index?key=5a8f9b5cc21c2edfc17562d4ac5a1019");
+        String content = getContent("https://api.tianapi.com/zaoan/index?key=5a8f9b5cc21c2edfc17562d4ac5a1019");
         if (StringUtils.isBlank(content)) return;
         for (String num : GROUP_NUM) {
             //发送群消息
@@ -95,9 +95,9 @@ public class SaticScheduleTask {
     }
 
     //每天晚上11点晚安
-    @Scheduled(cron = "0 0 23 * * ?")
+    @Scheduled(cron = "0 30 23 * * ?")
     private void goodEvening() {
-        String content = getContent("http://api.tianapi.com/wanan/index?key=5a8f9b5cc21c2edfc17562d4ac5a1019");
+        String content = getContent("https://api.tianapi.com/wanan/index?key=5a8f9b5cc21c2edfc17562d4ac5a1019");
         if (StringUtils.isBlank(content)) return;
         for (String num : GROUP_NUM) {
             //发送群消息
