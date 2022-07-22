@@ -1,0 +1,29 @@
+server:
+  port: 9988
+xiaoshen:
+  host: localhost
+  port: 7788
+  token: 666
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+  redis:
+    host: localhost
+    database: 0
+    port: 6379
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      url: jdbc:mysql://localhost:3306/seven?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false
+      username: root
+      password: root
+      driverClassName: com.mysql.cj.jdbc.Driver
+      use-ping-method: false
+mybatis-plus:
+  mapper-locations: classpath*:mybatis/**/*.xml, classpath*:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete
