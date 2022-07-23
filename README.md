@@ -13,39 +13,39 @@
 
 ### 设置更新提示模板，并且查看效果
 
-![This is an image](src/main/resources/pic/2.png)
+![2.png](https://s2.loli.net/2022/07/23/GjnvxQDi5wYoZkt.png)
 
 ### 小说更新后自动群发提示
 
-![This is an image](src/main/resources/pic/3.png)
+![3.png](https://s2.loli.net/2022/07/23/9ZqgGhNpdQ3jiUb.png)
 
 ### 根据群主要求，要限制图片刷屏，3连图要被禁言
 
-![This is an image](src/main/resources/pic/4.png)
+![4.png](https://s2.loli.net/2022/07/23/PBt6JGsuabHyNAQ.png)
 
 ### 根据群主要求，要限制图片刷屏，5连图要禁言最后两位
 
-![This is an image](src/main/resources/pic/1.jpg)
+![1.jpg](https://s2.loli.net/2022/07/23/QtxhvMP63jNg1pq.jpg)
 
 ### 入群欢迎
 
-![This is an image](src/main/resources/pic/6.png)
+![6.png](https://s2.loli.net/2022/07/23/psjHQTP7RdNYOD2.png)
 
 ### 为了活跃群聊添加的占卜功能，一天只能占卜一次，凌晨12点更新次数
 
-![This is an image](src/main/resources/pic/1.png)
+![1.png](https://s2.loli.net/2022/07/23/utMzSQ92FimCPT3.png)
 
 ### 还有督促女友学习，给她开的积分系统，由于她积分还不够，没有更多对应的截图
 
-![This is an image](src/main/resources/pic/5.png)
+![5.png](https://s2.loli.net/2022/07/23/c2t5ATUOZoKHfQN.png)
 
 
 每150分得一张瑞幸咖啡兑换卡
 
 每200分得一张零食兑换卡
 
-每300分得一张蛋糕兑换卡
+每300分得一张蛋糕兑换卡等规则，还能查看背包，使用道具
 
-每600分得一张大餐兑换卡
+督促早起规则，早上5点到7点30打卡加分，其余时间不加分，如果在早上5点到9点这段时间没有打过卡，那就会扣分
 
 后续还可能继续更新由运营官结合小说背景设计的文字游戏
