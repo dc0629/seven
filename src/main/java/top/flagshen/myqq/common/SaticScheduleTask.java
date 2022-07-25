@@ -86,6 +86,9 @@ public class SaticScheduleTask {
     private void goodMorning() {
         String content = getContent("https://api.tianapi.com/zaoan/index?key=5a8f9b5cc21c2edfc17562d4ac5a1019");
         if (StringUtils.isBlank(content)) return;
+        if (!content.contains("早安")) {
+            content += "早安！";
+        }
         for (String num : GROUP_NUM) {
             //发送群消息
             xsTemplate.sendMsgEx("444",
@@ -99,6 +102,9 @@ public class SaticScheduleTask {
     private void goodEvening() {
         String content = getContent("https://api.tianapi.com/wanan/index?key=5a8f9b5cc21c2edfc17562d4ac5a1019");
         if (StringUtils.isBlank(content)) return;
+        if (!content.contains("晚安")) {
+            content += "晚安！";
+        }
         for (String num : GROUP_NUM) {
             //发送群消息
             xsTemplate.sendMsgEx("444",

@@ -17,7 +17,7 @@ public class RedisConstant {
     public static final String GAIMING = "GAIMING:";//改命
     public static final String MENGZHU = "MENGZHU:";//盟主列表
     public static final String JINYAN = "JINYAN:";//是否开启禁言功能
-
+    public static final String JINYAN_COUNT = "JINYAN_COUNT:";//24小时内连图禁言次数
 
     public static final String STUDY_SCORE = "STUDY_SCORE";//学习积分
     public static final String GET_UP = "GET_UP";//起床

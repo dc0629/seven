@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class GroupManageServiceImpl implements IGroupManageService {
@@ -98,24 +99,47 @@ public class GroupManageServiceImpl implements IGroupManageService {
      * 满足条件就禁言
      * @param message
      * @param context
-     * @param gk
-     * @param qk
      */
     private void jinyan(MyQQMessage message, String context, String ftQQ) {
         map.put("c1", "444");
         map.put("c2", message.getMqFromid());
         // 禁言
         map.put("c3", message.getMqFromqq());
-        map.put("c4", 600);
+        map.put("c4", jyTime(message.getMqFromid(), message.getMqFromqq()));
         xsTemplate.tongyongPost("Api_Shutup", map);
         // 禁言倒数第二个人
         if (StringUtils.isNotBlank(ftQQ)) {
             map.put("c3", ftQQ);
+            map.put("c4", jyTime(message.getMqFromid(), ftQQ));
             xsTemplate.tongyongPost("Api_Shutup", map);
         }
         // 发消息
         xsTemplate.sendMsgEx(message.getMqRobot(),
                 0, TypeConstant.MSGTYPE_GROUP,
                 message.getMqFromid(), null, context);
+    }
+
+    public int jyTime(String id, String qq) {
+        String jinyanCountKey = RedisConstant.JINYAN_COUNT +  id + ":" + qq;
+        // 判断在redis中是否有key值
+        Boolean redisKey = redisTemplate.hasKey(jinyanCountKey);
+        // 如果没有key值，对他进行添加到redis中
+        if (redisKey) {
+            // 禁言次数
+            Integer count = Integer.valueOf(redisTemplate.opsForValue().get(jinyanCountKey));
+            count++;
+            redisTemplate.opsForValue().set(jinyanCountKey, String.valueOf(count), 1, TimeUnit.DAYS);
+            if (count == 2) {
+                // 第二次禁言30分钟
+                return 1800;
+            } else if (count == 3) {
+                // 最后一次禁言1天
+                return 86400;
+            }
+        }
+        // 存入key
+        redisTemplate.opsForValue().set(jinyanCountKey, "1", 1, TimeUnit.DAYS);
+        // 第一次禁言600秒
+        return 600;
     }
 }
