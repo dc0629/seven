@@ -1,5 +1,6 @@
 package top.flagshen.myqq.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -7,6 +8,8 @@ import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.RedisConstant;
 import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.database.forbidden.entity.ForbiddenLogDO;
+import top.flagshen.myqq.database.forbidden.service.IForbiddenLogService;
 import top.flagshen.myqq.entity.MyQQMessage;
 import top.flagshen.myqq.entity.ReqResult;
 import top.flagshen.myqq.service.IGroupManageService;
@@ -19,6 +22,9 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class GroupManageServiceImpl implements IGroupManageService {
+
+    @Autowired
+    private IForbiddenLogService forbiddenLogService;
 
     private final XiaoshenTemplate xsTemplate;
 
@@ -101,6 +107,10 @@ public class GroupManageServiceImpl implements IGroupManageService {
      * @param context
      */
     private void jinyan(MyQQMessage message, String context, String ftQQ) {
+        // 发消息
+        xsTemplate.sendMsgEx(message.getMqRobot(),
+                0, TypeConstant.MSGTYPE_GROUP,
+                message.getMqFromid(), null, context);
         map.put("c1", "444");
         map.put("c2", message.getMqFromid());
         // 禁言
@@ -113,10 +123,6 @@ public class GroupManageServiceImpl implements IGroupManageService {
             map.put("c4", jyTime(message.getMqFromid(), ftQQ));
             xsTemplate.tongyongPost("Api_Shutup", map);
         }
-        // 发消息
-        xsTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, context);
     }
 
     public int jyTime(String id, String qq) {
@@ -141,5 +147,29 @@ public class GroupManageServiceImpl implements IGroupManageService {
         redisTemplate.opsForValue().set(jinyanCountKey, "1", 1, TimeUnit.DAYS);
         // 第一次禁言600秒
         return 600;
+    }
+
+    /**
+     * 记录一条禁言日志
+     * @param message
+     * @return
+     */
+    @Override
+    public ReqResult jinyanlog(MyQQMessage message) {
+        ForbiddenLogDO forbiddenLogDO = new ForbiddenLogDO();
+        forbiddenLogDO.setQqNum(message.getMqPassiveqq());
+        forbiddenLogDO.setGroupNum(message.getMqFromid());
+        forbiddenLogService.save(forbiddenLogDO);
+
+        int count = forbiddenLogService.count(new LambdaQueryWrapper<ForbiddenLogDO>()
+                .eq(ForbiddenLogDO::getQqNum, message.getMqPassiveqq())
+                .eq(ForbiddenLogDO::getGroupNum, message.getMqFromid()));
+
+        String text = "[@"+message.getMqPassiveqq()+"]" +
+                "\r\n这是你的第" + count + "次被禁言，禁言次数过多可能会被移出群聊哦";
+        // 发消息
+        xsTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
+                message.getMqFromid(), null, text);
+        return new ReqResult(1);
     }
 }

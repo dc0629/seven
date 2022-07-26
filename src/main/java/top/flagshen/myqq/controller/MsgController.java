@@ -1,10 +1,12 @@
 package top.flagshen.myqq.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
 import top.flagshen.myqq.entity.MyQQMessage;
 import top.flagshen.myqq.entity.ReqResult;
 import top.flagshen.myqq.service.IGroupManageService;
@@ -21,17 +23,11 @@ import java.net.URLDecoder;
 @RestController
 public class MsgController {
 
-    private final XiaoshenTemplate xsTemplate;
-
     @Autowired
     private IGroupMsgService groupMsgService;
 
     @Autowired
     private IGroupManageService groupManageService;
-
-    public MsgController(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
-    }
 
     @PostMapping
     public ReqResult newMsg(@RequestBody MyQQMessage message, HttpServletRequest request) throws Exception {
@@ -49,6 +45,9 @@ public class MsgController {
         if (TypeConstant.MSGTYPE_GROUP == message.getMqType()) {
             // 群消息就开始判断是不是有人在连图，连图就禁言
             groupManageService.jkjinyan(message);
+        } else if (TypeConstant.MSGTYPE_ONE_BE_BAN == message.getMqType()) {
+            // 如果是有人被禁言，就存一下禁言记录
+            groupManageService.jinyanlog(message);
         }
         // 后面的内容就判断是不是/开头，不是就结束
         if (!"/".equals(mqMsg.substring(0, 1))) {

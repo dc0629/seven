@@ -33,9 +33,16 @@ public class ZhanBu implements PlayStrategy {
         if (redisTemplate.hasKey(key)) {
             return true;
         }
-        int yun = (int) (Math.random()*100 + 1);
-        if (yun < 10) {
-            yun = (int)(Math.random()*51 + 10);
+        int yun = (int) (Math.random()*100);
+        if (yun < 30) {
+            // 30%的概率幸运值是10-39
+            yun = (int)(Math.random()*30 + 10);
+        } else if  (yun < 90) {
+            // 60%的概率幸运值是40-79
+            yun = (int)(Math.random()*40 + 40);
+        } else {
+            // 10%的概率幸运值是80-100
+            yun = (int)(Math.random()*21 + 80);
         }
         //发送群消息
         xsTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP, message.getMqFromid(), null, ContentUtil.zhanbu(yun, message.getMqFromqq()));
