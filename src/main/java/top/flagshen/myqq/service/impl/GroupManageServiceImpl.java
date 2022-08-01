@@ -162,8 +162,7 @@ public class GroupManageServiceImpl implements IGroupManageService {
         forbiddenLogService.save(forbiddenLogDO);
 
         int count = forbiddenLogService.count(new LambdaQueryWrapper<ForbiddenLogDO>()
-                .eq(ForbiddenLogDO::getQqNum, message.getMqPassiveqq())
-                .eq(ForbiddenLogDO::getGroupNum, message.getMqFromid()));
+                .eq(ForbiddenLogDO::getQqNum, message.getMqPassiveqq()));
 
         String text = "[@"+message.getMqPassiveqq()+"]" +
                 "\r\n这是你的第" + count + "次被禁言，禁言次数过多可能会被移出群聊哦";

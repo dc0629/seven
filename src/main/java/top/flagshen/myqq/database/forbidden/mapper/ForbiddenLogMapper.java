@@ -1,7 +1,11 @@
 package top.flagshen.myqq.database.forbidden.mapper;
 
-import top.flagshen.myqq.database.forbidden.entity.ForbiddenLogDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import io.lettuce.core.dynamic.annotation.Param;
+import top.flagshen.myqq.database.forbidden.dto.JinYanCount;
+import top.flagshen.myqq.database.forbidden.entity.ForbiddenLogDO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +16,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2022-07-26
  */
 public interface ForbiddenLogMapper extends BaseMapper<ForbiddenLogDO> {
+
+    List<JinYanCount> getJinyanCount(@Param("groupNum") String groupNum);
 
 }

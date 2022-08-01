@@ -14,5 +14,17 @@
     <sql id="Base_Column_List">
         log_id, qq_num, group_num, create_time
     </sql>
+    <select id="getJinyanCount" resultType="top.flagshen.myqq.database.forbidden.dto.JinYanCount">
+        SELECT qq_num, COUNT(*) as count
+        FROM forbidden_log
+        <where>
+            <if test="groupNum != null and groupNum != ''">
+                and group_num = #{groupNum}
+            </if>
+        </where>
+        GROUP BY qq_num
+        ORDER BY count DESC
+        LIMIT 0,10
+    </select>
 
 </mapper>

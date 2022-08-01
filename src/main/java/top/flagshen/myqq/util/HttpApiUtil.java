@@ -1,8 +1,6 @@
 package top.flagshen.myqq.util;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -120,7 +118,7 @@ public final class HttpApiUtil {
 
     }
 
-    public static JSONObject httpClientCommon(String postType, String url, String jsonStr) {
+    public static String httpClientCommon(String postType, String url, String jsonStr) {
         httpClient = HttpClients.createDefault();
         CloseableHttpResponse httpResponse = null;
         try {
@@ -159,8 +157,7 @@ public final class HttpApiUtil {
             if (statusCode == HttpStatus.SC_OK) {
                 HttpEntity entity = httpResponse.getEntity();
                 String result = EntityUtils.toString(entity);
-                JSONObject resultObject = JSON.parseObject(result);
-                return resultObject;
+                return result;
             }
         } catch (IOException e) {
         } finally {

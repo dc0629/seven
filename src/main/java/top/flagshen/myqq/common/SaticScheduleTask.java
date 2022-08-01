@@ -1,5 +1,7 @@
 package top.flagshen.myqq.common;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -13,14 +15,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import top.flagshen.myqq.entity.TianXingResult;
 import top.flagshen.myqq.entity.NovelAttribute;
+import top.flagshen.myqq.entity.TianXingResult;
 import top.flagshen.myqq.service.IGroupMsgService;
 import top.flagshen.myqq.util.HttpApiUtil;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Configuration      //1.主要用于标记配置类，兼备Component的效果。
 @EnableScheduling   // 2.开启定时任务
@@ -142,7 +143,40 @@ public class SaticScheduleTask {
                     0, TypeConstant.MSGTYPE_GROUP,
                     "55", null, "懒宝，9点啦还不起床，扣分扣分，扣5分\n" + "当前总分：" + scoreTotal);
         }
+    }
 
+    //每天早上8点，查7日金价
+    @Scheduled(cron = "0 0 8 * * ?")
+    private void jinJia() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_WEEK, -7);
+        String url = "https://api.jijinhao.com/quoteCenter/history.htm?code=JO_42660&style=3&startDate=" +
+                dateFormat.format(calendar.getTime()) +
+                "&endDate=" + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String result = HttpApiUtil.httpClientCommon(HttpMethodConstants.HTTP_GET,
+                url, null);
+        result = result.substring(16);
+        JSONObject jsonObject = JSON.parseObject(result);
+        if (jsonObject == null) {
+            return;
+        }
+        JSONArray dataArr = JSON.parseArray(jsonObject.get("data").toString());
+        if (dataArr == null) {
+            return;
+        }
+        StringBuffer sb = new StringBuffer();
+        sb.append("7日金价：");
+        for(int j = 0;j<dataArr.size();j++){
+            JSONObject obj = dataArr.getJSONObject(j);
+            sb.append("\r\n日期：")
+                    .append(dateFormat.format(new Date(Long.valueOf(obj.get("time").toString()))))
+                    .append(" 价格：").append(obj.get("q1"));
+        }
+        //发送群消息
+        xsTemplate.sendMsgEx("1462152250",
+                0, TypeConstant.MSGTYPE_GROUP,
+                "531753196", null, sb.toString());
     }
 
     /**
@@ -151,8 +185,9 @@ public class SaticScheduleTask {
      * @return
      */
     private String getContent(String url) {
-        JSONObject jsonObject = HttpApiUtil.httpClientCommon(HttpMethodConstants.HTTP_GET,
+        String result = HttpApiUtil.httpClientCommon(HttpMethodConstants.HTTP_GET,
                 url, null);
+        JSONObject jsonObject = JSON.parseObject(result);
         if (jsonObject != null) {
             TianXingResult goodMorningResult = jsonObject.toJavaObject(TianXingResult.class);
             if (goodMorningResult.getCode().equals(200)) {
