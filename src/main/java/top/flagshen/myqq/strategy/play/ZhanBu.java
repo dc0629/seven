@@ -3,6 +3,7 @@ package top.flagshen.myqq.strategy.play;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import top.flagshen.myqq.common.Permissions;
 import top.flagshen.myqq.common.RedisConstant;
 import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.XiaoshenTemplate;
@@ -28,6 +29,7 @@ public class ZhanBu implements PlayStrategy {
     }
 
     @Override
+    @Permissions(groupNums = "423430656")
     public boolean play(MyQQMessage message) {
         String key = RedisConstant.DIVINATION + message.getMqFromqq();
         if (redisTemplate.hasKey(key)) {

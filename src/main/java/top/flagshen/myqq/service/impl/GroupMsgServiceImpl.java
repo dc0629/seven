@@ -66,11 +66,11 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
             message.setMqMsg(msg.substring(i + 1));
         }
         // 一些特殊操作，只开放给管理群和测试群
-        if (operationStrategyContext.operation(operate, message)) {
+        if (operationStrategyContext.operation(message, operate)) {
             return new ReqResult();
         }
         // 学习打卡群
-        if (StudyStrategyContext.study(operate, message)) {
+        if (StudyStrategyContext.study(message, operate)) {
             return new ReqResult();
         }
         // 查询是否在黑名单中
@@ -79,7 +79,7 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
             return new ReqResult(1);
         }
         // 一些玩法，占卜和改命，只开放给书友2群和舵主群，和管理测试群
-        if (playStrategyContext.play(operate, message)) {
+        if (playStrategyContext.play(message, operate)) {
             return new ReqResult(1);
         }
 

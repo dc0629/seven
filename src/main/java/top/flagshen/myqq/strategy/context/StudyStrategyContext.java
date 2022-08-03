@@ -2,6 +2,7 @@ package top.flagshen.myqq.strategy.context;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import top.flagshen.myqq.common.Permissions;
 import top.flagshen.myqq.entity.MyQQMessage;
 import top.flagshen.myqq.strategy.StudyStrategy;
 
@@ -18,11 +19,8 @@ public class StudyStrategyContext {
         strategyMap.forEach((k, v)-> this.strategyMap.put(k, v));
     }
 
-    public boolean study(String operation, MyQQMessage message) {
-
-        if (!"xxx".equals(message.getMqFromid())) {
-            return false;
-        }
+    @Permissions(groupNums = "333")
+    public boolean study(MyQQMessage message, String operation) {
         StudyStrategy studyStrategy = strategyMap.get(operation);
         return studyStrategy != null ? studyStrategy.study(message) : false;
     }

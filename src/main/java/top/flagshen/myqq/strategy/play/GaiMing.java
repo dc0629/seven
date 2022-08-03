@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import top.flagshen.myqq.common.Permissions;
 import top.flagshen.myqq.common.RedisConstant;
 import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.XiaoshenTemplate;
@@ -38,6 +39,7 @@ public class GaiMing implements PlayStrategy {
     }
 
     @Override
+    @Permissions(groupNums = "423430656")
     public boolean play(MyQQMessage message) {
         Set set = redisTemplateSet.opsForValue().get(RedisConstant.MENGZHU);
         if (CollectionUtils.isEmpty(set)) {

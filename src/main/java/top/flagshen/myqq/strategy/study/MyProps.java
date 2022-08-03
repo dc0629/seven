@@ -37,10 +37,10 @@ public class MyProps implements StudyStrategy {
             return true;
         }
 
-        sb.append("我的背包里有:\n");
+        sb.append("我的背包里有:");
         Map<String, Integer> propsMap = propsTotal.stream().collect(Collectors.toMap(PropsTotal::getPropsName, PropsTotal::getTotal));
         for (Map.Entry<String, Integer> entry : propsMap.entrySet()) {
-            sb.append(entry.getKey()).append("*").append(entry.getValue()).append("\n");
+            sb.append("\n").append(entry.getKey()).append("*").append(entry.getValue());
         }
         //发送群消息
         xsTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,

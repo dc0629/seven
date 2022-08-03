@@ -2,6 +2,7 @@ package top.flagshen.myqq.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import top.flagshen.myqq.common.FieldInterface;
 
 /**
  * @author 小棽
@@ -25,6 +26,7 @@ public class MyQQMessage {
      * 消息来源群号
      */
     @JsonProperty("MQ_fromID")
+    @FieldInterface
     private String mqFromid;
     /**
      * 消息来源qq

@@ -7,7 +7,7 @@ import javax.servlet.annotation.WebInitParam;
 
 /**
  * 配置druid过滤规则
- * @author maochong
+ * @author dc
  *
  */
 @WebFilter(filterName="druidWebStatFilter",urlPatterns="/*",
