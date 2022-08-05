@@ -3,6 +3,7 @@ package top.flagshen.myqq.common;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import top.flagshen.myqq.database.updatereminder.entity.UpdateReminderDO;
+import top.flagshen.myqq.database.updatereminder.service.IUpdateReminderService;
 import top.flagshen.myqq.entity.NovelAttribute;
 import top.flagshen.myqq.entity.TianXingResult;
 import top.flagshen.myqq.service.IGroupMsgService;
@@ -30,6 +33,9 @@ public class SaticScheduleTask {
 
     @Autowired
     private IGroupMsgService groupMsgService;
+
+    @Autowired
+    private IUpdateReminderService updateReminderService;
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
@@ -127,6 +133,33 @@ public class SaticScheduleTask {
         }
     }
 
+    //每天中午12点校验预约了更新提醒的人里哪些已经退群了，退群了的就移除
+    @Scheduled(cron = "0 0 12 * * ? ")
+    private void checkUpdateReminder() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("c1", "1462152250");
+        for (String groupNum : GROUP_NUM) {
+            // 查询该群预约了更新提醒的人
+            List<UpdateReminderDO> updateReminderDOList = updateReminderService.list(new LambdaQueryWrapper<UpdateReminderDO>()
+                    .eq(UpdateReminderDO::getGroupNum, groupNum));
+            if (CollectionUtils.isEmpty(updateReminderDOList)) {
+                continue;
+            }
+            // 查询群成员列表
+            map.put("c2", groupNum);
+            Map<String, Object> api_getGroupMemberList = xsTemplate.tongyongPost("Api_GetGroupMemberList_B", map);
+            HashMap data = (HashMap) api_getGroupMemberList.get("data");
+            // 获取到的群成员列表
+            List<String> groupMemberNums = Arrays.asList(data.get("ret").toString().split("\r\n"));
+            updateReminderDOList.forEach(updateReminderDO -> {
+                // 如果该qq号不在群成员中，就删除
+                if (!groupMemberNums.contains(updateReminderDO.getQqNum())) {
+                    updateReminderService.removeById(updateReminderDO.getReminderId());
+                }
+            });
+        }
+    }
+
     //每天早上9点，判断有没有起床
     @Scheduled(cron = "0 0 9 * * ?")
     private void getUp() {
@@ -145,8 +178,8 @@ public class SaticScheduleTask {
         }
     }
 
-    //每天早上8点，查7日金价
-    @Scheduled(cron = "0 0 8 * * ?")
+    //每天早上10点，查7日金价
+    @Scheduled(cron = "0 30 11 * * ?")
     private void jinJia() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar calendar = Calendar.getInstance();

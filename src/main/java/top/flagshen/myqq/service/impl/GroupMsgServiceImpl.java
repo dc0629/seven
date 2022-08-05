@@ -1,15 +1,19 @@
 package top.flagshen.myqq.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import top.flagshen.myqq.common.RedisConstant;
 import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.XiaoshenTemplate;
 import top.flagshen.myqq.database.blacklist.entity.BlacklistDO;
 import top.flagshen.myqq.database.blacklist.service.IBlacklistService;
+import top.flagshen.myqq.database.updatereminder.entity.UpdateReminderDO;
+import top.flagshen.myqq.database.updatereminder.service.IUpdateReminderService;
 import top.flagshen.myqq.entity.MyQQMessage;
 import top.flagshen.myqq.entity.NovelAttribute;
 import top.flagshen.myqq.entity.ReqResult;
@@ -50,6 +54,12 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
 
     @Autowired
     private IBlacklistService blacklistService;
+
+    @Autowired
+    private IUpdateReminderService updateReminderService;
+
+    // 设置更新提醒时每一批@20个人
+    private static final int batchSize = 20;
 
     @Override
     public ReqResult manageGroupMsg(String msg, MyQQMessage message) {
@@ -102,13 +112,36 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
         StringSubstitutor sub = new StringSubstitutor(valuesMap);
         String content= sub.replace(template);
         for (String groupQQ: manageGroup) {
-            //发送群消息
+            //给开启更新提醒的人发送更新消息
+            updateReminder(groupQQ);
+            //发送更新公告
             xsTemplate.sendMsgEx("444",
                     0, TypeConstant.MSGTYPE_GROUP,
                     groupQQ, null, content);
         }
 
         return null;
+    }
+
+    private void updateReminder(String groupNum) {
+        // 获取该群开启提醒的成员
+        List<UpdateReminderDO> reminderList = updateReminderService.list(new LambdaQueryWrapper<UpdateReminderDO>()
+                .eq(UpdateReminderDO::getGroupNum, groupNum));
+        if (CollectionUtils.isEmpty(reminderList)) {
+            return;
+        }
+        StringBuffer sb = new StringBuffer();
+        for (int i = 1; i <= reminderList.size(); i++) {
+            sb.append("[@"+reminderList.get(i-1).getQqNum()+"] ");
+            // 设置每一条消息上限20人
+            if ((i != 1 && i % batchSize == 0) || i == reminderList.size()) {
+                xsTemplate.sendMsgEx("1462152250",
+                        0, TypeConstant.MSGTYPE_GROUP,
+                        groupNum, null, sb.toString());
+                // 清空内容
+                sb.setLength(0);
+            }
+        }
     }
 
     @Override
