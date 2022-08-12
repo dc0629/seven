@@ -45,6 +45,8 @@ public class MsgController {
         if (TypeConstant.MSGTYPE_GROUP == message.getMqType()) {
             // 群消息就开始判断是不是有人在连图，连图就禁言
             groupManageService.jkjinyan(message);
+            // 撤回敏感消息
+            groupManageService.mgc(message);
         } else if (TypeConstant.MSGTYPE_ONE_BE_BAN == message.getMqType()) {
             // 如果是有人被禁言，就存一下禁言记录
             groupManageService.jinyanlog(message);

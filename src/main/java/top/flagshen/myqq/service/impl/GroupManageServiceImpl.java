@@ -1,6 +1,7 @@
 package top.flagshen.myqq.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -13,14 +14,13 @@ import top.flagshen.myqq.database.forbidden.service.IForbiddenLogService;
 import top.flagshen.myqq.entity.MyQQMessage;
 import top.flagshen.myqq.entity.ReqResult;
 import top.flagshen.myqq.service.IGroupManageService;
+import top.flagshen.myqq.util.MgcUtil;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class GroupManageServiceImpl implements IGroupManageService {
 
     @Autowired
@@ -170,5 +170,32 @@ public class GroupManageServiceImpl implements IGroupManageService {
         xsTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
                 message.getMqFromid(), null, text);
         return new ReqResult(1);
+    }
+
+    @Override
+    public ReqResult mgc(MyQQMessage message) {
+        // 是否开启撤回功能
+        if (!redisTemplate.hasKey(RedisConstant.CHEHUI)) {
+            return null;
+        }
+        try {
+            Set<String> strings = MgcUtil.loadFile();
+            strings.forEach(s -> {
+                if (StringUtils.isNotBlank(s) && message.getMqMsg().contains(s)) {
+                    log.info("撤回消息:{}",message.getMqMsg());
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("c1", message.getMqRobot());
+                    hashMap.put("c2", message.getMqFromid());
+                    // 撤回消息
+                    hashMap.put("c3", message.getMqMsgseq());
+                    hashMap.put("c4", message.getMqMsgid());
+                    xsTemplate.tongyongPost("Api_WithdrawMsg", hashMap);
+                }
+            });
+        } catch (Exception e) {
+            log.info("撤回出错:{}", e.getMessage());
+        }
+
+        return null;
     }
 }

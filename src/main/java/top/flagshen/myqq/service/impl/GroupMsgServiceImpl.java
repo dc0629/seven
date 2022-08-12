@@ -113,7 +113,9 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
         String content= sub.replace(template);
         for (String groupQQ: manageGroup) {
             //给开启更新提醒的人发送更新消息
-            updateReminder(groupQQ);
+            if (RedisConstant.TEMPLATE.equals(templateKey)) {
+                updateReminder(groupQQ);
+            }
             //发送更新公告
             xsTemplate.sendMsgEx("444",
                     0, TypeConstant.MSGTYPE_GROUP,
@@ -124,28 +126,36 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
     }
 
     private void updateReminder(String groupNum) {
-        // 获取该群开启提醒的成员
-        List<UpdateReminderDO> reminderList = updateReminderService.list(new LambdaQueryWrapper<UpdateReminderDO>()
-                .eq(UpdateReminderDO::getGroupNum, groupNum));
-        if (CollectionUtils.isEmpty(reminderList)) {
-            return;
-        }
-        StringBuffer sb = new StringBuffer();
-        for (int i = 1; i <= reminderList.size(); i++) {
-            sb.append("[@"+reminderList.get(i-1).getQqNum()+"] ");
-            // 设置每一条消息上限20人
-            if ((i != 1 && i % batchSize == 0) || i == reminderList.size()) {
-                xsTemplate.sendMsgEx("1462152250",
-                        0, TypeConstant.MSGTYPE_GROUP,
-                        groupNum, null, sb.toString());
-                // 清空内容
-                sb.setLength(0);
+        try {
+            // 获取该群开启提醒的成员
+            List<UpdateReminderDO> reminderList = updateReminderService.list(new LambdaQueryWrapper<UpdateReminderDO>()
+                    .eq(UpdateReminderDO::getGroupNum, groupNum));
+            if (CollectionUtils.isEmpty(reminderList)) {
+                return;
             }
+            StringBuffer sb = new StringBuffer();
+            for (int i = 1; i <= reminderList.size(); i++) {
+                sb.append("[@"+reminderList.get(i-1).getQqNum()+"] ");
+                // 设置每一条消息上限20人
+                if ((i != 1 && i % batchSize == 0) || i == reminderList.size()) {
+                    xsTemplate.sendMsgEx("xxx",
+                            0, TypeConstant.MSGTYPE_GROUP,
+                            groupNum, null, sb.toString());
+                    // 清空内容
+                    sb.setLength(0);
+                }
+            }
+        } catch (Exception e) {
+            log.info("更新提醒异常：{}", e.getMessage());
         }
+
     }
 
     @Override
     public ReqResult ruqunMsg(MyQQMessage message) {
+        if ("xxx".equals(message.getMqFromid())) {
+            return null;
+        }
         String s = "[@"+message.getMqPassiveqq()+"]" + " 尊敬的预约玩家，欢迎加入404避难所！(*≧▽≦)" +
                 "\r\n我是助理小柒，有什么不懂的不要问我，自己看群规哦o(≧v≦)o";
         xsTemplate.sendMsgEx(message.getMqRobot(),

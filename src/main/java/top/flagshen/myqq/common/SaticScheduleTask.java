@@ -55,15 +55,20 @@ public class SaticScheduleTask {
         try {
             // 已有的章节名
             String oldChapter = redisTemplate.opsForValue().get(RedisConstant.CHAPTER_NAME);
+            // 最新章节数
+            String chapterNum = redisTemplate.opsForValue().get(RedisConstant.CHAPTER_NUM);
             document = Jsoup.connect("https://m.qidian.com/book/1029391348.html").get();
-            Elements select = document.select("div[class='category-item-container']>a");
+            Elements select = document.select("a[class='charpter-link auto-report']");
             if (CollectionUtils.isEmpty(select)) {
                 return;
             }
             Element e = select.get(0);
             NovelAttribute novelAttribute = new NovelAttribute();
-            String newChapter = "";// 新的章节数
+            String newChapter = "";// 新的章节名
             String fictionChapter = e.text();
+            if (fictionChapter.contains("最新章节 ")) {
+                fictionChapter = fictionChapter.substring(5);
+            }
             String fictionUrl = e.attr("abs:href");
             novelAttribute.setFictionUrl(fictionUrl);// 链接
             novelAttribute.setFictionChapter(fictionChapter);// 标题
@@ -71,7 +76,19 @@ public class SaticScheduleTask {
             fictionAlt = fictionAlt.substring(fictionAlt.lastIndexOf(": ") + 2);
             novelAttribute.setFictionNumber(fictionAlt);// 字数
             newChapter = fictionChapter;
-            // 如果两次章节数不同，就说明更新了
+            int zhang = newChapter.indexOf("章");
+            int di = newChapter.indexOf("第");
+            // 判断是否有 第章两个字，如果是请假可以走后面的流程
+            if (di == 0 && zhang > 0) {
+                String newChapterNum = newChapter.substring(1, zhang);
+                // 如果最新章节数量小于等于老的章节数量，结束
+                if (chapterNum != null && Integer.valueOf(newChapterNum) <= Integer.valueOf(chapterNum)) {
+                    return;
+                }
+                // 并且记录最新章节数
+                redisTemplate.opsForValue().set(RedisConstant.CHAPTER_NUM, newChapterNum);
+            }
+            // 如果两次章节名不同，就说明更新了
             if (!newChapter.equals(oldChapter)) {
                 if (newChapter.contains("不是请假")) {
                     groupMsgService.batchSendMsg(novelAttribute, RedisConstant.LATER_TEMPLATE);
@@ -80,7 +97,7 @@ public class SaticScheduleTask {
                 } else {
                     groupMsgService.batchSendMsg(novelAttribute, RedisConstant.TEMPLATE);
                 }
-                // 把新的数量存入缓存
+                // 把新的章节名存入缓存
                 redisTemplate.opsForValue().set(RedisConstant.CHAPTER_NAME, newChapter);
             }
         } catch (Exception e) {
@@ -96,12 +113,10 @@ public class SaticScheduleTask {
         if (!content.contains("早安")) {
             content += "早安！";
         }
-        for (String num : GROUP_NUM) {
-            //发送群消息
-            xsTemplate.sendMsgEx("444",
-                    0, TypeConstant.MSGTYPE_GROUP,
-                    num, null, content);
-        }
+        //发送群消息
+        xsTemplate.sendMsgEx("xxx",
+                0, TypeConstant.MSGTYPE_GROUP,
+                "xxx", null, content);
     }
 
     //每天晚上11点晚安
@@ -112,12 +127,10 @@ public class SaticScheduleTask {
         if (!content.contains("晚安")) {
             content += "晚安！";
         }
-        for (String num : GROUP_NUM) {
-            //发送群消息
-            xsTemplate.sendMsgEx("444",
-                    0, TypeConstant.MSGTYPE_GROUP,
-                    num, null, content);
-        }
+        //发送群消息
+        xsTemplate.sendMsgEx("xxx",
+                0, TypeConstant.MSGTYPE_GROUP,
+                "xxx", null, content);
     }
 
     //每天晚上12点清空占卜缓存

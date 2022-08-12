@@ -25,7 +25,7 @@ public class FaGongGao implements OperationStrategy {
         this.xsTemplate = xsTemplate;
     }
 
-    private static final List<String> manageGroup = Arrays.asList("427654886","777329976","165832396","885454847","423430656");
+    private static final List<String> manageGroup = Arrays.asList("777329976","746814450","423430656");
 
     @Override
     public boolean operation(MyQQMessage message) {

@@ -76,12 +76,16 @@ public final class ContentUtil {
         Document document;
         try {
             document = Jsoup.connect("https://m.qidian.com/book/1029391348.html").get();
-            Elements select = document.select("div[class='category-item-container']>a");
+            Elements select = document.select("a[class='charpter-link auto-report']");
             NovelAttribute novelAttribute = new NovelAttribute();
             if (!CollectionUtils.isEmpty(select)) {
                 Element e = select.get(0);
                 novelAttribute.setFictionUrl(e.attr("abs:href"));
-                novelAttribute.setFictionChapter(e.text());
+                String fictionChapter = e.text();
+                if (fictionChapter.contains("最新章节 ")) {
+                    fictionChapter = fictionChapter.substring(5);
+                }
+                novelAttribute.setFictionChapter(fictionChapter);
                 // 字数
                 String fictionAlt = e.attr("abs:alt");
                 fictionAlt = fictionAlt.substring(fictionAlt.lastIndexOf(": ") + 2);

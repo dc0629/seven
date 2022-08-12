@@ -18,4 +18,11 @@ public interface IGroupManageService {
      * @return
      */
     ReqResult jinyanlog(MyQQMessage message);
+
+    /**
+     * 敏感词检测
+     * @param message
+     * @return
+     */
+    ReqResult mgc(MyQQMessage message);
 }
