@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.flagshen.myqq.database.userinfo.mapper.UserInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="top.flagshen.myqq.database.userinfo.entity.UserInfoDO">
+        <id column="qq_num" property="qqNum" />
+        <result column="strength" property="strength" />
+        <result column="agile" property="agile" />
+        <result column="perception" property="perception" />
+        <result column="intelligence" property="intelligence" />
+        <result column="constitution" property="constitution" />
+        <result column="contribution" property="contribution" />
+        <result column="silver_coin" property="silverCoin" />
+        <result column="good_opinion" property="goodOpinion" />
+        <result column="game_understanding" property="gameUnderstanding" />
+        <result column="empirical_value" property="empiricalValue" />
+        <result column="level" property="level" />
+        <result column="create_time" property="createTime" />
+        <result column="modify_time" property="modifyTime" />
+        <result column="is_delete" property="isDelete" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        qq_num, strength, agile, perception, intelligence, constitution, contribution, silver_coin, good_opinion, game_understanding, empirical_value, level, create_time, modify_time, is_delete
+    </sql>
+
+</mapper>

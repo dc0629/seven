@@ -1,12 +1,11 @@
 package top.flagshen.myqq.database.blacklist.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import java.util.Date;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -26,6 +25,7 @@ public class BlacklistDO implements Serializable {
     @TableId(value = "qq_num", type = IdType.INPUT)
     private String qqNum;
 
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
 
