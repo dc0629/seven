@@ -1,5 +1,10 @@
 server:
   port: 9988
+  ssl: # ssl相关配置
+    enabled: true
+    key-store: classpath:yaaaa.top.jks
+    key-store-password: 4bw9100m9wso3
+    key-store-type: JKS
 xiaoshen:
   host: localhost
   port: 7788

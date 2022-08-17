@@ -29,6 +29,11 @@ public class UserInfoDO implements Serializable {
     private String qqNum;
 
     /**
+     * 绑定了的微信小程序openId
+     */
+    private String openId;
+
+    /**
      * 力量
      */
     private Integer strength;
