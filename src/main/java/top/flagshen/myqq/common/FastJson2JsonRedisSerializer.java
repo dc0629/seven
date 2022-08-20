@@ -13,9 +13,7 @@ import java.nio.charset.StandardCharsets;
  * Description...
  *
  * @param <T> the type parameter
- * @author YangYi
- * @version v1.0
- * @date 2019 /11/15
+ * @author dengchao
  */
 public class FastJson2JsonRedisSerializer<T> implements RedisSerializer<T> {
 
