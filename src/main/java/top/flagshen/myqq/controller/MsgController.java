@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.entity.MyQQMessage;
-import top.flagshen.myqq.entity.ReqResult;
-import top.flagshen.myqq.service.IGroupManageService;
-import top.flagshen.myqq.service.IGroupMsgService;
+import top.flagshen.myqq.entity.common.MyQQMessage;
+import top.flagshen.myqq.entity.common.ReqResult;
+import top.flagshen.myqq.service.group.IGroupManageService;
+import top.flagshen.myqq.service.group.IGroupMsgService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;

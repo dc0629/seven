@@ -8,7 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.util.CollectionUtils;
-import top.flagshen.myqq.entity.NovelAttribute;
+import top.flagshen.myqq.entity.common.NovelAttribute;
 
 import java.util.*;
 

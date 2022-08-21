@@ -1,21 +1,11 @@
 package top.flagshen.myqq.common;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
-import top.flagshen.myqq.entity.DataResult;
-import top.flagshen.myqq.entity.PushMessage;
+import top.flagshen.myqq.entity.common.DataResult;
+import top.flagshen.myqq.entity.common.PushMessage;
 import top.flagshen.myqq.util.HttpApiUtil;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
-import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;

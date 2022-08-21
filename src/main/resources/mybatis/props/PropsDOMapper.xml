@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="top.flagshen.myqq.database.props.mapper.PropsMapper">
+<mapper namespace="top.flagshen.myqq.dao.props.mapper.PropsMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="top.flagshen.myqq.database.props.entity.PropsDO">
+    <resultMap id="BaseResultMap" type="top.flagshen.myqq.dao.props.entity.PropsDO">
         <id column="props_id" property="propsId" />
         <result column="qq_num" property="qqNum" />
         <result column="props_name" property="propsName" />
@@ -17,7 +17,7 @@
     <sql id="Base_Column_List">
         props_id, qq_num, props_name, is_used, is_delete, modify_time, create_time
     </sql>
-    <select id="getPropsCount" resultType="top.flagshen.myqq.database.props.dto.PropsTotal">
+    <select id="getPropsCount" resultType="top.flagshen.myqq.dao.props.dto.PropsTotal">
         SELECT props_name, COUNT(*) as total
         FROM props
         <where>

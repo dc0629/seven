@@ -60,7 +60,7 @@ public class PermissionsAnnotationService {
 			}
 			return joinPoint.proceed();
 		} catch (Throwable e) {
-			log.info("权限控制注解出问题了，快看一下" + e.getMessage());
+			log.info("操作发生异常:{}", e.getMessage());
 		}
 		return false;
 	}

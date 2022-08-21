@@ -16,8 +16,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import top.flagshen.myqq.common.HttpMethodConstants;
-import top.flagshen.myqq.entity.DataResult;
-import top.flagshen.myqq.entity.PushMessage;
+import top.flagshen.myqq.entity.common.DataResult;
+import top.flagshen.myqq.entity.common.PushMessage;
 
 import java.io.IOException;
 import java.net.URI;

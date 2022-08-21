@@ -16,11 +16,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import top.flagshen.myqq.database.updatereminder.entity.UpdateReminderDO;
-import top.flagshen.myqq.database.updatereminder.service.IUpdateReminderService;
-import top.flagshen.myqq.entity.NovelAttribute;
-import top.flagshen.myqq.entity.TianXingResult;
-import top.flagshen.myqq.service.IGroupMsgService;
+import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
+import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
+import top.flagshen.myqq.entity.common.NovelAttribute;
+import top.flagshen.myqq.entity.common.TianXingResult;
+import top.flagshen.myqq.service.group.IGroupMsgService;
 import top.flagshen.myqq.util.HttpApiUtil;
 
 import java.text.SimpleDateFormat;

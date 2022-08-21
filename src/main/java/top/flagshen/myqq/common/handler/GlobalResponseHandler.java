@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-import top.flagshen.myqq.common.ResponseResult;
 
 import java.util.Objects;
 
@@ -45,7 +44,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
             return false;
         }
         final String returnTypeName = returnType.getParameterType().getName();
-        return !"top.flagshen.myqq.common.ResponseResult".equals(returnTypeName);
+        return !"top.flagshen.myqq.common.handler.ResponseResult".equals(returnTypeName);
     }
 
     @Override
