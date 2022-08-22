@@ -34,6 +34,11 @@ public class UserInfoDO implements Serializable {
     private String openId;
 
     /**
+     * 密码
+     */
+    private String password;
+
+    /**
      * 力量
      */
     private Integer strength;

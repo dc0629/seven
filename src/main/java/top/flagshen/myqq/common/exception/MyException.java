@@ -1,4 +1,4 @@
-package top.flagshen.myqq.common;
+package top.flagshen.myqq.common.exception;
 
 
 import lombok.ToString;
@@ -19,8 +19,8 @@ public class MyException extends RuntimeException {
         this(expoErrors.getErrorSpecCode(), expoErrors.getDescription());
     }
 
-    public MyException(Integer errCode) {
-        this(errCode, errCode.toString());
+    public MyException(String errMsg) {
+        this(0, errMsg);
     }
 
     public MyException(Integer errCode, String errMsg) {

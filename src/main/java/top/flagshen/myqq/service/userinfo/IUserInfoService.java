@@ -2,6 +2,7 @@ package top.flagshen.myqq.service.userinfo;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
+import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
 import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
 
@@ -28,4 +29,10 @@ public interface IUserInfoService extends IService<UserInfoDO> {
      * @return
      */
     WeiXinResp getOpenId(String code);
+
+    /**
+     * 绑定qq
+     * @param req
+     */
+    void bingQQ(BindQQReq req);
 }

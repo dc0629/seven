@@ -112,14 +112,14 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
         StringSubstitutor sub = new StringSubstitutor(valuesMap);
         String content= sub.replace(template);
         for (String groupQQ: manageGroup) {
-            //给开启更新提醒的人发送更新消息
-            if (RedisConstant.TEMPLATE.equals(templateKey)) {
-                updateReminder(groupQQ);
-            }
             //发送更新公告
             xsTemplate.sendMsgEx("444",
                     0, TypeConstant.MSGTYPE_GROUP,
                     groupQQ, null, content);
+            //给开启更新提醒的人发送更新消息
+            if (RedisConstant.TEMPLATE.equals(templateKey)) {
+                updateReminder(groupQQ);
+            }
         }
 
         return null;

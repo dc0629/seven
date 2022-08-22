@@ -7,11 +7,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.HttpMethodConstants;
+import top.flagshen.myqq.common.exception.ErrorCodeEnum;
+import top.flagshen.myqq.common.exception.ExceptionAssertUtil;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
 import top.flagshen.myqq.dao.userinfo.mapper.UserInfoMapper;
-import top.flagshen.myqq.service.userinfo.IUserInfoService;
+import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
 import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
+import top.flagshen.myqq.service.userinfo.IUserInfoService;
 import top.flagshen.myqq.util.AesUtils;
 import top.flagshen.myqq.util.HttpApiUtil;
 
@@ -28,8 +31,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
 
     @Override
     public UserInfoResp getUserDetail(String qqNum) {
-        // 先解密
-        qqNum = AesUtils.decodeHexString(qqNum);
         UserInfoResp userInfoResp = new UserInfoResp();
         UserInfoDO userInfoDO = this.getById(qqNum);
         if (userInfoDO == null) {
@@ -59,8 +60,27 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
                 .eq(UserInfoDO::getOpenId, openid.toString())
                 .last("limit 1"));
         if (userInfo != null) {
-            resp.setQqNum(userInfo.getQqNum());
+            // qq号要加密
+            resp.setQqNum(AesUtils.encryptHexString(userInfo.getQqNum()));
         }
         return resp;
+    }
+
+    @Override
+    public void bingQQ(BindQQReq req) {
+        ExceptionAssertUtil.notBlank(req.getOpenId(), ErrorCodeEnum.PARAM_ILLEGAL);
+        ExceptionAssertUtil.notBlank(req.getPassword(), ErrorCodeEnum.PARAM_ILLEGAL);
+        ExceptionAssertUtil.notBlank(req.getQqNum(), ErrorCodeEnum.PARAM_ILLEGAL);
+
+        UserInfoDO userInfoDO = this.getOne(new LambdaQueryWrapper<UserInfoDO>()
+                .eq(UserInfoDO::getQqNum, req.getQqNum())
+                .eq(UserInfoDO::getPassword, req.getPassword())
+                .last("limit 1"));
+        // 没有查到的话，都提示密码错误
+        ExceptionAssertUtil.notNull(userInfoDO, ErrorCodeEnum.PASSWORD_ERROR);
+
+        // 否则更新openId
+        userInfoDO.setOpenId(req.getOpenId());
+        this.updateById(userInfoDO);
     }
 }
