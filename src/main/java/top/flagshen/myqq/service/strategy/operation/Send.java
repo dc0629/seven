@@ -19,7 +19,7 @@ public class Send implements OperationStrategy {
         this.xsTemplate = xsTemplate;
     }
 
-    private static final List<String> manageGroup = Arrays.asList("1","2","3","4","5","6");
+    private static final List<String> manageGroup = Arrays.asList("777329976","746814450","423430656","641684580");
 
     /**
      * 向着对应群发消息，指令为  /s 舵主 发消息
@@ -32,6 +32,9 @@ public class Send implements OperationStrategy {
             return true;
         }
         int j = message.getMqMsg().indexOf(" ");
+        if (j < 0) {
+            return true;
+        }
         String operate = message.getMqMsg().substring(0, j);// 发给哪个群
         String content = message.getMqMsg().substring(j + 1);// 发的内容
         if (StringUtils.isEmpty(content)) {
@@ -46,18 +49,14 @@ public class Send implements OperationStrategy {
                         groupQQ, null, content);
             }
         }
-        if ("弟子".equals(operate)) {
+        if ("v1".equalsIgnoreCase(operate)) {
             qunNum = "1";
-        } else if ("执事".equals(operate)) {
+        } else if ("v2".equalsIgnoreCase(operate)) {
             qunNum = "2";
-        } else if ("舵主".equals(operate)) {
-            qunNum = "3";
         } else if ("管理".equals(operate)) {
+            qunNum = "3";
+        } else if ("占卜".equals(operate)) {
             qunNum = "4";
-        } else if ("1".equals(operate)) {
-            qunNum = "5";
-        } else if ("2".equals(operate)) {
-            qunNum = "6";
         }
         //发送群消息
         xsTemplate.sendMsgEx(message.getMqRobot(),
