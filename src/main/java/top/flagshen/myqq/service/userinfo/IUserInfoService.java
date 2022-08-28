@@ -24,6 +24,13 @@ public interface IUserInfoService extends IService<UserInfoDO> {
     UserInfoResp getUserDetail(String qqNum);
 
     /**
+     * 探查，和详情功能一样，只不过探查的qq号是加密的
+     * @param qqNum
+     * @return
+     */
+    UserInfoResp getSearchUserDetail(String qqNum);
+
+    /**
      *
      * @param code
      * @return

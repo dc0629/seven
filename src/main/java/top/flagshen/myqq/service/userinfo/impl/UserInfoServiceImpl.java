@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.HttpMethodConstants;
 import top.flagshen.myqq.common.exception.ErrorCodeEnum;
 import top.flagshen.myqq.common.exception.ExceptionAssertUtil;
+import top.flagshen.myqq.common.exception.MyException;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
 import top.flagshen.myqq.dao.userinfo.mapper.UserInfoMapper;
 import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
@@ -32,9 +34,28 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
     @Override
     public UserInfoResp getUserDetail(String qqNum) {
         UserInfoResp userInfoResp = new UserInfoResp();
+        if (StringUtils.isBlank(qqNum)) {
+            return userInfoResp;
+        }
         UserInfoDO userInfoDO = this.getById(qqNum);
         if (userInfoDO == null) {
             return userInfoResp;
+        }
+        BeanUtils.copyProperties(userInfoDO, userInfoResp);
+        return userInfoResp;
+    }
+
+    @Override
+    public UserInfoResp getSearchUserDetail(String qqNum) {
+        // 解密
+        qqNum = AesUtils.decodeHexString(qqNum);
+        if (StringUtils.isBlank(qqNum)) {
+            throw new MyException(ErrorCodeEnum.INVALID_QR_CODE);
+        }
+        UserInfoResp userInfoResp = new UserInfoResp();
+        UserInfoDO userInfoDO = this.getById(qqNum);
+        if (userInfoDO == null) {
+            throw new MyException(ErrorCodeEnum.INVALID_QR_CODE);
         }
         BeanUtils.copyProperties(userInfoDO, userInfoResp);
         return userInfoResp;
@@ -78,6 +99,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
                 .last("limit 1"));
         // 没有查到的话，都提示密码错误
         ExceptionAssertUtil.notNull(userInfoDO, ErrorCodeEnum.PASSWORD_ERROR);
+        // 已经被绑定的话也提示密码错误
+        if (StringUtils.isNotBlank(userInfoDO.getOpenId())) {
+            throw new MyException(ErrorCodeEnum.PASSWORD_ERROR);
+        }
 
         // 否则更新openId
         userInfoDO.setOpenId(req.getOpenId());

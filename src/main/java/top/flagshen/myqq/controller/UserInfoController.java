@@ -1,12 +1,11 @@
 package top.flagshen.myqq.controller;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
-import top.flagshen.myqq.service.userinfo.IUserInfoService;
 import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
+import top.flagshen.myqq.service.userinfo.IUserInfoService;
 
 /**
  * @author dc
@@ -26,10 +25,17 @@ public class UserInfoController {
      */
     @GetMapping("/detail/{qqNum}")
     public UserInfoResp getUserDetail(@PathVariable String qqNum) {
-        if (StringUtils.isBlank(qqNum)) {
-            return new UserInfoResp();
-        }
         return userInfoService.getUserDetail(qqNum);
+    }
+
+    /**
+     * 探查，和详情功能一样，只不过探查的qq号是加密的
+     * @param qqNum
+     * @return
+     */
+    @GetMapping("/search/{qqNum}")
+    public UserInfoResp getSearchUserDetail(@PathVariable String qqNum) {
+        return userInfoService.getSearchUserDetail(qqNum);
     }
 
     /**

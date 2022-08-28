@@ -117,8 +117,8 @@ public class GroupManageServiceImpl implements IGroupManageService {
         map.put("c3", message.getMqFromqq());
         map.put("c4", jyTime(message.getMqFromid(), message.getMqFromqq()));
         xsTemplate.tongyongPost("Api_Shutup", map);
-        // 禁言倒数第二个人
-        if (StringUtils.isNotBlank(ftQQ)) {
+        // 当倒数第二个人和倒数第一个人不是同一个人时 禁言倒数第二个人
+        if (StringUtils.isNotBlank(ftQQ) && !message.getMqFromqq().equals(ftQQ)) {
             map.put("c3", ftQQ);
             map.put("c4", jyTime(message.getMqFromid(), ftQQ));
             xsTemplate.tongyongPost("Api_Shutup", map);

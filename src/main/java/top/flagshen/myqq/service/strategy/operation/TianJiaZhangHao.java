@@ -1,5 +1,6 @@
 package top.flagshen.myqq.service.strategy.operation;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.TypeConstant;
@@ -30,6 +31,9 @@ public class TianJiaZhangHao implements OperationStrategy {
         }
         String qqNum = mqMsg.substring(0, j);// 账号
         String password = mqMsg.substring(j + 1);// 密码
+        if (StringUtils.isBlank(password)) {
+            return true;
+        }
         // 先查询是否存在
         UserInfoDO user = userInfoService.getById(qqNum);
         if (user != null) {
