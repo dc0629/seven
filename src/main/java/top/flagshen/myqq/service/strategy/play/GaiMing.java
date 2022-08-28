@@ -28,9 +28,6 @@ public class GaiMing implements PlayStrategy {
     @Autowired
     RedisTemplate<String, Integer> redisTemplateInt;
 
-    @Autowired
-    RedisTemplate<String, Set> redisTemplateSet;
-
     private final Set<String> MENGZHU_SET = new HashSet<>(Arrays.asList("xxx"));
 
 
@@ -41,9 +38,9 @@ public class GaiMing implements PlayStrategy {
     @Override
     @Permissions(groupNums = "423430656")
     public boolean play(MyQQMessage message) {
-        Set set = redisTemplateSet.opsForValue().get(RedisConstant.MENGZHU);
+        Set set = redisTemplate.opsForSet().members(RedisConstant.MENGZHU);
         if (CollectionUtils.isEmpty(set)) {
-            redisTemplateSet.opsForValue().set(RedisConstant.MENGZHU, MENGZHU_SET);
+            redisTemplate.opsForSet().add(RedisConstant.MENGZHU, MENGZHU_SET.stream().toArray(String[]::new));
             if (!MENGZHU_SET.contains(message.getMqFromqq())) {
                 return true;
             }

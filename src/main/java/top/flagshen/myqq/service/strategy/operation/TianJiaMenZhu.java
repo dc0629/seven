@@ -18,7 +18,7 @@ import java.util.Set;
 public class TianJiaMenZhu implements OperationStrategy {
 
     @Autowired
-    RedisTemplate<String, Set> redisTemplateSet;
+    RedisTemplate<String, String> redisTemplateSet;
 
     private final XiaoshenTemplate xsTemplate;
 
@@ -30,15 +30,11 @@ public class TianJiaMenZhu implements OperationStrategy {
 
     @Override
     public boolean operation(MyQQMessage message) {
-        Set set = redisTemplateSet.opsForValue().get(RedisConstant.MENGZHU);
+        Set set = redisTemplateSet.opsForSet().members(RedisConstant.MENGZHU);
         if (CollectionUtils.isEmpty(set)) {
-            HashSet<String> strings = new HashSet<>(MENGZHU_SET);
-            strings.add(message.getMqMsg());
-            redisTemplateSet.opsForValue().set(RedisConstant.MENGZHU, strings);
+            redisTemplateSet.opsForSet().add(RedisConstant.MENGZHU, MENGZHU_SET.stream().toArray(String[]::new));
         } else {
-            Set<String> strings = redisTemplateSet.opsForValue().get(RedisConstant.MENGZHU);
-            strings.add(message.getMqMsg());
-            redisTemplateSet.opsForValue().set(RedisConstant.MENGZHU, strings);
+            redisTemplateSet.opsForSet().add(RedisConstant.MENGZHU, message.getMqMsg());
         }
         //发送群消息
         xsTemplate.sendMsgEx(message.getMqRobot(),

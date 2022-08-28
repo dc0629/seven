@@ -62,7 +62,7 @@ public class PermissionsAnnotationService {
 		} catch (Throwable e) {
 			log.info("操作发生异常:{}", e.getMessage());
 		}
-		return false;
+		return true;
 	}
 
 }
