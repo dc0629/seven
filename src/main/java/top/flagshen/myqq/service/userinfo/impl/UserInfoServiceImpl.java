@@ -35,11 +35,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
     public UserInfoResp getUserDetail(String qqNum) {
         UserInfoResp userInfoResp = new UserInfoResp();
         if (StringUtils.isBlank(qqNum)) {
-            return userInfoResp;
+            throw new MyException("请重启小程序");
         }
         UserInfoDO userInfoDO = this.getById(qqNum);
         if (userInfoDO == null) {
-            return userInfoResp;
+            throw new MyException("账号异常");
         }
         BeanUtils.copyProperties(userInfoDO, userInfoResp);
         return userInfoResp;
@@ -81,8 +81,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
                 .eq(UserInfoDO::getOpenId, openid.toString())
                 .last("limit 1"));
         if (userInfo != null) {
-            // qq号要加密
-            resp.setQqNum(AesUtils.encryptHexString(userInfo.getQqNum()));
+            resp.setQqNum(userInfo.getQqNum());
         }
         return resp;
     }

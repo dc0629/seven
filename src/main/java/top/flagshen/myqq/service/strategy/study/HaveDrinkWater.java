@@ -7,7 +7,7 @@ import top.flagshen.myqq.common.XiaoshenTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.StudyStrategy;
 
-@Service("今天我喝水啦")
+@Service("我喝水啦")
 public class HaveDrinkWater implements StudyStrategy {
 
     private final XiaoshenTemplate xsTemplate;
