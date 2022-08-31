@@ -2,6 +2,7 @@ package top.flagshen.myqq.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import top.flagshen.myqq.common.context.LocalInvocationContext;
 import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
 import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
@@ -23,9 +24,19 @@ public class UserInfoController {
      * @param qqNum
      * @return
      */
+    @Deprecated
     @GetMapping("/detail/{qqNum}")
     public UserInfoResp getUserDetail(@PathVariable String qqNum) {
         return userInfoService.getUserDetail(qqNum);
+    }
+
+    /**
+     * 查看详情
+     * @return
+     */
+    @GetMapping("/detail")
+    public UserInfoResp getDetail() {
+        return userInfoService.getUserDetail(LocalInvocationContext.getContext().getQqNum());
     }
 
     /**

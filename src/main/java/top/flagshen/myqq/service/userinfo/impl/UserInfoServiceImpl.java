@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.HttpMethodConstants;
 import top.flagshen.myqq.common.exception.ErrorCodeEnum;
@@ -20,6 +22,8 @@ import top.flagshen.myqq.service.userinfo.IUserInfoService;
 import top.flagshen.myqq.util.AesUtils;
 import top.flagshen.myqq.util.HttpApiUtil;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * <p>
  * 用户基本信息 服务实现类
@@ -30,6 +34,9 @@ import top.flagshen.myqq.util.HttpApiUtil;
  */
 @Service
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO> implements IUserInfoService {
+
+    @Autowired
+    RedisTemplate<String, String> redisTemplate;
 
     @Override
     public UserInfoResp getUserDetail(String qqNum) {
@@ -81,6 +88,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
                 .last("limit 1"));
         if (userInfo != null) {
             resp.setQqNum(userInfo.getQqNum());
+            redisTemplate.opsForValue().set(openid.toString(), userInfo.getQqNum(), 1, TimeUnit.DAYS);
         }
         return resp;
     }
@@ -105,5 +113,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
         // 否则更新openId
         userInfoDO.setOpenId(req.getOpenId());
         this.updateById(userInfoDO);
+        redisTemplate.opsForValue().set(req.getOpenId(), req.getQqNum(), 1, TimeUnit.DAYS);
     }
 }
