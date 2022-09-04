@@ -1,10 +1,5 @@
 server:
   port: 9988
-  ssl: # ssl相关配置
-    enabled: true
-    key-store: classpath:yaaaa.top.jks
-    key-store-password: 4bw9100m9wso3
-    key-store-type: JKS
 xiaoshen:
   host: localhost
   port: 7788
@@ -21,8 +16,8 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       url: jdbc:mysql://localhost:3306/seven?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false
-      username: root
-      password: root
+      username: localhost
+      password: localhost
       driverClassName: com.mysql.cj.jdbc.Driver
       use-ping-method: false
 mybatis-plus:
@@ -32,3 +27,6 @@ mybatis-plus:
   global-config:
     db-config:
       logic-delete-field: isDelete
+logging:
+  level:
+    top.flagshen.myqq: DEBUG
