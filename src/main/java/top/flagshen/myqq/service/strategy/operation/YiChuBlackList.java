@@ -4,17 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.service.blacklist.IBlacklistService;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
 
 @Service("移除黑名单")
 public class YiChuBlackList implements OperationStrategy {
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
-    public YiChuBlackList(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public YiChuBlackList(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
     @Autowired
@@ -25,7 +25,7 @@ public class YiChuBlackList implements OperationStrategy {
         // 移除黑名单
         blacklistService.removeById(message.getMqMsg());
         //发送群消息
-        xsTemplate.sendMsgEx(message.getMqRobot(),
+        robotTemplate.sendMsgEx(message.getMqRobot(),
                 0, TypeConstant.MSGTYPE_GROUP,
                 message.getMqFromid(), null, "移除成功");
         return true;

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.RedisConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
 
@@ -19,10 +19,10 @@ public class FaGongGao implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
-    public FaGongGao(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public FaGongGao(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
     private static final List<String> manageGroup = Arrays.asList("777329976","746814450","423430656");
@@ -37,7 +37,7 @@ public class FaGongGao implements OperationStrategy {
         for (String groupQQ: manageGroup) {
             //发公告
             map.put("c2", groupQQ);
-            xsTemplate.tongyongPost("Api_PBGroupNotic", map);
+            //robotTemplate.tongyongPost("Api_PBGroupNotic", map);
         }
         return true;
     }

@@ -5,10 +5,6 @@ server:
     key-store: classpath:yaaaa.top.jks
     key-store-password: password
     key-store-type: JKS
-xiaoshen:
-  host: localhost
-  port: 7788
-  token: 666
 spring:
   http:
     encoding:

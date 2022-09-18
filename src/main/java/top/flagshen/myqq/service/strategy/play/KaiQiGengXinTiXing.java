@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
 import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
 import top.flagshen.myqq.entity.common.MyQQMessage;
@@ -20,10 +20,10 @@ import java.util.concurrent.TimeUnit;
 @Service("开启更新提醒")
 public class KaiQiGengXinTiXing implements PlayStrategy {
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
-    public KaiQiGengXinTiXing(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public KaiQiGengXinTiXing(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
     @Autowired
@@ -57,7 +57,7 @@ public class KaiQiGengXinTiXing implements PlayStrategy {
             // 构建at
             String at = util.toCat("at", "code="+message.getMqFromqq());
             //发送群消息
-            xsTemplate.sendMsgEx(message.getMqRobot(),
+            robotTemplate.sendMsgEx(message.getMqRobot(),
                     0, TypeConstant.MSGTYPE_GROUP,
                     message.getMqFromid(), null, at + " 开启成功");
         }

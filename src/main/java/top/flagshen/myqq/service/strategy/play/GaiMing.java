@@ -7,7 +7,7 @@ import org.springframework.util.CollectionUtils;
 import top.flagshen.myqq.common.Permissions;
 import top.flagshen.myqq.common.RedisConstant;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.PlayStrategy;
 import top.flagshen.myqq.util.ContentUtil;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Service("改命")
 public class GaiMing implements PlayStrategy {
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
@@ -31,8 +31,8 @@ public class GaiMing implements PlayStrategy {
     private final Set<String> MENGZHU_SET = new HashSet<>(Arrays.asList("xxx"));
 
 
-    public GaiMing(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public GaiMing(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class GaiMing implements PlayStrategy {
             yun = (int) (Math.random()*(100-oldYun) + oldYun + 1);
         }
         //发送群消息
-        xsTemplate.sendMsgEx(message.getMqRobot(),
+        robotTemplate.sendMsgEx(message.getMqRobot(),
                 0, TypeConstant.MSGTYPE_GROUP,
                 message.getMqFromid(), null, ContentUtil.zhanbu(yun, message.getMqFromqq()));
 

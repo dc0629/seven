@@ -3,6 +3,7 @@ package top.flagshen.myqq.service.group.impl;
 import catcode.CatCodeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import love.forte.simbot.api.message.events.GroupMemberIncrease;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import top.flagshen.myqq.common.RedisConstant;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.entity.common.NovelAttribute;
@@ -35,12 +36,12 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
-    private static final List<String> manageGroup = Arrays.asList("xxx","xxx");
+    private static final List<String> manageGroup = Arrays.asList("777329976","746814450","423430656","641684580");
 
-    public GroupMsgServiceImpl(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public GroupMsgServiceImpl(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
     @Autowired
@@ -111,7 +112,7 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
                 updateReminder(groupQQ);
             }
             //发送更新公告
-            xsTemplate.sendMsgEx("444",
+            robotTemplate.sendMsgEx("1462152250",
                     0, TypeConstant.MSGTYPE_GROUP,
                     groupQQ, null, content);
         }
@@ -121,7 +122,7 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
 
     @Override
     public void sendMsg(String groupId, String content) {
-        xsTemplate.sendMsgEx("xxx",
+        robotTemplate.sendMsgEx("1462152250",
                 0, TypeConstant.MSGTYPE_GROUP,
                 groupId, null, content);
     }
@@ -140,7 +141,7 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
                 sb.append(util.toCat("at", "code="+reminderList.get(i-1).getQqNum())).append(" ");
                 // 设置每一条消息上限20人
                 if ((i != 1 && i % batchSize == 0) || i == reminderList.size()) {
-                    xsTemplate.sendMsgEx("xxx",
+                    robotTemplate.sendMsgEx("1462152250",
                             0, TypeConstant.MSGTYPE_GROUP,
                             groupNum, null, sb.toString());
                     // 清空内容
@@ -154,18 +155,18 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
     }
 
     @Override
-    public ReqResult ruqunMsg(MyQQMessage message) {
-        if ("xxx".equals(message.getMqFromid())) {
+    public ReqResult ruqunMsg(GroupMemberIncrease groupMemberIncrease) {
+        if ("641684580".equals(groupMemberIncrease.getGroupInfo().getGroupCode())) {
             return null;
         }
         CatCodeUtil util = CatCodeUtil.INSTANCE;
         // 构建at
-        String at = util.toCat("at", "code="+message.getMqFromqq());
+        String at = util.toCat("at", "code="+groupMemberIncrease.getAccountInfo().getAccountCode());
         String s = at + " 尊敬的预约玩家，欢迎加入404避难所！(*≧▽≦)" +
                 "\r\n我是助理小柒，有什么不懂的不要问我，自己看群规哦o(≧v≦)o";
-        xsTemplate.sendMsgEx(message.getMqRobot(),
+        robotTemplate.sendMsgEx("1462152250",
                 0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, s);
+                groupMemberIncrease.getGroupInfo().getGroupCode(), null, s);
         return null;
     }
 

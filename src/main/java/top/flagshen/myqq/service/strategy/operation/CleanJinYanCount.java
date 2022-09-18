@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.forbidden.entity.ForbiddenLogDO;
 import top.flagshen.myqq.service.forbidden.IForbiddenLogService;
 import top.flagshen.myqq.entity.common.MyQQMessage;
@@ -18,10 +18,10 @@ import top.flagshen.myqq.service.strategy.OperationStrategy;
 @Service("清除禁言次数")
 public class CleanJinYanCount implements OperationStrategy {
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
-    public CleanJinYanCount(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public CleanJinYanCount(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
     @Autowired
@@ -48,7 +48,7 @@ public class CleanJinYanCount implements OperationStrategy {
                 .eq(ForbiddenLogDO::getQqNum, qqNum)
                 .eq(StringUtils.isNotBlank(groupNum), ForbiddenLogDO::getGroupNum, groupNum));
         //发送群消息
-        xsTemplate.sendMsgEx(message.getMqRobot(),
+        robotTemplate.sendMsgEx(message.getMqRobot(),
                 0, TypeConstant.MSGTYPE_GROUP,
                 message.getMqFromid(), null, "成功");
         return true;

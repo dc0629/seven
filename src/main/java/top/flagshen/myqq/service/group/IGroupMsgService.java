@@ -1,5 +1,6 @@
 package top.flagshen.myqq.service.group;
 
+import love.forte.simbot.api.message.events.GroupMemberIncrease;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.entity.common.NovelAttribute;
 import top.flagshen.myqq.entity.common.ReqResult;
@@ -31,9 +32,9 @@ public interface IGroupMsgService {
 
     /**
      * 入群发欢迎消息
-     * @param message
+     * @param groupMemberIncrease
      * @return
      */
-    ReqResult ruqunMsg(MyQQMessage message);
+    ReqResult ruqunMsg(GroupMemberIncrease groupMemberIncrease);
 
 }

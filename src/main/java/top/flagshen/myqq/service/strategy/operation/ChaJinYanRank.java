@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.forbidden.dto.JinYanCount;
 import top.flagshen.myqq.service.forbidden.IForbiddenLogService;
 import top.flagshen.myqq.entity.common.MyQQMessage;
@@ -20,10 +20,10 @@ import java.util.List;
 @Service("查禁言排行")
 public class ChaJinYanRank implements OperationStrategy {
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
-    public ChaJinYanRank(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public ChaJinYanRank(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
     @Autowired
@@ -49,7 +49,7 @@ public class ChaJinYanRank implements OperationStrategy {
                     .append(jinYanCount.getCount());
         });
         //发送群消息
-        xsTemplate.sendMsgEx(message.getMqRobot(),
+        robotTemplate.sendMsgEx(message.getMqRobot(),
                 0, TypeConstant.MSGTYPE_GROUP,
                 message.getMqFromid(), null, buffer.toString());
         return true;

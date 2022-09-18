@@ -1,9 +1,5 @@
 server:
   port: 9988
-xiaoshen:
-  host: localhost
-  port: 7788
-  token: 666
 spring:
   http:
     encoding:

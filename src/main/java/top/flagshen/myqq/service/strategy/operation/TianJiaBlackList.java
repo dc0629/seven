@@ -5,17 +5,17 @@ import org.springframework.stereotype.Service;
 import top.flagshen.myqq.dao.blacklist.entity.BlacklistDO;
 import top.flagshen.myqq.service.blacklist.IBlacklistService;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
 
 @Service("添加黑名单")
 public class TianJiaBlackList implements OperationStrategy {
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
-    public TianJiaBlackList(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public TianJiaBlackList(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
     @Autowired
@@ -28,7 +28,7 @@ public class TianJiaBlackList implements OperationStrategy {
         // 添加黑名单
         blacklistService.saveOrUpdate(blacklistDO);
         //发送群消息
-        xsTemplate.sendMsgEx(message.getMqRobot(),
+        robotTemplate.sendMsgEx(message.getMqRobot(),
                 0, TypeConstant.MSGTYPE_GROUP,
                 message.getMqFromid(), null, "添加成功");
         return true;

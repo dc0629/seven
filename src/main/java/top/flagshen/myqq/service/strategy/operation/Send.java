@@ -3,7 +3,7 @@ package top.flagshen.myqq.service.strategy.operation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
 
@@ -13,13 +13,13 @@ import java.util.List;
 @Service("s")
 public class Send implements OperationStrategy {
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
-    public Send(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public Send(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
-    private static final List<String> manageGroup = Arrays.asList("777329976","746814450","423430656","641684580");
+    private static final List<String> manageGroup = Arrays.asList("xxx");
 
     /**
      * 向着对应群发消息，指令为  /s 舵主 发消息
@@ -44,22 +44,22 @@ public class Send implements OperationStrategy {
         if ("all".equals(operate)) {
             for (String groupQQ: manageGroup) {
                 //发送群消息
-                xsTemplate.sendMsgEx("444",
+                robotTemplate.sendMsgEx("1462152250",
                         0, TypeConstant.MSGTYPE_GROUP,
                         groupQQ, null, content);
             }
         }
-        if ("v1".equalsIgnoreCase(operate)) {
-            qunNum = "1";
+         if ("v1".equalsIgnoreCase(operate)) {
+            qunNum = "111";
         } else if ("v2".equalsIgnoreCase(operate)) {
-            qunNum = "2";
+            qunNum = "222";
         } else if ("管理".equals(operate)) {
-            qunNum = "3";
+            qunNum = "333";
         } else if ("占卜".equals(operate)) {
-            qunNum = "4";
+            qunNum = "444";
         }
         //发送群消息
-        xsTemplate.sendMsgEx(message.getMqRobot(),
+        robotTemplate.sendMsgEx(message.getMqRobot(),
                 0, TypeConstant.MSGTYPE_GROUP,
                 qunNum, null, content);
         return true;

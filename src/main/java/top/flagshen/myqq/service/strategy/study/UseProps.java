@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.props.entity.PropsDO;
 import top.flagshen.myqq.service.props.IPropsService;
 import top.flagshen.myqq.entity.common.MyQQMessage;
@@ -13,10 +13,10 @@ import top.flagshen.myqq.service.strategy.StudyStrategy;
 @Service("使用道具")
 public class UseProps implements StudyStrategy {
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
-    public UseProps(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public UseProps(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
     @Autowired
@@ -34,14 +34,14 @@ public class UseProps implements StudyStrategy {
                 .last("limit 1"));
         if (one == null) {
             //发送群消息
-            xsTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
+            robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
                     message.getMqFromid(), null, "我没有这个道具");
             return true;
         }
         // 将使用状态修改为1，已使用
         one.setIsUsed(1);
         propsService.updateById(one);
-        xsTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
+        robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
                 message.getMqFromid(), null, "使用成功");
         return true;
     }

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.StudyStrategy;
 
@@ -15,10 +15,10 @@ public class StudyTime implements StudyStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
-    public StudyTime(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public StudyTime(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
     @Autowired
@@ -42,7 +42,7 @@ public class StudyTime implements StudyStrategy {
             score = 10;
         }
         //发送群消息
-        xsTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
+        robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
                 message.getMqFromid(), null, scoreUtil.scoreCalculation(score));
         return true;
     }

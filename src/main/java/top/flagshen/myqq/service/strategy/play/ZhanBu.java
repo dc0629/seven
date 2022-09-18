@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.Permissions;
 import top.flagshen.myqq.common.RedisConstant;
 import top.flagshen.myqq.common.TypeConstant;
-import top.flagshen.myqq.common.XiaoshenTemplate;
+import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.PlayStrategy;
 import top.flagshen.myqq.util.ContentUtil;
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 @Service("占卜")
 public class ZhanBu implements PlayStrategy {
 
-    private final XiaoshenTemplate xsTemplate;
+    private final RobotTemplate robotTemplate;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
@@ -24,8 +24,8 @@ public class ZhanBu implements PlayStrategy {
     @Autowired
     RedisTemplate<String, Integer> redisTemplateInt;
 
-    public ZhanBu(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
+    public ZhanBu(RobotTemplate robotTemplate) {
+        this.robotTemplate = robotTemplate;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ZhanBu implements PlayStrategy {
             yun = (int)(Math.random()*21 + 80);
         }
         //发送群消息
-        xsTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP, message.getMqFromid(), null, ContentUtil.zhanbu(yun, message.getMqFromqq()));
+        robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP, message.getMqFromid(), null, ContentUtil.zhanbu(yun, message.getMqFromqq()));
         redisTemplateInt.opsForValue().set(key, yun, 24, TimeUnit.HOURS);
         return true;
     }

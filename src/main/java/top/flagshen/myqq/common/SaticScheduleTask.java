@@ -41,7 +41,7 @@ public class SaticScheduleTask {
     private RedisTemplate<String, String> redisTemplate;
 
 
-    private static final List<String> GROUP_NUM = Arrays.asList("xxx","xxx");
+    private static final List<String> GROUP_NUM = Arrays.asList("xxx");
 
     //群发更新信息
     @Scheduled(cron = "0/5 * * * * ?")
@@ -103,29 +103,31 @@ public class SaticScheduleTask {
     //每天早上7点早安
     //@Scheduled(cron = "0 0 7 * * ?")
     private void goodMorning() {
-        String content = getContent("https://api.tianapi.com/zaoan/index?key=5a8f9b5cc21c2edfc17562d4ac5a1019");
+        String content = getContent("https://api.tianapi.com/zaoan/index?key=xxx");
         if (StringUtils.isBlank(content)) return;
         if (!content.contains("早安")) {
             content += "早安！";
         }
         //发送群消息
-        xsTemplate.sendMsgEx("xxx",
+        /*robotTemplate.sendMsgEx("1462152250",
                 0, TypeConstant.MSGTYPE_GROUP,
-                "xxx", null, content);
+                "531753196", null, content);*/
+
     }
 
     //每天晚上11点晚安
     //@Scheduled(cron = "0 30 23 * * ?")
     private void goodEvening() {
-        String content = getContent("https://api.tianapi.com/wanan/index");
+        String content = getContent("https://api.tianapi.com/wanan/index?key=xxx");
         if (StringUtils.isBlank(content)) return;
         if (!content.contains("晚安")) {
             content += "晚安！";
         }
+
         //发送群消息
-        xsTemplate.sendMsgEx("xxx",
+        /*robotTemplate.sendMsgEx("1462152250",
                 0, TypeConstant.MSGTYPE_GROUP,
-                "xxx", null, content);
+                "531753196", null, content);*/
     }
 
     //每天晚上12点清空占卜缓存
@@ -155,7 +157,7 @@ public class SaticScheduleTask {
             }
             // 查询群成员列表
             map.put("c2", groupNum);
-            //Map<String, Object> api_getGroupMemberList = xsTemplate.tongyongPost("Api_GetGroupMemberList_B", map);
+            //Map<String, Object> api_getGroupMemberList = robotTemplate.tongyongPost("Api_GetGroupMemberList_B", map);
             //HashMap data = (HashMap) api_getGroupMemberList.get("data");
             // 获取到的群成员列表
             /*List<String> groupMemberNums = Arrays.asList(data.get("ret").toString().split("\r\n"));
@@ -179,10 +181,7 @@ public class SaticScheduleTask {
             int scoreTotal = Integer.parseInt(redisTemplate.opsForValue().get(RedisConstant.STUDY_SCORE));
             scoreTotal = scoreTotal - 5;
             redisTemplate.opsForValue().set(RedisConstant.STUDY_SCORE, String.valueOf(scoreTotal));
-            //发送群消息
-            xsTemplate.sendMsgEx("444",
-                    0, TypeConstant.MSGTYPE_GROUP,
-                    "55", null, "懒宝，9点啦还不起床，扣分扣分，扣5分\n" + "当前总分：" + scoreTotal);
+            groupMsgService.sendMsg("531753196", "懒宝，9点啦还不起床，扣分扣分，扣5分\n" + "当前总分：" + scoreTotal);
         }
     }
 
@@ -214,7 +213,7 @@ public class SaticScheduleTask {
                     .append(dateFormat.format(new Date(Long.valueOf(obj.get("time").toString()))))
                     .append(" 价格：").append(obj.get("q1"));
         }
-        groupMsgService.sendMsg("xxx", sb.toString());
+        groupMsgService.sendMsg("531753196", sb.toString());
     }
 
     /**
