@@ -1,5 +1,8 @@
 package top.flagshen.myqq.common;
 
+import love.forte.simbot.bot.Bot;
+import love.forte.simbot.bot.BotManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import top.flagshen.myqq.entity.common.DataResult;
@@ -11,8 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * @author 小棽
- * @date 2021/6/20 22:45
+ * @author dengchao
  */
 @Component
 public final class XiaoshenTemplate {
@@ -22,6 +24,9 @@ public final class XiaoshenTemplate {
     private String port;
     @Value("${xiaoshen.token}")
     private String token;
+
+    @Autowired
+    private BotManager manager;
 
     /**
      * 通用发消息
@@ -59,18 +64,8 @@ public final class XiaoshenTemplate {
         return HttpApiUtil.sendPost(host, port, pushMessage);
     }
 
-    public Map<String, Object> sendMsgEx(String robotqq,int niming,int type,String group,String targetqq,String msg) {
-        Map<String, Object> params = new LinkedHashMap<>();
-        params.put("c1", robotqq);
-        params.put("c2",niming);
-        params.put("c3",type);
-        params.put("c4",group);
-        params.put("c5",targetqq);
-        params.put("c6",msg);
-        params.put("c7",0);
-        PushMessage pushMessage = new PushMessage("Api_SendMsgEx", token, params);
-
-//        return HttpApiUtil.sendPost(host, port, pushMessage);
-        return HttpApiUtil.sendPost(host, port,pushMessage);
+    public void sendMsgEx(String robotqq,int niming,int type,String group,String targetqq,String msg) {
+        Bot bot = manager.getBot(robotqq);
+        bot.getSender().SENDER.sendGroupMsg(group, msg);
     }
 }

@@ -1,5 +1,6 @@
 package top.flagshen.myqq.util;
 
+import catcode.CatCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
@@ -58,8 +59,10 @@ public final class ContentUtil {
         } else {
             ability = ABILITY_LIST.get(random.nextInt(ABILITY_LIST.size()));
         }
-
-        String text = "[@"+fromQQ+"]" +
+        CatCodeUtil util = CatCodeUtil.INSTANCE;
+        // 构建at
+        String at = util.toCat("at", "code="+fromQQ);
+        String text = at +
                 "\r\n幸运值：" + yun +
                 "\r\n幸运序列：" + ability +
                 "\r\n宜："+ yi + " 忌：" + ji;

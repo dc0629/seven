@@ -17,10 +17,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
-import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
 import top.flagshen.myqq.entity.common.NovelAttribute;
 import top.flagshen.myqq.entity.common.TianXingResult;
 import top.flagshen.myqq.service.group.IGroupMsgService;
+import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
 import top.flagshen.myqq.util.HttpApiUtil;
 
 import java.text.SimpleDateFormat;
@@ -40,13 +40,8 @@ public class SaticScheduleTask {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    private final XiaoshenTemplate xsTemplate;
 
     private static final List<String> GROUP_NUM = Arrays.asList("xxx","xxx");
-
-    public SaticScheduleTask(XiaoshenTemplate xsTemplate) {
-        this.xsTemplate = xsTemplate;
-    }
 
     //群发更新信息
     @Scheduled(cron = "0/5 * * * * ?")
@@ -106,7 +101,7 @@ public class SaticScheduleTask {
     }
 
     //每天早上7点早安
-    @Scheduled(cron = "0 0 7 * * ?")
+    //@Scheduled(cron = "0 0 7 * * ?")
     private void goodMorning() {
         String content = getContent("https://api.tianapi.com/zaoan/index?key=5a8f9b5cc21c2edfc17562d4ac5a1019");
         if (StringUtils.isBlank(content)) return;
@@ -120,7 +115,7 @@ public class SaticScheduleTask {
     }
 
     //每天晚上11点晚安
-    @Scheduled(cron = "0 30 23 * * ?")
+    //@Scheduled(cron = "0 30 23 * * ?")
     private void goodEvening() {
         String content = getContent("https://api.tianapi.com/wanan/index");
         if (StringUtils.isBlank(content)) return;
@@ -147,10 +142,10 @@ public class SaticScheduleTask {
     }
 
     //每天中午12点校验预约了更新提醒的人里哪些已经退群了，退群了的就移除
-    @Scheduled(cron = "0 0 12 * * ? ")
+    //@Scheduled(cron = "0 0 12 * * ? ")
     private void checkUpdateReminder() {
         HashMap<String, Object> map = new HashMap<>();
-        map.put("c1", "1462152250");
+        map.put("c1", "xxx");
         for (String groupNum : GROUP_NUM) {
             // 查询该群预约了更新提醒的人
             List<UpdateReminderDO> updateReminderDOList = updateReminderService.list(new LambdaQueryWrapper<UpdateReminderDO>()
@@ -160,16 +155,16 @@ public class SaticScheduleTask {
             }
             // 查询群成员列表
             map.put("c2", groupNum);
-            Map<String, Object> api_getGroupMemberList = xsTemplate.tongyongPost("Api_GetGroupMemberList_B", map);
-            HashMap data = (HashMap) api_getGroupMemberList.get("data");
+            //Map<String, Object> api_getGroupMemberList = xsTemplate.tongyongPost("Api_GetGroupMemberList_B", map);
+            //HashMap data = (HashMap) api_getGroupMemberList.get("data");
             // 获取到的群成员列表
-            List<String> groupMemberNums = Arrays.asList(data.get("ret").toString().split("\r\n"));
+            /*List<String> groupMemberNums = Arrays.asList(data.get("ret").toString().split("\r\n"));
             updateReminderDOList.forEach(updateReminderDO -> {
                 // 如果该qq号不在群成员中，就删除
                 if (!groupMemberNums.contains(updateReminderDO.getQqNum())) {
                     updateReminderService.removeById(updateReminderDO.getReminderId());
                 }
-            });
+            });*/
         }
     }
 
@@ -219,10 +214,7 @@ public class SaticScheduleTask {
                     .append(dateFormat.format(new Date(Long.valueOf(obj.get("time").toString()))))
                     .append(" 价格：").append(obj.get("q1"));
         }
-        //发送群消息
-        xsTemplate.sendMsgEx("1462152250",
-                0, TypeConstant.MSGTYPE_GROUP,
-                "531753196", null, sb.toString());
+        groupMsgService.sendMsg("xxx", sb.toString());
     }
 
     /**

@@ -1,5 +1,6 @@
 package top.flagshen.myqq.service.group.impl;
 
+import catcode.CatCodeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -157,14 +158,16 @@ public class GroupManageServiceImpl implements IGroupManageService {
     @Override
     public ReqResult jinyanlog(MyQQMessage message) {
         ForbiddenLogDO forbiddenLogDO = new ForbiddenLogDO();
-        forbiddenLogDO.setQqNum(message.getMqPassiveqq());
+        forbiddenLogDO.setQqNum(message.getMqFromqq());
         forbiddenLogDO.setGroupNum(message.getMqFromid());
         forbiddenLogService.save(forbiddenLogDO);
 
         int count = forbiddenLogService.count(new LambdaQueryWrapper<ForbiddenLogDO>()
-                .eq(ForbiddenLogDO::getQqNum, message.getMqPassiveqq()));
-
-        String text = "[@"+message.getMqPassiveqq()+"]" +
+                .eq(ForbiddenLogDO::getQqNum, message.getMqFromqq()));
+        CatCodeUtil util = CatCodeUtil.INSTANCE;
+        // 构建at
+        String at = util.toCat("at", "code="+message.getMqFromqq());
+        String text = at +
                 "\r\n这是你的第" + count + "次被禁言，禁言次数过多可能会被移出群聊哦";
         // 发消息
         xsTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,

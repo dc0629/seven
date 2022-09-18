@@ -23,6 +23,13 @@ public interface IGroupMsgService {
     ReqResult batchSendMsg(NovelAttribute novelAttribute, String template);
 
     /**
+     * 普通发消息
+     * @param groupId
+     * @param content
+     */
+    void sendMsg(String groupId, String content);
+
+    /**
      * 入群发欢迎消息
      * @param message
      * @return

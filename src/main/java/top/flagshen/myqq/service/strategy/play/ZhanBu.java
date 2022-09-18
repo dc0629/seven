@@ -29,7 +29,7 @@ public class ZhanBu implements PlayStrategy {
     }
 
     @Override
-    @Permissions(groupNums = "423430656")
+    @Permissions(groupNums = "423430656,954804208")
     public boolean play(MyQQMessage message) {
         String key = RedisConstant.DIVINATION + message.getMqFromqq();
         if (redisTemplate.hasKey(key)) {

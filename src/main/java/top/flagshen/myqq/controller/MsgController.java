@@ -1,5 +1,7 @@
 package top.flagshen.myqq.controller;
 
+import love.forte.simbot.annotation.OnGroup;
+import love.forte.simbot.api.message.events.GroupMsg;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,6 +71,33 @@ public class MsgController {
                 return groupMsgService.manageGroupMsg(mqMsg, message);
         }
         return new ReqResult(1);
+    }
+
+    /**
+     * 群消息监听
+     * @param groupMsg
+     */
+    @OnGroup
+    public void onGroupMsg(GroupMsg groupMsg) {
+
+        MyQQMessage message = new MyQQMessage();
+        String text = groupMsg.getText();
+        if (StringUtils.isBlank(text)) {
+            return;
+        }
+        message.setMqMsg(text);
+        // 后面的内容就判断是不是/开头，不是就结束
+        if (!"/".equals(text.substring(0, 1))) {
+            return;
+        }
+        text = text.substring(1);
+        if (StringUtils.isEmpty(text)) {
+            return;
+        }
+        message.setMqFromid(groupMsg.getGroupInfo().getGroupCode());
+        message.setMqFromqq(groupMsg.getAccountInfo().getAccountCode());
+        message.setMqRobot(groupMsg.getBotInfo().getBotCode());
+        groupMsgService.manageGroupMsg(text, message);
     }
 
 }

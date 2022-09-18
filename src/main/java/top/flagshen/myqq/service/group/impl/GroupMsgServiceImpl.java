@@ -1,5 +1,6 @@
 package top.flagshen.myqq.service.group.impl;
 
+import catcode.CatCodeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringSubstitutor;
@@ -10,17 +11,16 @@ import org.springframework.util.CollectionUtils;
 import top.flagshen.myqq.common.RedisConstant;
 import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.XiaoshenTemplate;
-import top.flagshen.myqq.dao.blacklist.entity.BlacklistDO;
-import top.flagshen.myqq.service.blacklist.IBlacklistService;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
-import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.entity.common.NovelAttribute;
 import top.flagshen.myqq.entity.common.ReqResult;
+import top.flagshen.myqq.service.blacklist.IBlacklistService;
 import top.flagshen.myqq.service.group.IGroupMsgService;
 import top.flagshen.myqq.service.strategy.context.OperationStrategyContext;
 import top.flagshen.myqq.service.strategy.context.PlayStrategyContext;
 import top.flagshen.myqq.service.strategy.context.StudyStrategyContext;
+import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
 import top.flagshen.myqq.util.ContentUtil;
 
 import java.util.Arrays;
@@ -83,16 +83,10 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
         if (StudyStrategyContext.study(message, operate)) {
             return new ReqResult();
         }
-        // 查询是否在黑名单中
-        BlacklistDO blacklist = blacklistService.getById(message.getMqFromqq());
-        if (blacklist != null) {
-            return new ReqResult(1);
-        }
         // 一些玩法，占卜和改命，只开放给书友2群和舵主群，和管理测试群
         if (playStrategyContext.play(message, operate)) {
             return new ReqResult(1);
         }
-
         return new ReqResult(1);
     }
 
@@ -112,17 +106,24 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
         StringSubstitutor sub = new StringSubstitutor(valuesMap);
         String content= sub.replace(template);
         for (String groupQQ: manageGroup) {
-            //发送更新公告
-            xsTemplate.sendMsgEx("444",
-                    0, TypeConstant.MSGTYPE_GROUP,
-                    groupQQ, null, content);
             //给开启更新提醒的人发送更新消息
             if (RedisConstant.TEMPLATE.equals(templateKey)) {
                 updateReminder(groupQQ);
             }
+            //发送更新公告
+            xsTemplate.sendMsgEx("444",
+                    0, TypeConstant.MSGTYPE_GROUP,
+                    groupQQ, null, content);
         }
 
         return null;
+    }
+
+    @Override
+    public void sendMsg(String groupId, String content) {
+        xsTemplate.sendMsgEx("xxx",
+                0, TypeConstant.MSGTYPE_GROUP,
+                groupId, null, content);
     }
 
     private void updateReminder(String groupNum) {
@@ -134,8 +135,9 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
                 return;
             }
             StringBuffer sb = new StringBuffer();
+            CatCodeUtil util = CatCodeUtil.INSTANCE;
             for (int i = 1; i <= reminderList.size(); i++) {
-                sb.append("[@"+reminderList.get(i-1).getQqNum()+"] ");
+                sb.append(util.toCat("at", "code="+reminderList.get(i-1).getQqNum())).append(" ");
                 // 设置每一条消息上限20人
                 if ((i != 1 && i % batchSize == 0) || i == reminderList.size()) {
                     xsTemplate.sendMsgEx("xxx",
@@ -156,7 +158,10 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
         if ("xxx".equals(message.getMqFromid())) {
             return null;
         }
-        String s = "[@"+message.getMqPassiveqq()+"]" + " 尊敬的预约玩家，欢迎加入404避难所！(*≧▽≦)" +
+        CatCodeUtil util = CatCodeUtil.INSTANCE;
+        // 构建at
+        String at = util.toCat("at", "code="+message.getMqFromqq());
+        String s = at + " 尊敬的预约玩家，欢迎加入404避难所！(*≧▽≦)" +
                 "\r\n我是助理小柒，有什么不懂的不要问我，自己看群规哦o(≧v≦)o";
         xsTemplate.sendMsgEx(message.getMqRobot(),
                 0, TypeConstant.MSGTYPE_GROUP,

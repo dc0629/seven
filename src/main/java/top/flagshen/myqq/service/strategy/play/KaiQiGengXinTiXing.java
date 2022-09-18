@@ -1,5 +1,6 @@
 package top.flagshen.myqq.service.strategy.play;
 
+import catcode.CatCodeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -52,10 +53,13 @@ public class KaiQiGengXinTiXing implements PlayStrategy {
                 return true;
             }
             redisTemplate.opsForValue().set(key, "1", 10, TimeUnit.MINUTES);
+            CatCodeUtil util = CatCodeUtil.INSTANCE;
+            // 构建at
+            String at = util.toCat("at", "code="+message.getMqFromqq());
             //发送群消息
             xsTemplate.sendMsgEx(message.getMqRobot(),
                     0, TypeConstant.MSGTYPE_GROUP,
-                    message.getMqFromid(), null, "[@"+message.getMqFromqq()+"]" + " 开启成功");
+                    message.getMqFromid(), null, at + " 开启成功");
         }
         return true;
     }
