@@ -8,7 +8,6 @@ import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.message.events.MuteGet;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.group.IGroupManageService;
@@ -17,7 +16,6 @@ import top.flagshen.myqq.service.group.IGroupMsgService;
 /**
  * @author dengchao
  */
-@RequestMapping("/msg")
 @RestController
 public class MsgController {
 
@@ -33,6 +31,10 @@ public class MsgController {
      */
     @OnGroup
     public void onGroupMsg(GroupMsg groupMsg) {
+        // 系统消息直接结束
+        if (GroupMsg.Type.SYS.equals(groupMsg.getGroupMsgType())) {
+            return;
+        }
         // 群消息就开始判断是不是有人在连图，连图就禁言
         groupManageService.jkjinyan(groupMsg);
         MyQQMessage message = new MyQQMessage();

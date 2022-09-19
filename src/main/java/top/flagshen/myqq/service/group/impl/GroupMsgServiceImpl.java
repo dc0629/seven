@@ -126,6 +126,8 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
 
     private void updateReminder(String groupNum) {
         try {
+            // 获取群成员
+            List<String> groupMemberList = robotTemplate.getGroupMemberList(groupNum);
             // 获取该群开启提醒的成员
             List<UpdateReminderDO> reminderList = updateReminderService.list(new LambdaQueryWrapper<UpdateReminderDO>()
                     .eq(UpdateReminderDO::getGroupNum, groupNum));
@@ -135,7 +137,10 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
             StringBuffer sb = new StringBuffer();
             CatCodeUtil util = CatCodeUtil.INSTANCE;
             for (int i = 1; i <= reminderList.size(); i++) {
-                sb.append(util.toCat("at", "code="+reminderList.get(i-1).getQqNum())).append(" ");
+                // 群成员中包含才拼接 否则会报错
+                if (groupMemberList.contains(reminderList.get(i-1).getQqNum())) {
+                    sb.append(util.toCat("at", "code="+reminderList.get(i-1).getQqNum())).append(" ");
+                }
                 // 设置每一条消息上限20人
                 if ((i != 1 && i % batchSize == 0) || i == reminderList.size()) {
                     robotTemplate.sendMsgEx("xxx", groupNum, sb.toString());
