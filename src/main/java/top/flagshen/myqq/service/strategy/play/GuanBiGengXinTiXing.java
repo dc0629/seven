@@ -20,11 +20,8 @@ import java.util.concurrent.TimeUnit;
 @Service("关闭更新提醒")
 public class GuanBiGengXinTiXing implements PlayStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public GuanBiGengXinTiXing(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
@@ -55,9 +52,7 @@ public class GuanBiGengXinTiXing implements PlayStrategy {
             // 构建at
             String at = util.toCat("at", "code="+message.getMqFromqq());
             //发送群消息
-            robotTemplate.sendMsgEx(message.getMqRobot(),
-                    0, TypeConstant.MSGTYPE_GROUP,
-                    message.getMqFromid(), null, at + " 关闭成功");
+            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), at + " 关闭成功");
         }
         return true;
     }

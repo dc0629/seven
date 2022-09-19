@@ -12,11 +12,8 @@ import top.flagshen.myqq.service.strategy.OperationStrategy;
 @Service("添加黑名单")
 public class TianJiaBlackList implements OperationStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public TianJiaBlackList(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     private IBlacklistService blacklistService;
@@ -28,9 +25,7 @@ public class TianJiaBlackList implements OperationStrategy {
         // 添加黑名单
         blacklistService.saveOrUpdate(blacklistDO);
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, "添加成功");
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "添加成功");
         return true;
     }
 }

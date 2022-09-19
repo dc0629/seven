@@ -19,11 +19,8 @@ public class FaGongGao implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final RobotTemplate robotTemplate;
-
-    public FaGongGao(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     private static final List<String> manageGroup = Arrays.asList("777329976","746814450","423430656");
 

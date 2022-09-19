@@ -10,11 +10,8 @@ import top.flagshen.myqq.service.strategy.StudyStrategy;
 @Service("我没吃零食")
 public class HaventSnacks implements StudyStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public HaventSnacks(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     private ScoreUtil scoreUtil;
@@ -22,8 +19,7 @@ public class HaventSnacks implements StudyStrategy {
     @Override
     public boolean study(MyQQMessage message) {
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, scoreUtil.scoreCalculation(5));
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), scoreUtil.scoreCalculation(5));
         return true;
     }
 }

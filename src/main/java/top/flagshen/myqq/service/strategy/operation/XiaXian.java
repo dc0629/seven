@@ -1,5 +1,6 @@
 package top.flagshen.myqq.service.strategy.operation;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
@@ -11,11 +12,8 @@ import java.util.Map;
 @Service("下线")
 public class XiaXian implements OperationStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public XiaXian(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Override
     public boolean operation(MyQQMessage message) {

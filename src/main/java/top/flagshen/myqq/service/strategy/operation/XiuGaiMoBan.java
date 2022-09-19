@@ -16,24 +16,17 @@ public class XiuGaiMoBan implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final RobotTemplate robotTemplate;
-
-    public XiuGaiMoBan(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Override
     public boolean operation(MyQQMessage message) {
         if (StringUtils.isBlank(message.getMqMsg())) {
-            robotTemplate.sendMsgEx(message.getMqRobot(),
-                    0, TypeConstant.MSGTYPE_GROUP,
-                    message.getMqFromid(), null, "模板不能为空");
+            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "模板不能为空");
         }
         redisTemplate.opsForValue().set(RedisConstant.TEMPLATE, message.getMqMsg());
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, "修改模板成功");
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "修改模板成功");
         return true;
     }
 }

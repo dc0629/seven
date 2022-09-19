@@ -15,19 +15,14 @@ public class XiuGaiUrl implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final RobotTemplate robotTemplate;
-
-    public XiuGaiUrl(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Override
     public boolean operation(MyQQMessage message) {
         redisTemplate.opsForValue().set(RedisConstant.URL, message.getMqMsg());
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, "修改url成功");
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "修改url成功");
         return true;
     }
 }

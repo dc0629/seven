@@ -144,7 +144,7 @@ public class SaticScheduleTask {
     }
 
     //每天中午12点校验预约了更新提醒的人里哪些已经退群了，退群了的就移除
-    //@Scheduled(cron = "0 0 12 * * ? ")
+    @Scheduled(cron = "0 0 12 * * ? ")
     private void checkUpdateReminder() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("c1", "xxx");
@@ -155,18 +155,13 @@ public class SaticScheduleTask {
             if (CollectionUtils.isEmpty(updateReminderDOList)) {
                 continue;
             }
-            // 查询群成员列表
-            map.put("c2", groupNum);
-            //Map<String, Object> api_getGroupMemberList = robotTemplate.tongyongPost("Api_GetGroupMemberList_B", map);
-            //HashMap data = (HashMap) api_getGroupMemberList.get("data");
-            // 获取到的群成员列表
-            /*List<String> groupMemberNums = Arrays.asList(data.get("ret").toString().split("\r\n"));
+            List<String> groupMemberNums = groupMsgService.getGroupMemberNums(groupNum);
             updateReminderDOList.forEach(updateReminderDO -> {
                 // 如果该qq号不在群成员中，就删除
                 if (!groupMemberNums.contains(updateReminderDO.getQqNum())) {
                     updateReminderService.removeById(updateReminderDO.getReminderId());
                 }
-            });*/
+            });
         }
     }
 

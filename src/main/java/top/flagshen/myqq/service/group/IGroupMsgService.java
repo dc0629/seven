@@ -5,6 +5,8 @@ import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.entity.common.NovelAttribute;
 import top.flagshen.myqq.entity.common.ReqResult;
 
+import java.util.List;
+
 public interface IGroupMsgService {
 
     /**
@@ -29,6 +31,13 @@ public interface IGroupMsgService {
      * @param content
      */
     void sendMsg(String groupId, String content);
+
+    /**
+     * 获取群成员
+     * @param group
+     * @return
+     */
+    List<String> getGroupMemberNums(String group);
 
     /**
      * 入群发欢迎消息

@@ -15,19 +15,14 @@ public class GuanBiJinYan implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final RobotTemplate robotTemplate;
-
-    public GuanBiJinYan(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Override
     public boolean operation(MyQQMessage message) {
         redisTemplate.delete(RedisConstant.JINYAN);
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, "ok");
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "ok");
         return true;
     }
 }

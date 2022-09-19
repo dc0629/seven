@@ -16,17 +16,14 @@ import java.util.concurrent.TimeUnit;
 @Service("占卜")
 public class ZhanBu implements PlayStrategy {
 
-    private final RobotTemplate robotTemplate;
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
     @Autowired
     RedisTemplate<String, Integer> redisTemplateInt;
-
-    public ZhanBu(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
 
     @Override
     @Permissions(groupNums = "423430656,954804208")
@@ -47,7 +44,7 @@ public class ZhanBu implements PlayStrategy {
             yun = (int)(Math.random()*21 + 80);
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP, message.getMqFromid(), null, ContentUtil.zhanbu(yun, message.getMqFromqq()));
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), ContentUtil.zhanbu(yun, message.getMqFromqq()));
         redisTemplateInt.opsForValue().set(key, yun, 24, TimeUnit.HOURS);
         return true;
     }

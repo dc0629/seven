@@ -1,8 +1,8 @@
 package top.flagshen.myqq.service.strategy.operation;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
@@ -13,11 +13,8 @@ import java.util.List;
 @Service("s")
 public class Send implements OperationStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public Send(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     private static final List<String> manageGroup = Arrays.asList("xxx");
 
@@ -44,9 +41,7 @@ public class Send implements OperationStrategy {
         if ("all".equals(operate)) {
             for (String groupQQ: manageGroup) {
                 //发送群消息
-                robotTemplate.sendMsgEx("1462152250",
-                        0, TypeConstant.MSGTYPE_GROUP,
-                        groupQQ, null, content);
+                robotTemplate.sendMsgEx("1462152250", groupQQ, content);
             }
         }
          if ("v1".equalsIgnoreCase(operate)) {
@@ -59,9 +54,7 @@ public class Send implements OperationStrategy {
             qunNum = "444";
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                qunNum, null, content);
+        robotTemplate.sendMsgEx(message.getMqRobot(), qunNum, content);
         return true;
     }
 }

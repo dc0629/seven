@@ -3,11 +3,10 @@ package top.flagshen.myqq.service.strategy.study;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.props.dto.PropsTotal;
-import top.flagshen.myqq.service.props.IPropsService;
 import top.flagshen.myqq.entity.common.MyQQMessage;
+import top.flagshen.myqq.service.props.IPropsService;
 import top.flagshen.myqq.service.strategy.StudyStrategy;
 
 import java.util.List;
@@ -17,11 +16,8 @@ import java.util.stream.Collectors;
 @Service("看看我的背包")
 public class MyProps implements StudyStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public MyProps(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     private IPropsService propsService;
@@ -32,8 +28,7 @@ public class MyProps implements StudyStrategy {
         List<PropsTotal> propsTotal = propsService.getPropsCount("333", 0);
         if (CollectionUtils.isEmpty(propsTotal)) {
             //发送群消息
-            robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                    message.getMqFromid(), null, "我的背包空空的");
+            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "我的背包空空的");
             return true;
         }
 
@@ -43,8 +38,7 @@ public class MyProps implements StudyStrategy {
             sb.append("\n").append(entry.getKey()).append("*").append(entry.getValue());
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, sb.toString());
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), sb.toString());
         return true;
     }
 }

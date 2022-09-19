@@ -15,18 +15,14 @@ public class ChaKanMoBan implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final RobotTemplate robotTemplate;
-
-    public ChaKanMoBan(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Override
     public boolean operation(MyQQMessage message) {
         String s = redisTemplate.opsForValue().get(RedisConstant.TEMPLATE);
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, s);
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), s);
         return true;
     }
 }

@@ -20,11 +20,8 @@ import java.util.List;
 @Service("查禁言排行")
 public class ChaJinYanRank implements OperationStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public ChaJinYanRank(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     private IForbiddenLogService forbiddenLogService;
@@ -49,9 +46,7 @@ public class ChaJinYanRank implements OperationStrategy {
                     .append(jinYanCount.getCount());
         });
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, buffer.toString());
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), buffer.toString());
         return true;
     }
 }

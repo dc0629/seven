@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.RedisConstant;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.forbidden.entity.ForbiddenLogDO;
 import top.flagshen.myqq.entity.common.MyQQMessage;
@@ -29,16 +28,13 @@ public class GroupManageServiceImpl implements IGroupManageService {
     @Autowired
     private IForbiddenLogService forbiddenLogService;
 
-    private final RobotTemplate robotTemplate;
-
-    public GroupManageServiceImpl(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private static final List<String> manageGroup = Arrays.asList("777329976", "746814450", "423430656", "954804208", "903959441");
+    private static final List<String> manageGroup = Arrays.asList("xxx");
 
     private static final String ftQQKey = "ftQQ:";//上一个发图的qq + 群号组成key
     private static final String qtNumKey = "qtNum:";//群体连图数量 + 群号组成key
@@ -113,15 +109,13 @@ public class GroupManageServiceImpl implements IGroupManageService {
      */
     private void jinyan(String accountCode, String groupCode, String context, String ftQQ) {
         // 发消息
-        robotTemplate.sendMsgEx("1462152250",
-                0, TypeConstant.MSGTYPE_GROUP,
-                groupCode, null, context);
+        robotTemplate.sendMsgEx("xxx", groupCode, context);
         // 禁言
-        robotTemplate.setGroupBan("1462152250", groupCode, accountCode, jyTime(groupCode, accountCode));
+        robotTemplate.setGroupBan("xxx", groupCode, accountCode, jyTime(groupCode, accountCode));
         // 当倒数第二个人和倒数第一个人不是同一个人时 禁言倒数第二个人
         if (StringUtils.isNotBlank(ftQQ) && !accountCode.equals(ftQQ)) {
             // 禁言
-            robotTemplate.setGroupBan("1462152250", groupCode, ftQQ, jyTime(groupCode, ftQQ));
+            robotTemplate.setGroupBan("xxx", groupCode, ftQQ, jyTime(groupCode, ftQQ));
         }
     }
 
@@ -169,8 +163,7 @@ public class GroupManageServiceImpl implements IGroupManageService {
         String text = at +
                 "\r\n这是你的第" + count + "次被禁言，禁言次数过多可能会被移出群聊哦";
         // 发消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, text);
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), text);
         return new ReqResult(1);
     }
 

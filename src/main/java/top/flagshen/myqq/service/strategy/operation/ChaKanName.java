@@ -15,17 +15,13 @@ public class ChaKanName implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final RobotTemplate robotTemplate;
-
-    public ChaKanName(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Override
     public boolean operation(MyQQMessage message) {
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, redisTemplate.opsForValue().get(RedisConstant.NAME));
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), redisTemplate.opsForValue().get(RedisConstant.NAME));
         return true;
     }
 }

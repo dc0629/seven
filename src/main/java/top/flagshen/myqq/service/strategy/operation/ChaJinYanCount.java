@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.forbidden.entity.ForbiddenLogDO;
-import top.flagshen.myqq.service.forbidden.IForbiddenLogService;
 import top.flagshen.myqq.entity.common.MyQQMessage;
+import top.flagshen.myqq.service.forbidden.IForbiddenLogService;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
 
 /**
@@ -18,11 +17,8 @@ import top.flagshen.myqq.service.strategy.OperationStrategy;
 @Service("查禁言次数")
 public class ChaJinYanCount implements OperationStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public ChaJinYanCount(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     private IForbiddenLogService forbiddenLogService;
@@ -48,9 +44,7 @@ public class ChaJinYanCount implements OperationStrategy {
                 .eq(ForbiddenLogDO::getQqNum, qqNum)
                 .eq(StringUtils.isNotBlank(groupNum), ForbiddenLogDO::getGroupNum, groupNum));
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, "禁言次数："+count);
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "禁言次数："+count);
         return true;
     }
 }

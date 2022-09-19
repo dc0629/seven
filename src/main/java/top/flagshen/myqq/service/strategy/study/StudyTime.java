@@ -15,11 +15,8 @@ public class StudyTime implements StudyStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final RobotTemplate robotTemplate;
-
-    public StudyTime(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     private ScoreUtil scoreUtil;
@@ -42,8 +39,7 @@ public class StudyTime implements StudyStrategy {
             score = 10;
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, scoreUtil.scoreCalculation(score));
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), scoreUtil.scoreCalculation(score));
         return true;
     }
 }

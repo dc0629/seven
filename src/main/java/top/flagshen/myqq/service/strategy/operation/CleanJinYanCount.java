@@ -18,11 +18,8 @@ import top.flagshen.myqq.service.strategy.OperationStrategy;
 @Service("清除禁言次数")
 public class CleanJinYanCount implements OperationStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public CleanJinYanCount(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     private IForbiddenLogService forbiddenLogService;
@@ -48,9 +45,7 @@ public class CleanJinYanCount implements OperationStrategy {
                 .eq(ForbiddenLogDO::getQqNum, qqNum)
                 .eq(StringUtils.isNotBlank(groupNum), ForbiddenLogDO::getGroupNum, groupNum));
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, "成功");
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "成功");
         return true;
     }
 }

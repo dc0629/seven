@@ -3,7 +3,6 @@ package top.flagshen.myqq.service.strategy.operation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
 import top.flagshen.myqq.entity.common.MyQQMessage;
@@ -13,11 +12,8 @@ import top.flagshen.myqq.service.userinfo.IUserInfoService;
 @Service("添加账号")
 public class TianJiaZhangHao implements OperationStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public TianJiaZhangHao(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     private IUserInfoService userInfoService;
@@ -48,9 +44,7 @@ public class TianJiaZhangHao implements OperationStrategy {
             userInfoService.save(addUser);
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, "添加成功");
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "添加成功");
         return true;
     }
 }

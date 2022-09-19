@@ -1,16 +1,20 @@
 package top.flagshen.myqq.common;
 
 import love.forte.simbot.api.message.events.GroupMsg;
+import love.forte.simbot.api.message.results.GroupMemberInfo;
 import love.forte.simbot.bot.Bot;
 import love.forte.simbot.bot.BotManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * @author dengchao
  */
 @Component
-public final class RobotTemplate {
+public class RobotTemplate {
 
     @Autowired
     private BotManager manager;
@@ -25,8 +29,14 @@ public final class RobotTemplate {
         bot.getSender().SETTER.setGroupBan(group, member, time);
     }
 
-    public void sendMsgEx(String botCode,int niming,int type,String group,String targetqq,String msg) {
+    public void sendMsgEx(String botCode, String group, String msg) {
         Bot bot = manager.getBot(botCode);
         bot.getSender().SENDER.sendGroupMsg(group, msg);
+    }
+
+    public List<String> getGroupMemberList(String group) {
+        Bot bot = manager.getBot("");
+        List<GroupMemberInfo> groupMemberInfos = bot.getSender().GETTER.getGroupMemberList(group).getResults();
+        return groupMemberInfos.stream().map(GroupMemberInfo::getAccountCode).collect(Collectors.toList());
     }
 }

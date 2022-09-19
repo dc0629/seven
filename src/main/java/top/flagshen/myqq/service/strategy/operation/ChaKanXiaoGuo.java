@@ -1,11 +1,10 @@
 package top.flagshen.myqq.service.strategy.operation;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.apache.commons.lang3.StringUtils;
 import top.flagshen.myqq.common.RedisConstant;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
@@ -17,23 +16,18 @@ public class ChaKanXiaoGuo implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final RobotTemplate robotTemplate;
-
-    public ChaKanXiaoGuo(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Override
     public boolean operation(MyQQMessage message) {
         String template = redisTemplate.opsForValue().get(RedisConstant.TEMPLATE);
         if (StringUtils.isEmpty(template)) {
-            robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                    message.getMqFromid(), null, "没设置模板");
+            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "没设置模板");
             return true;
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, ContentUtil.getContent(template,
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), ContentUtil.getContent(template,
                         redisTemplate.opsForValue().get(RedisConstant.NAME),
                         redisTemplate.opsForValue().get(RedisConstant.TITLE),
                         redisTemplate.opsForValue().get(RedisConstant.URL),

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.RedisConstant;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.StudyStrategy;
@@ -19,11 +18,8 @@ public class HaveGetUp implements StudyStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final RobotTemplate robotTemplate;
-
-    public HaveGetUp(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     private ScoreUtil scoreUtil;
@@ -37,16 +33,13 @@ public class HaveGetUp implements StudyStrategy {
         if (time >= 500 && time <= 730 && !redisTemplate.hasKey(RedisConstant.GET_UP)) {
             redisTemplate.opsForValue().set(RedisConstant.GET_UP, "1", 4, TimeUnit.HOURS);
             //发送群消息
-            robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                    message.getMqFromid(), null, "今天起来的好早啊，很棒哦，继续坚持吧\n" + scoreUtil.scoreCalculation(5));
+            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "今天起来的好早啊，很棒哦，继续坚持吧\n" + scoreUtil.scoreCalculation(5));
         } else if (time > 730 && time <= 900 && !redisTemplate.hasKey(RedisConstant.GET_UP)) {
             redisTemplate.opsForValue().set(RedisConstant.GET_UP, "1", 2, TimeUnit.HOURS);
             //发送群消息
-            robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                    message.getMqFromid(), null, "现在起床还不晚呢，快快开始学习吧~");
+            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "现在起床还不晚呢，快快开始学习吧~");
         } else {
-            robotTemplate.sendMsgEx(message.getMqRobot(), 0, TypeConstant.MSGTYPE_GROUP,
-                    message.getMqFromid(), null, "现在起床不加分哦");
+            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "现在起床不加分哦");
         }
         return true;
     }

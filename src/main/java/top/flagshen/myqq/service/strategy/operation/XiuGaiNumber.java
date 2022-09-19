@@ -15,19 +15,14 @@ public class XiuGaiNumber implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private final RobotTemplate robotTemplate;
-
-    public XiuGaiNumber(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Override
     public boolean operation(MyQQMessage message) {
         redisTemplate.opsForValue().set(RedisConstant.NUMBER, message.getMqMsg());
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, "修改number成功");
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "修改number成功");
         return true;
     }
 }

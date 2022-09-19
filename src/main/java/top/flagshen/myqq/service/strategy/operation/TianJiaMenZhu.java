@@ -5,7 +5,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import top.flagshen.myqq.common.RedisConstant;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
@@ -20,11 +19,8 @@ public class TianJiaMenZhu implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplateSet;
 
-    private final RobotTemplate robotTemplate;
-
-    public TianJiaMenZhu(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     private final Set<String> MENGZHU_SET = new HashSet<>(Arrays.asList("xxx"));
 
@@ -37,9 +33,7 @@ public class TianJiaMenZhu implements OperationStrategy {
             redisTemplateSet.opsForSet().add(RedisConstant.MENGZHU, message.getMqMsg());
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, "添加成功");
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "添加成功");
         return true;
     }
 }

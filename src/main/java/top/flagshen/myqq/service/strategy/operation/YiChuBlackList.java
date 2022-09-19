@@ -11,11 +11,8 @@ import top.flagshen.myqq.service.strategy.OperationStrategy;
 @Service("移除黑名单")
 public class YiChuBlackList implements OperationStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public YiChuBlackList(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     private IBlacklistService blacklistService;
@@ -25,9 +22,7 @@ public class YiChuBlackList implements OperationStrategy {
         // 移除黑名单
         blacklistService.removeById(message.getMqMsg());
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(),
-                0, TypeConstant.MSGTYPE_GROUP,
-                message.getMqFromid(), null, "移除成功");
+        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "移除成功");
         return true;
     }
 }

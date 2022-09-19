@@ -5,12 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
-import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.PlayStrategy;
+import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,11 +19,8 @@ import java.util.concurrent.TimeUnit;
 @Service("开启更新提醒")
 public class KaiQiGengXinTiXing implements PlayStrategy {
 
-    private final RobotTemplate robotTemplate;
-
-    public KaiQiGengXinTiXing(RobotTemplate robotTemplate) {
-        this.robotTemplate = robotTemplate;
-    }
+    @Autowired
+    private RobotTemplate robotTemplate;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
@@ -57,9 +53,7 @@ public class KaiQiGengXinTiXing implements PlayStrategy {
             // 构建at
             String at = util.toCat("at", "code="+message.getMqFromqq());
             //发送群消息
-            robotTemplate.sendMsgEx(message.getMqRobot(),
-                    0, TypeConstant.MSGTYPE_GROUP,
-                    message.getMqFromid(), null, at + " 开启成功");
+            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), at + " 开启成功");
         }
         return true;
     }
