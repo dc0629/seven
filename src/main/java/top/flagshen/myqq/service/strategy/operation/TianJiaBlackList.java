@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.dao.blacklist.entity.BlacklistDO;
 import top.flagshen.myqq.service.blacklist.IBlacklistService;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;

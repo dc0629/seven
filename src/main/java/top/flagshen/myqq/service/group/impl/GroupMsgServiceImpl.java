@@ -4,6 +4,7 @@ import catcode.CatCodeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.api.message.events.GroupMemberIncrease;
+import love.forte.simbot.api.sender.MsgSender;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,7 +15,6 @@ import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.entity.common.NovelAttribute;
-import top.flagshen.myqq.entity.common.ReqResult;
 import top.flagshen.myqq.service.blacklist.IBlacklistService;
 import top.flagshen.myqq.service.group.IGroupMsgService;
 import top.flagshen.myqq.service.strategy.context.OperationStrategyContext;
@@ -59,7 +59,7 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
     private static final int batchSize = 20;
 
     @Override
-    public ReqResult manageGroupMsg(String msg, MyQQMessage message) {
+    public void manageGroupMsg(String msg, MyQQMessage message) {
         // 获取第一个空格的位置
         int i = msg.indexOf(" ");
         String operate;
@@ -74,22 +74,22 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
         }
         // 一些特殊操作，只开放给管理群和测试群
         if (operationStrategyContext.operation(message, operate)) {
-            return new ReqResult();
+            return;
         }
         // 学习打卡群
         if (StudyStrategyContext.study(message, operate)) {
-            return new ReqResult();
+            return;
         }
         // 一些玩法，占卜和改命，只开放给书友2群和舵主群，和管理测试群
         if (playStrategyContext.play(message, operate)) {
-            return new ReqResult(1);
+            return;
         }
-        return new ReqResult(1);
+        return;
     }
 
 
     @Override
-    public ReqResult batchSendMsg(NovelAttribute novelAttribute, String templateKey) {
+    public void batchSendMsg(NovelAttribute novelAttribute, String templateKey) {
         String template = redisTemplate.opsForValue().get(templateKey);
         String name = redisTemplate.opsForValue().get(RedisConstant.NAME);
         Map valuesMap = new HashMap();
@@ -110,8 +110,6 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
             //发送更新公告
             robotTemplate.sendMsgEx("xxx", groupQQ, content);
         }
-
-        return null;
     }
 
     @Override
@@ -155,17 +153,16 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
     }
 
     @Override
-    public ReqResult ruqunMsg(GroupMemberIncrease groupMemberIncrease) {
+    public void ruqunMsg(GroupMemberIncrease groupMemberIncrease, MsgSender sender) {
         if ("xxx".equals(groupMemberIncrease.getGroupInfo().getGroupCode())) {
-            return null;
+            return;
         }
         CatCodeUtil util = CatCodeUtil.INSTANCE;
         // 构建at
         String at = util.toCat("at", "code="+groupMemberIncrease.getAccountInfo().getAccountCode());
         String s = at + " 尊敬的预约玩家，欢迎加入404避难所！(*≧▽≦)" +
                 "\r\n我是助理小柒，有什么不懂的不要问我，自己看群规哦o(≧v≦)o";
-        robotTemplate.sendMsgEx("xxx", groupMemberIncrease.getGroupInfo().getGroupCode(), s);
-        return null;
+        sender.SENDER.sendGroupMsg(groupMemberIncrease.getGroupInfo().getGroupCode(), s);
     }
 
 }

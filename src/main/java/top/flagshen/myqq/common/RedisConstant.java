@@ -1,8 +1,7 @@
 package top.flagshen.myqq.common;
 
 /**
- * @author 小棽
- * @date 2021/6/20 23:15
+ * @author dengchao
  */
 public class RedisConstant {
     public static final String TEMPLATE = "template";//消息模板

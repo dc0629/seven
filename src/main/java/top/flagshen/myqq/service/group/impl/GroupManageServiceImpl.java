@@ -14,7 +14,6 @@ import top.flagshen.myqq.common.RedisConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.forbidden.entity.ForbiddenLogDO;
 import top.flagshen.myqq.entity.common.MyQQMessage;
-import top.flagshen.myqq.entity.common.ReqResult;
 import top.flagshen.myqq.service.forbidden.IForbiddenLogService;
 import top.flagshen.myqq.service.group.IGroupManageService;
 import top.flagshen.myqq.util.MgcUtil;
@@ -40,14 +39,13 @@ public class GroupManageServiceImpl implements IGroupManageService {
     private static final String ftQQKey = "ftQQ:";//上一个发图的qq + 群号组成key
     private static final String qtNumKey = "qtNum:";//群体连图数量 + 群号组成key
     private static final String grNumKey = "grNum:";//个人连图数量 + 群号组成key
-    Map<String, Object> map = new HashMap<>();
     Map<String, Object> jymap = new HashMap<>();
 
     @Override
-    public synchronized ReqResult jkjinyan(GroupMsg groupMsg) {
+    public synchronized void jkjinyan(GroupMsg groupMsg, MsgSender sender) {
         // 是否开启禁言功能
         if (!redisTemplate.hasKey(RedisConstant.JINYAN)) {
-            return null;
+            return;
         }
         String groupCode = groupMsg.getGroupInfo().getGroupCode();
         String accountCode = groupMsg.getAccountInfo().getAccountCode();
@@ -78,21 +76,21 @@ public class GroupManageServiceImpl implements IGroupManageService {
                 // 如果群发数量=5，就禁言现在的发图人
                 if (qtNum >= 5) {
                     jinyan(accountCode, groupCode, "连续五张图最后一，二位会被禁言喔\r\n" +
-                            "（｡ò ∀ ó｡）", ftQQ);
+                            "（｡ò ∀ ó｡）", ftQQ, sender);
                     // 清空个人和群体发的数量
                     jymap.put(gk, 0);
                     jymap.put(qk, 0);
                     jymap.put(fk, "");
-                    return null;
+                    return;
                 }
                 // 如果个人连发=3，就禁言现在发图的人
                 else if (grNum >= 3) {
-                    jinyan(accountCode, groupCode, "个人三连图会被禁言喔\r\n（｡ò ∀ ó｡）", null);
+                    jinyan(accountCode, groupCode, "个人三连图会被禁言喔\r\n（｡ò ∀ ó｡）", null, sender);
                     // 清空个人和群体发的数量
                     jymap.put(gk, 0);
                     jymap.put(qk, 0);
                     jymap.put(fk, "");
-                    return null;
+                    return;
                 }
             } else {
                 // 没人发图就置为空
@@ -101,22 +99,22 @@ public class GroupManageServiceImpl implements IGroupManageService {
                 jymap.put(fk, "");
             }
         }
-        return null;
+        return;
     }
 
     /**
      * 满足条件就禁言
      * @param context
      */
-    private void jinyan(String accountCode, String groupCode, String context, String ftQQ) {
+    private void jinyan(String accountCode, String groupCode, String context, String ftQQ, MsgSender sender) {
         // 发消息
-        robotTemplate.sendMsgEx("xxx", groupCode, context);
+        sender.SENDER.sendGroupMsg(groupCode, context);
         // 禁言
-        robotTemplate.setGroupBan("xxx", groupCode, accountCode, jyTime(groupCode, accountCode));
+        sender.SETTER.setGroupBan(groupCode, accountCode, jyTime(groupCode, accountCode));
         // 当倒数第二个人和倒数第一个人不是同一个人时 禁言倒数第二个人
         if (StringUtils.isNotBlank(ftQQ) && !accountCode.equals(ftQQ)) {
             // 禁言
-            robotTemplate.setGroupBan("xxx", groupCode, ftQQ, jyTime(groupCode, ftQQ));
+            sender.SETTER.setGroupBan(groupCode, ftQQ, jyTime(groupCode, ftQQ));
         }
     }
 
@@ -150,7 +148,7 @@ public class GroupManageServiceImpl implements IGroupManageService {
      * @return
      */
     @Override
-    public ReqResult jinyanlog(MyQQMessage message) {
+    public void jinyanlog(MyQQMessage message) {
         ForbiddenLogDO forbiddenLogDO = new ForbiddenLogDO();
         forbiddenLogDO.setQqNum(message.getMqFromqq());
         forbiddenLogDO.setGroupNum(message.getMqFromid());
@@ -165,14 +163,13 @@ public class GroupManageServiceImpl implements IGroupManageService {
                 "\r\n这是你的第" + count + "次被禁言，禁言次数过多可能会被移出群聊哦";
         // 发消息
         robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), text);
-        return new ReqResult(1);
     }
 
     @Override
-    public ReqResult mgc(GroupMsg groupMsg, MsgSender sender) {
+    public void mgc(GroupMsg groupMsg, MsgSender sender) {
         // 是否开启撤回功能
         if (!redisTemplate.hasKey(RedisConstant.CHEHUI) || "641684580".equals(groupMsg.getGroupInfo().getGroupCode())) {
-            return null;
+            return;
         }
         try {
             Set<String> strings = MgcUtil.loadFile();
@@ -185,7 +182,5 @@ public class GroupManageServiceImpl implements IGroupManageService {
         } catch (Exception e) {
             log.info("撤回出错:{}", e.getMessage());
         }
-
-        return null;
     }
 }

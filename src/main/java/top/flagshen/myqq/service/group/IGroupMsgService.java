@@ -1,9 +1,9 @@
 package top.flagshen.myqq.service.group;
 
 import love.forte.simbot.api.message.events.GroupMemberIncrease;
+import love.forte.simbot.api.sender.MsgSender;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.entity.common.NovelAttribute;
-import top.flagshen.myqq.entity.common.ReqResult;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public interface IGroupMsgService {
      * @param message
      * @return
      */
-    ReqResult manageGroupMsg(String msg, MyQQMessage message);
+    void manageGroupMsg(String msg, MyQQMessage message);
 
     /**
      * 发送更新公告
@@ -23,7 +23,7 @@ public interface IGroupMsgService {
      * @param template
      * @return
      */
-    ReqResult batchSendMsg(NovelAttribute novelAttribute, String template);
+    void batchSendMsg(NovelAttribute novelAttribute, String template);
 
     /**
      * 普通发消息
@@ -44,6 +44,6 @@ public interface IGroupMsgService {
      * @param groupMemberIncrease
      * @return
      */
-    ReqResult ruqunMsg(GroupMemberIncrease groupMemberIncrease);
+    void ruqunMsg(GroupMemberIncrease groupMemberIncrease, MsgSender sender);
 
 }

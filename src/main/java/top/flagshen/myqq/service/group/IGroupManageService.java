@@ -3,7 +3,6 @@ package top.flagshen.myqq.service.group;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.MsgSender;
 import top.flagshen.myqq.entity.common.MyQQMessage;
-import top.flagshen.myqq.entity.common.ReqResult;
 
 public interface IGroupManageService {
 
@@ -12,19 +11,19 @@ public interface IGroupManageService {
      * @param groupMsg
      * @return
      */
-    ReqResult jkjinyan(GroupMsg groupMsg);
+    void jkjinyan(GroupMsg groupMsg, MsgSender sender);
 
     /**
      * 有人被禁言就记录并且提示禁言次数
      * @param message
      * @return
      */
-    ReqResult jinyanlog(MyQQMessage message);
+    void jinyanlog(MyQQMessage message);
 
     /**
      * 敏感词检测
      * @param groupMsg
      * @return
      */
-    ReqResult mgc(GroupMsg groupMsg, MsgSender sender);
+    void mgc(GroupMsg groupMsg, MsgSender sender);
 }

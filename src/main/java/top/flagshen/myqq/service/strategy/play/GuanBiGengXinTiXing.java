@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
 import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;

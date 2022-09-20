@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.forbidden.dto.JinYanCount;
 import top.flagshen.myqq.service.forbidden.IForbiddenLogService;

@@ -37,7 +37,7 @@ public class MsgController {
             return;
         }
         // 群消息就开始判断是不是有人在连图，连图就禁言
-        groupManageService.jkjinyan(groupMsg);
+        groupManageService.jkjinyan(groupMsg, sender);
         MyQQMessage message = new MyQQMessage();
         String text = groupMsg.getText();
         if (StringUtils.isBlank(text)) {
@@ -65,8 +65,8 @@ public class MsgController {
      * @param groupMemberIncrease
      */
     @OnGroupMemberIncrease
-    public void onGroupAddRequest(GroupMemberIncrease groupMemberIncrease) {
-        groupMsgService.ruqunMsg(groupMemberIncrease);
+    public void onGroupAddRequest(GroupMemberIncrease groupMemberIncrease, MsgSender sender) {
+        groupMsgService.ruqunMsg(groupMemberIncrease, sender);
     }
 
     /**

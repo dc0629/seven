@@ -39,6 +39,11 @@ public class UserInfoDO implements Serializable {
     private String password;
 
     /**
+     * 类型，力量系STRENGTH，敏捷系AGILE，感知系PERCEPTION，智力系INTELLIGENCE，体质系CONSTITUTION
+     */
+    private String userType;
+
+    /**
      * 力量
      */
     private Integer strength;
@@ -109,5 +114,9 @@ public class UserInfoDO implements Serializable {
     @TableLogic
     private Integer isDelete;
 
+    /**
+     * 是否测试
+     */
+    private Integer isTest;
 
 }
