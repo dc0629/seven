@@ -5,11 +5,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.Permissions;
 import top.flagshen.myqq.common.RedisConstant;
-import top.flagshen.myqq.common.TypeConstant;
 import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.PlayStrategy;
 import top.flagshen.myqq.util.ContentUtil;
+import top.flagshen.myqq.util.DateUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -45,7 +45,8 @@ public class ZhanBu implements PlayStrategy {
         }
         //发送群消息
         robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), ContentUtil.zhanbu(yun, message.getMqFromqq()));
-        redisTemplateInt.opsForValue().set(key, yun, 24, TimeUnit.HOURS);
+        // 午夜过期
+        redisTemplateInt.opsForValue().set(key, yun, DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);
         return true;
     }
 }

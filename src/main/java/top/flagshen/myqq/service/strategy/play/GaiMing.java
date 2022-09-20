@@ -10,6 +10,7 @@ import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.PlayStrategy;
 import top.flagshen.myqq.util.ContentUtil;
+import top.flagshen.myqq.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -56,9 +57,8 @@ public class GaiMing implements PlayStrategy {
         }
         //发送群消息
         robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), ContentUtil.zhanbu(yun, message.getMqFromqq()));
-
-        redisTemplateInt.opsForValue().set(key, yun,
-                24, TimeUnit.HOURS);
+        // 午夜12点过期
+        redisTemplateInt.opsForValue().set(key, yun, DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);
         return true;
     }
 }

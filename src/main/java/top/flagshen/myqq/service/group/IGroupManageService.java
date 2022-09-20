@@ -1,6 +1,7 @@
 package top.flagshen.myqq.service.group;
 
 import love.forte.simbot.api.message.events.GroupMsg;
+import love.forte.simbot.api.sender.MsgSender;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.entity.common.ReqResult;
 
@@ -25,5 +26,5 @@ public interface IGroupManageService {
      * @param groupMsg
      * @return
      */
-    ReqResult mgc(GroupMsg groupMsg);
+    ReqResult mgc(GroupMsg groupMsg, MsgSender sender);
 }

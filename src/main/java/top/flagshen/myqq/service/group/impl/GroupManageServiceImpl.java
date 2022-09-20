@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.api.message.MessageContent;
 import love.forte.simbot.api.message.events.GroupMsg;
+import love.forte.simbot.api.sender.MsgSender;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -168,9 +169,9 @@ public class GroupManageServiceImpl implements IGroupManageService {
     }
 
     @Override
-    public ReqResult mgc(GroupMsg groupMsg) {
+    public ReqResult mgc(GroupMsg groupMsg, MsgSender sender) {
         // 是否开启撤回功能
-        if (!redisTemplate.hasKey(RedisConstant.CHEHUI)) {
+        if (!redisTemplate.hasKey(RedisConstant.CHEHUI) || "641684580".equals(groupMsg.getGroupInfo().getGroupCode())) {
             return null;
         }
         try {
@@ -178,7 +179,7 @@ public class GroupManageServiceImpl implements IGroupManageService {
             strings.forEach(s -> {
                 if (StringUtils.isNotBlank(s) && groupMsg.getText().contains(s)) {
                     log.info("撤回消息:{}",groupMsg.getText());
-                    robotTemplate.msgRecall(groupMsg);
+                    sender.SETTER.setMsgRecall(groupMsg.getFlag());
                 }
             });
         } catch (Exception e) {

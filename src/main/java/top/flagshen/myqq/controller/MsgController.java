@@ -6,6 +6,7 @@ import love.forte.simbot.annotation.OnGroupMemberIncrease;
 import love.forte.simbot.api.message.events.GroupMemberIncrease;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.message.events.MuteGet;
+import love.forte.simbot.api.sender.MsgSender;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class MsgController {
      * @param groupMsg
      */
     @OnGroup
-    public void onGroupMsg(GroupMsg groupMsg) {
+    public void onGroupMsg(GroupMsg groupMsg, MsgSender sender) {
         // 系统消息直接结束
         if (GroupMsg.Type.SYS.equals(groupMsg.getGroupMsgType())) {
             return;
@@ -43,7 +44,7 @@ public class MsgController {
             return;
         }
         // 敏感词信息进行撤回
-        groupManageService.mgc(groupMsg);
+        groupManageService.mgc(groupMsg, sender);
         message.setMqMsg(text);
         // 后面的内容就判断是不是/开头，不是就结束
         if (!"/".equals(text.substring(0, 1))) {
