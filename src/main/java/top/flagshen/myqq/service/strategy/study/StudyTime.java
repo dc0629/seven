@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.StudyStrategy;
 
@@ -13,9 +12,6 @@ public class StudyTime implements StudyStrategy {
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
-
-    @Autowired
-    private RobotTemplate robotTemplate;
 
     @Autowired
     private ScoreUtil scoreUtil;

@@ -1,9 +1,7 @@
 package top.flagshen.myqq.service.strategy.operation;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
 
@@ -13,10 +11,7 @@ import java.util.List;
 @Service("s")
 public class Send implements OperationStrategy {
 
-    @Autowired
-    private RobotTemplate robotTemplate;
-
-    private static final List<String> manageGroup = Arrays.asList("xxx");
+    private static final List<String> manageGroup = Arrays.asList("777329976","746814450","423430656","641684580");
 
     /**
      * 向着对应群发消息，指令为  /s 舵主 发消息

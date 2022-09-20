@@ -11,9 +11,6 @@ import top.flagshen.myqq.service.strategy.OperationStrategy;
 public class YiChuBlackList implements OperationStrategy {
 
     @Autowired
-    private RobotTemplate robotTemplate;
-
-    @Autowired
     private IBlacklistService blacklistService;
 
     @Override

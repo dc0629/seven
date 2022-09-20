@@ -3,7 +3,6 @@ package top.flagshen.myqq.service.strategy.study;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.props.dto.PropsTotal;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.props.IPropsService;
@@ -15,9 +14,6 @@ import java.util.stream.Collectors;
 
 @Service("看看我的背包")
 public class MyProps implements StudyStrategy {
-
-    @Autowired
-    private RobotTemplate robotTemplate;
 
     @Autowired
     private IPropsService propsService;

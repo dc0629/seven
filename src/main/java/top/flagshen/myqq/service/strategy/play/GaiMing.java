@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import top.flagshen.myqq.common.Permissions;
 import top.flagshen.myqq.common.RedisConstant;
-import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.PlayStrategy;
 import top.flagshen.myqq.util.ContentUtil;
@@ -19,9 +18,6 @@ import java.util.concurrent.TimeUnit;
 
 @Service("改命")
 public class GaiMing implements PlayStrategy {
-
-    @Autowired
-    private RobotTemplate robotTemplate;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;

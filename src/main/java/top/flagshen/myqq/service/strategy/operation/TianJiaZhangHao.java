@@ -3,7 +3,6 @@ package top.flagshen.myqq.service.strategy.operation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
@@ -11,9 +10,6 @@ import top.flagshen.myqq.service.userinfo.IUserInfoService;
 
 @Service("添加账号")
 public class TianJiaZhangHao implements OperationStrategy {
-
-    @Autowired
-    private RobotTemplate robotTemplate;
 
     @Autowired
     private IUserInfoService userInfoService;

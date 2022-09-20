@@ -20,9 +20,6 @@ import java.util.List;
 public class ChaJinYanRank implements OperationStrategy {
 
     @Autowired
-    private RobotTemplate robotTemplate;
-
-    @Autowired
     private IForbiddenLogService forbiddenLogService;
 
     @Override

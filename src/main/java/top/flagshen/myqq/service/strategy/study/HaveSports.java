@@ -10,9 +10,6 @@ import top.flagshen.myqq.service.strategy.StudyStrategy;
 public class HaveSports implements StudyStrategy {
 
     @Autowired
-    private RobotTemplate robotTemplate;
-
-    @Autowired
     private ScoreUtil scoreUtil;
 
     @Override

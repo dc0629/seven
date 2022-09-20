@@ -14,9 +14,6 @@ public class KaiQiJinYan implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
-    private RobotTemplate robotTemplate;
-
     @Override
     public boolean operation(MyQQMessage message) {
         redisTemplate.opsForValue().set(RedisConstant.JINYAN, "true");

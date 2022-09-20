@@ -19,9 +19,6 @@ public class FaGongGao implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
-    private RobotTemplate robotTemplate;
-
     private static final List<String> manageGroup = Arrays.asList("777329976","746814450","423430656");
 
     @Override

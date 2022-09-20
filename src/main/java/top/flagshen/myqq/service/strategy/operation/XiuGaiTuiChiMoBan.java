@@ -15,9 +15,6 @@ public class XiuGaiTuiChiMoBan implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
-    private RobotTemplate robotTemplate;
-
     @Override
     public boolean operation(MyQQMessage message) {
         if (StringUtils.isBlank(message.getMqMsg())) {

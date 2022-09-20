@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.RedisConstant;
-import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
 import top.flagshen.myqq.util.ContentUtil;
@@ -15,9 +14,6 @@ public class ChaKanXiaoGuo implements OperationStrategy {
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
-
-    @Autowired
-    private RobotTemplate robotTemplate;
 
     @Override
     public boolean operation(MyQQMessage message) {

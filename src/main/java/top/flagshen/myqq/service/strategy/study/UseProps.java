@@ -3,7 +3,6 @@ package top.flagshen.myqq.service.strategy.study;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.props.entity.PropsDO;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.props.IPropsService;
@@ -11,9 +10,6 @@ import top.flagshen.myqq.service.strategy.StudyStrategy;
 
 @Service("使用道具")
 public class UseProps implements StudyStrategy {
-
-    @Autowired
-    private RobotTemplate robotTemplate;
 
     @Autowired
     private IPropsService propsService;

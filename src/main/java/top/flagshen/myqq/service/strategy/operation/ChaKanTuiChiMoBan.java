@@ -14,9 +14,6 @@ public class ChaKanTuiChiMoBan implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
-    private RobotTemplate robotTemplate;
-
     @Override
     public boolean operation(MyQQMessage message) {
         //发送群消息

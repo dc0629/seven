@@ -5,11 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
-import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.PlayStrategy;
+import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,9 +17,6 @@ import java.util.concurrent.TimeUnit;
  */
 @Service("关闭更新提醒")
 public class GuanBiGengXinTiXing implements PlayStrategy {
-
-    @Autowired
-    private RobotTemplate robotTemplate;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;

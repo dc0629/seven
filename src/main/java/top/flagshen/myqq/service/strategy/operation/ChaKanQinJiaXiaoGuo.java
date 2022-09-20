@@ -16,9 +16,6 @@ public class ChaKanQinJiaXiaoGuo implements OperationStrategy {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    @Autowired
-    private RobotTemplate robotTemplate;
-
     @Override
     public boolean operation(MyQQMessage message) {
         String template = redisTemplate.opsForValue().get(RedisConstant.VACATION_TEMPLATE);

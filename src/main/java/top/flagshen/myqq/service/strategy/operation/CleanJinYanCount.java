@@ -18,9 +18,6 @@ import top.flagshen.myqq.service.strategy.OperationStrategy;
 public class CleanJinYanCount implements OperationStrategy {
 
     @Autowired
-    private RobotTemplate robotTemplate;
-
-    @Autowired
     private IForbiddenLogService forbiddenLogService;
 
     @Override

@@ -5,7 +5,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import top.flagshen.myqq.common.RedisConstant;
-import top.flagshen.myqq.common.RobotTemplate;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
 
@@ -18,9 +17,6 @@ public class TianJiaMenZhu implements OperationStrategy {
 
     @Autowired
     RedisTemplate<String, String> redisTemplateSet;
-
-    @Autowired
-    private RobotTemplate robotTemplate;
 
     private final Set<String> MENGZHU_SET = new HashSet<>(Arrays.asList("xxx"));
 
