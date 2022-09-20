@@ -28,7 +28,7 @@ public class MyProps implements StudyStrategy {
         List<PropsTotal> propsTotal = propsService.getPropsCount("333", 0);
         if (CollectionUtils.isEmpty(propsTotal)) {
             //发送群消息
-            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "我的背包空空的");
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "我的背包空空的");
             return true;
         }
 
@@ -38,7 +38,7 @@ public class MyProps implements StudyStrategy {
             sb.append("\n").append(entry.getKey()).append("*").append(entry.getValue());
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), sb.toString());
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), sb.toString());
         return true;
     }
 }

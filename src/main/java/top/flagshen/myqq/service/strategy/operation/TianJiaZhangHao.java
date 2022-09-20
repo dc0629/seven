@@ -44,7 +44,7 @@ public class TianJiaZhangHao implements OperationStrategy {
             userInfoService.save(addUser);
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "添加成功");
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "添加成功");
         return true;
     }
 }

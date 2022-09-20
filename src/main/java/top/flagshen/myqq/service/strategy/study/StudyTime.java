@@ -38,7 +38,7 @@ public class StudyTime implements StudyStrategy {
             score = 10;
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), scoreUtil.scoreCalculation(score));
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), scoreUtil.scoreCalculation(score));
         return true;
     }
 }

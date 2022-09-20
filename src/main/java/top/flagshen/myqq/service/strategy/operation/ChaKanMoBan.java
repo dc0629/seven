@@ -21,7 +21,7 @@ public class ChaKanMoBan implements OperationStrategy {
     public boolean operation(MyQQMessage message) {
         String s = redisTemplate.opsForValue().get(RedisConstant.TEMPLATE);
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), s);
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), s);
         return true;
     }
 }

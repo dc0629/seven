@@ -1,6 +1,8 @@
 package top.flagshen.myqq.entity.common;
 
 import lombok.Data;
+import love.forte.simbot.api.message.MessageContent;
+import love.forte.simbot.api.sender.MsgSender;
 import top.flagshen.myqq.common.FieldInterface;
 
 /**
@@ -26,5 +28,7 @@ public class MyQQMessage {
      */
     private String mqMsg;
 
+    private MsgSender sender;
 
+    private MessageContent messageContent;
 }

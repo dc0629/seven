@@ -21,7 +21,7 @@ public class CleanScore implements StudyStrategy {
     public boolean study(MyQQMessage message) {
         redisTemplate.opsForValue().set(RedisConstant.STUDY_SCORE, 0);
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "当前总分：" + redisTemplate.opsForValue().get(RedisConstant.STUDY_SCORE));
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "当前总分：" + redisTemplate.opsForValue().get(RedisConstant.STUDY_SCORE));
         return true;
     }
 }

@@ -44,7 +44,7 @@ public class CleanJinYanCount implements OperationStrategy {
                 .eq(ForbiddenLogDO::getQqNum, qqNum)
                 .eq(StringUtils.isNotBlank(groupNum), ForbiddenLogDO::getGroupNum, groupNum));
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "成功");
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "成功");
         return true;
     }
 }

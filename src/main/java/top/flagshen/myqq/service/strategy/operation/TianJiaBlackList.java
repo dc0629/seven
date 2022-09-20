@@ -24,7 +24,7 @@ public class TianJiaBlackList implements OperationStrategy {
         // 添加黑名单
         blacklistService.saveOrUpdate(blacklistDO);
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "添加成功");
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "添加成功");
         return true;
     }
 }

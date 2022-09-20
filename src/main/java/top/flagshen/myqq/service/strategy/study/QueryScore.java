@@ -20,7 +20,7 @@ public class QueryScore implements StudyStrategy {
     @Override
     public boolean study(MyQQMessage message) {
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "当前总分：" + redisTemplate.opsForValue().get(RedisConstant.STUDY_SCORE));
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "当前总分：" + redisTemplate.opsForValue().get(RedisConstant.STUDY_SCORE));
         return true;
     }
 }

@@ -23,11 +23,11 @@ public class ChaKanXiaoGuo implements OperationStrategy {
     public boolean operation(MyQQMessage message) {
         String template = redisTemplate.opsForValue().get(RedisConstant.TEMPLATE);
         if (StringUtils.isEmpty(template)) {
-            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "没设置模板");
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "没设置模板");
             return true;
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), ContentUtil.getContent(template,
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), ContentUtil.getContent(template,
                         redisTemplate.opsForValue().get(RedisConstant.NAME),
                         redisTemplate.opsForValue().get(RedisConstant.TITLE),
                         redisTemplate.opsForValue().get(RedisConstant.URL),

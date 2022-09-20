@@ -33,13 +33,13 @@ public class HaveGetUp implements StudyStrategy {
         if (time >= 500 && time <= 800 && !redisTemplate.hasKey(RedisConstant.GET_UP)) {
             redisTemplate.opsForValue().set(RedisConstant.GET_UP, "1", 4, TimeUnit.HOURS);
             //发送群消息
-            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "今天起来的好早啊，很棒哦，继续坚持吧\n" + scoreUtil.scoreCalculation(5));
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "今天起来的好早啊，很棒哦，继续坚持吧\n" + scoreUtil.scoreCalculation(5));
         } else if (time > 800 && time <= 900 && !redisTemplate.hasKey(RedisConstant.GET_UP)) {
             redisTemplate.opsForValue().set(RedisConstant.GET_UP, "1", 2, TimeUnit.HOURS);
             //发送群消息
-            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "现在起床还不晚呢，快快开始学习吧~");
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "现在起床还不晚呢，快快开始学习吧~");
         } else {
-            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "现在起床不加分哦");
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "现在起床不加分哦");
         }
         return true;
     }

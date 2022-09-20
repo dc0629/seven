@@ -33,7 +33,7 @@ public class TianJiaMenZhu implements OperationStrategy {
             redisTemplateSet.opsForSet().add(RedisConstant.MENGZHU, message.getMqMsg());
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "添加成功");
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "添加成功");
         return true;
     }
 }

@@ -18,7 +18,7 @@ public class HaventSports implements StudyStrategy {
     @Override
     public boolean study(MyQQMessage message) {
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), scoreUtil.scoreCalculation(-10));
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), scoreUtil.scoreCalculation(-10));
         return true;
     }
 }

@@ -162,7 +162,7 @@ public class GroupManageServiceImpl implements IGroupManageService {
         String text = at +
                 "\r\n这是你的第" + count + "次被禁言，禁言次数过多可能会被移出群聊哦";
         // 发消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), text);
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), text);
     }
 
     @Override

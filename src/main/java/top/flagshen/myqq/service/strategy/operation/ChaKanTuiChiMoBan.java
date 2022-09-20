@@ -20,7 +20,7 @@ public class ChaKanTuiChiMoBan implements OperationStrategy {
     @Override
     public boolean operation(MyQQMessage message) {
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), redisTemplate.opsForValue().get(RedisConstant.LATER_TEMPLATE));
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), redisTemplate.opsForValue().get(RedisConstant.LATER_TEMPLATE));
         return true;
     }
 }

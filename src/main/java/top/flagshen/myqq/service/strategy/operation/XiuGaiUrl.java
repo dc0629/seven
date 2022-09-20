@@ -21,7 +21,7 @@ public class XiuGaiUrl implements OperationStrategy {
     public boolean operation(MyQQMessage message) {
         redisTemplate.opsForValue().set(RedisConstant.URL, message.getMqMsg());
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "修改url成功");
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "修改url成功");
         return true;
     }
 }

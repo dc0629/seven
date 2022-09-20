@@ -30,13 +30,13 @@ public class UseProps implements StudyStrategy {
                 .last("limit 1"));
         if (one == null) {
             //发送群消息
-            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "我没有这个道具");
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "我没有这个道具");
             return true;
         }
         // 将使用状态修改为1，已使用
         one.setIsUsed(1);
         propsService.updateById(one);
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "使用成功");
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "使用成功");
         return true;
     }
 }

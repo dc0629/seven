@@ -21,11 +21,11 @@ public class XiuGaiQinJiaMoBan implements OperationStrategy {
     @Override
     public boolean operation(MyQQMessage message) {
         if (StringUtils.isBlank(message.getMqMsg())) {
-            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "请假模板不能为空");
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "请假模板不能为空");
         }
         redisTemplate.opsForValue().set(RedisConstant.VACATION_TEMPLATE, message.getMqMsg());
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "修改请假模板成功");
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "修改请假模板成功");
         return true;
     }
 }

@@ -51,7 +51,7 @@ public class GuanBiGengXinTiXing implements PlayStrategy {
             // 构建at
             String at = util.toCat("at", "code="+message.getMqFromqq());
             //发送群消息
-            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), at + " 关闭成功");
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), at + " 关闭成功");
         }
         return true;
     }

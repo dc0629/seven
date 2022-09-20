@@ -45,7 +45,7 @@ public class ChaJinYanRank implements OperationStrategy {
                     .append(jinYanCount.getCount());
         });
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), buffer.toString());
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), buffer.toString());
         return true;
     }
 }

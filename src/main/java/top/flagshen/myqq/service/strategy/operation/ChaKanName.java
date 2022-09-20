@@ -20,7 +20,7 @@ public class ChaKanName implements OperationStrategy {
     @Override
     public boolean operation(MyQQMessage message) {
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), redisTemplate.opsForValue().get(RedisConstant.NAME));
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), redisTemplate.opsForValue().get(RedisConstant.NAME));
         return true;
     }
 }

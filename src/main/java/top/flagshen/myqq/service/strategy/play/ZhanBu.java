@@ -44,7 +44,7 @@ public class ZhanBu implements PlayStrategy {
             yun = (int)(Math.random()*21 + 80);
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), ContentUtil.zhanbu(yun, message.getMqFromqq()));
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), ContentUtil.zhanbu(yun, message.getMqFromqq()));
         // 午夜过期
         redisTemplateInt.opsForValue().set(key, yun, DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);
         return true;

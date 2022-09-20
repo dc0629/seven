@@ -44,7 +44,7 @@ public class ChaJinYanCount implements OperationStrategy {
                 .eq(ForbiddenLogDO::getQqNum, qqNum)
                 .eq(StringUtils.isNotBlank(groupNum), ForbiddenLogDO::getGroupNum, groupNum));
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "禁言次数："+count);
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "禁言次数："+count);
         return true;
     }
 }

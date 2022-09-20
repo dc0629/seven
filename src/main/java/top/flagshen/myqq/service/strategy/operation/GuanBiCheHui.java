@@ -21,7 +21,7 @@ public class GuanBiCheHui implements OperationStrategy {
     public boolean operation(MyQQMessage message) {
         redisTemplate.delete(RedisConstant.CHEHUI);
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "ok");
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "ok");
         return true;
     }
 }

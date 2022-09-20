@@ -57,6 +57,8 @@ public class MsgController {
         message.setMqFromid(groupMsg.getGroupInfo().getGroupCode());
         message.setMqFromqq(groupMsg.getAccountInfo().getAccountCode());
         message.setMqRobot(groupMsg.getBotInfo().getBotCode());
+        message.setMessageContent(groupMsg.getMsgContent());
+        message.setSender(sender);
         groupMsgService.manageGroupMsg(text, message);
     }
 

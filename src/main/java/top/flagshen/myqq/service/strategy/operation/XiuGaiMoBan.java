@@ -21,11 +21,11 @@ public class XiuGaiMoBan implements OperationStrategy {
     @Override
     public boolean operation(MyQQMessage message) {
         if (StringUtils.isBlank(message.getMqMsg())) {
-            robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "模板不能为空");
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "模板不能为空");
         }
         redisTemplate.opsForValue().set(RedisConstant.TEMPLATE, message.getMqMsg());
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "修改模板成功");
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "修改模板成功");
         return true;
     }
 }

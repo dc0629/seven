@@ -21,7 +21,7 @@ public class YiChuBlackList implements OperationStrategy {
         // 移除黑名单
         blacklistService.removeById(message.getMqMsg());
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), message.getMqFromid(), "移除成功");
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "移除成功");
         return true;
     }
 }

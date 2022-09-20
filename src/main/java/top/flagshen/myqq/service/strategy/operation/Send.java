@@ -41,7 +41,7 @@ public class Send implements OperationStrategy {
         if ("all".equals(operate)) {
             for (String groupQQ: manageGroup) {
                 //发送群消息
-                robotTemplate.sendMsgEx("1462152250", groupQQ, content);
+                message.getSender().SENDER.sendGroupMsg(groupQQ, content);
             }
         }
          if ("v1".equalsIgnoreCase(operate)) {
@@ -54,7 +54,7 @@ public class Send implements OperationStrategy {
             qunNum = "444";
         }
         //发送群消息
-        robotTemplate.sendMsgEx(message.getMqRobot(), qunNum, content);
+        message.getSender().SENDER.sendGroupMsg(qunNum, content);
         return true;
     }
 }
