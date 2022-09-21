@@ -1,4 +1,4 @@
-package top.flagshen.myqq.common;
+package top.flagshen.myqq.common.cache;
 
 /**
  * @author dengchao

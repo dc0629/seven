@@ -5,7 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import top.flagshen.myqq.common.Permissions;
-import top.flagshen.myqq.common.RedisConstant;
+import top.flagshen.myqq.common.cache.RedisConstant;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.PlayStrategy;
 import top.flagshen.myqq.util.ContentUtil;

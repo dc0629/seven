@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import top.flagshen.myqq.common.cache.RedisConstant;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
 import top.flagshen.myqq.entity.common.NovelAttribute;
 import top.flagshen.myqq.entity.common.TianXingResult;

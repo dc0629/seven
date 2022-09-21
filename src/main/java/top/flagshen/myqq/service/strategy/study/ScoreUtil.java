@@ -3,7 +3,7 @@ package top.flagshen.myqq.service.strategy.study;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import top.flagshen.myqq.common.RedisConstant;
+import top.flagshen.myqq.common.cache.RedisConstant;
 import top.flagshen.myqq.dao.props.dto.PropsTotal;
 import top.flagshen.myqq.dao.props.entity.PropsDO;
 import top.flagshen.myqq.service.props.IPropsService;
