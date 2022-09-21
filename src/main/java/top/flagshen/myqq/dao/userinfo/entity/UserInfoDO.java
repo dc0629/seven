@@ -44,6 +44,11 @@ public class UserInfoDO implements Serializable {
     private String userType;
 
     /**
+     * 昵称
+     */
+    private String nickName;
+
+    /**
      * 力量
      */
     private Integer strength;

@@ -9,14 +9,17 @@ public class DefaultInvocationContext implements InvocationContext {
 
 	private String qqNum;
 
+	private Integer isTest;
+
 
 	public DefaultInvocationContext() {
 	}
 
 
-	public DefaultInvocationContext(String traceId, String qqNum) {
+	public DefaultInvocationContext(String traceId, String qqNum, Integer isTest) {
 		this.traceId = traceId;
 		this.qqNum = qqNum;
+		this.isTest = isTest;
 	}
 
 	@Override
@@ -27,5 +30,10 @@ public class DefaultInvocationContext implements InvocationContext {
 	@Override
 	public String getQqNum() {
 		return this.qqNum;
+	}
+
+	@Override
+	public Integer getIsTest() {
+		return this.isTest;
 	}
 }

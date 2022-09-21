@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class InvocationContextSetupInterceptor extends HandlerInterceptorAdapter implements Ordered {
 
 	private static final String OPEN_ID_NAME = "open-id";
+	private static final String IS_TEST = "is-test";
 
 	@Autowired
 	RedisTemplate<String, String> redisTemplate;
@@ -56,7 +57,8 @@ public class InvocationContextSetupInterceptor extends HandlerInterceptorAdapter
 				redisTemplate.opsForValue().set(openId, qqNum, 1, TimeUnit.DAYS);
 			}
 			String traceId = MDC.get("traceId");
-			InvocationContext context = new DefaultInvocationContext(traceId, qqNum);
+			String isTest = request.getHeader(IS_TEST);
+			InvocationContext context = new DefaultInvocationContext(traceId, qqNum, Integer.valueOf(isTest));
 			LocalInvocationContext.bindContext(context);
 		}
 		return true;

@@ -19,4 +19,10 @@ public interface InvocationContext extends Cloneable, Serializable {
 	 */
 	String getQqNum();
 
+	/**
+	 * 是否是测试
+	 * @return
+	 */
+	Integer getIsTest();
+
 }

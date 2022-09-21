@@ -10,18 +10,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.HttpMethodConstants;
+import top.flagshen.myqq.common.constants.YesOrNoConstants;
 import top.flagshen.myqq.common.exception.ErrorCodeEnum;
 import top.flagshen.myqq.common.exception.ExceptionAssertUtil;
 import top.flagshen.myqq.common.exception.MyException;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
 import top.flagshen.myqq.dao.userinfo.mapper.UserInfoMapper;
+import top.flagshen.myqq.entity.userinfo.enums.UserTypeEnum;
 import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
+import top.flagshen.myqq.entity.userinfo.req.CreateUserReq;
 import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
 import top.flagshen.myqq.service.userinfo.IUserInfoService;
 import top.flagshen.myqq.util.AesUtils;
 import top.flagshen.myqq.util.HttpApiUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -114,5 +119,97 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
         userInfoDO.setOpenId(req.getOpenId());
         this.updateById(userInfoDO);
         redisTemplate.opsForValue().set(req.getOpenId(), req.getQqNum(), 1, TimeUnit.DAYS);
+    }
+
+    @Override
+    public UserInfoResp createUser(CreateUserReq req) {
+        String qqNum = req.getQqNum();
+        if (StringUtils.isBlank(qqNum) || StringUtils.isBlank(req.getUserType()) ) {
+            throw new MyException("参数错误");
+        }
+        // 如果是测试，是在qq号后面直接拼接
+        if (YesOrNoConstants.YES.equals(req.getIsTest())) {
+            qqNum += "test";
+        }
+        // 判断用户是否已存在
+        UserInfoDO userInfo = this.getById(qqNum);
+        if (userInfo != null) {
+            throw new MyException("账号已存在");
+        }
+        // 初始化用户信息
+        UserInfoDO addUserInfo = initUser(qqNum, req.getNickName(), req.getUserType(), req.getIsTest(), req.getOpenId());
+        this.save(addUserInfo);
+        if (StringUtils.isNotBlank(req.getOpenId())) {
+            redisTemplate.opsForValue().set(req.getOpenId(), req.getQqNum(), 1, TimeUnit.DAYS);
+        }
+        UserInfoResp userInfoResp = new UserInfoResp();
+        BeanUtils.copyProperties(addUserInfo, userInfoResp);
+        return userInfoResp;
+    }
+
+    /**
+     * 初始化用户信息
+     * x系的五维  就是 x 7点 其他的在3-6之间随机
+     * 总和等于25
+     * 比如  7 3 6 6 3
+     *       7 4 3 5 6
+     * @return
+     */
+    private static UserInfoDO initUser(String qqNum, String nickName, String userType, Integer isTest, String openId) {
+        UserInfoDO userInfo = new UserInfoDO();
+        userInfo.setQqNum(qqNum);
+        userInfo.setOpenId(openId);
+        userInfo.setIsTest(isTest);
+        userInfo.setUserType(userType);
+        userInfo.setNickName(nickName);
+
+        // 总数25点属性，主属性7点，其他在3-6之间随机
+        List<Integer> attributeList = new ArrayList<>(4);
+        // 扣除主属性7点后剩余点数总量18
+        int attributeCount = 18;
+        int attribute = 0;
+        // 随机数的上限
+        int upLimit = 0;
+        // 随机数的下限
+        int lowerLimit = 0;
+        // 随机生成4个属性
+        for (int i = 0; i < 4; i++) {
+            // 剩下位置保底都要大等于3点 所以剩余点-剩余位*3 大等于6，随机上限就是6，否则就是剩余点-剩余位*3
+            if (attributeCount - (3-i)*3 >= 6) {
+                upLimit = 6;
+            } else {
+                upLimit = attributeCount - (3-i)*3;
+            }
+            // 剩下位置保底都要小等于6点 所以剩余点-剩余位*6 小等于3，随机下限就是3，否则就是剩余点-剩余位*6
+            if (attributeCount - (3-i)*6 <= 3) {
+                lowerLimit = 3;
+            } else {
+                lowerLimit = attributeCount - (3-i)*6;
+            }
+            attribute = (int) (Math.random() * (upLimit - lowerLimit)) + lowerLimit;
+            attributeList.add(attribute);
+            attributeCount-=attribute;
+        }
+
+        // 将随机的4个属性2次打乱填入新数组中，因为实测发现最后一位属性总是可能是大的数字
+        List<Integer> attributeListNew = new ArrayList<>(5);
+        int r = 0;
+        for (int i = 0; i < 5; i++) {
+            // 如果是主属性的位置，设置为7
+            if (i == UserTypeEnum.getByCode(userType).getIndex()) {
+                attributeListNew.add(7);
+                continue;
+            }
+            r = (int) (Math.random() * attributeList.size());
+            attributeListNew.add(attributeList.get(r));
+            attributeList.remove(r);
+        }
+
+        userInfo.setStrength(attributeListNew.get(0));
+        userInfo.setAgile(attributeListNew.get(1));
+        userInfo.setPerception(attributeListNew.get(2));
+        userInfo.setIntelligence(attributeListNew.get(3));
+        userInfo.setConstitution(attributeListNew.get(4));
+        return userInfo;
     }
 }

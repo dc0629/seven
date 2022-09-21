@@ -24,6 +24,10 @@ public class MyQQMessage {
      */
     private String mqFromqq;
     /**
+     * 昵称
+     */
+    private String mqFromqqName;
+    /**
      * 消息内容
      */
     private String mqMsg;

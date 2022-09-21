@@ -3,6 +3,7 @@ package top.flagshen.myqq.service.userinfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
 import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
+import top.flagshen.myqq.entity.userinfo.req.CreateUserReq;
 import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
 
@@ -42,4 +43,14 @@ public interface IUserInfoService extends IService<UserInfoDO> {
      * @param req
      */
     void bingQQ(BindQQReq req);
+
+    /**
+     * 创建用户信息
+     * x系的五维  就是 x 7点 其他的在3-6之间随机
+     * 总和等于25
+     * 比如  7 3 6 6 3
+     * @param userReq
+     * @return
+     */
+    UserInfoResp createUser(CreateUserReq userReq);
 }
