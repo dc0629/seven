@@ -295,10 +295,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
         }
         // 更新银币和贡献度
         userInfo.setSilverCoin(userInfo.getSilverCoin() + coin);
-        userInfo.setContribution(userInfo.getConstitution() + 100);
+        userInfo.setContribution(userInfo.getContribution() + 100);
         this.updateById(userInfo);
         // 熟练度增加
-        Double proficiencyExperience = coin * 0.2 * userInfo.getEmpiricalValue();
+        Double proficiencyExperience = coin * 0.2 * userInfo.getIntelligence();
         // 更新或新增熟练度
         if (userProficiency == null) {
             UserProficiencyDO addUserProficiency = new UserProficiencyDO();
@@ -331,7 +331,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
         String result = workList.get(r) + coin;
         // 如果是测试，就只有5分钟过期，否则凌晨过期
         redisTemplate.opsForValue().set(workKey, result,
-                YesOrNoConstants.YES.equals(isTest) ? 300000 : DateUtil.getMidnightMillis(),
+                YesOrNoConstants.YES.equals(isTest) ? 60000 : DateUtil.getMidnightMillis(),
                 TimeUnit.MILLISECONDS);
         return result;
     }

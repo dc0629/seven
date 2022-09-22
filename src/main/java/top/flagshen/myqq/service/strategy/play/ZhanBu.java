@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.Permissions;
 import top.flagshen.myqq.common.cache.RedisConstant;
+import top.flagshen.myqq.common.constants.SystemConstants;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.PlayStrategy;
 import top.flagshen.myqq.util.ContentUtil;
@@ -24,7 +25,11 @@ public class ZhanBu implements PlayStrategy {
     @Override
     @Permissions(groupNums = "423430656,954804208,481024974")
     public boolean play(MyQQMessage message) {
-        String key = RedisConstant.DIVINATION + message.getMqFromqq();
+        String qq = message.getMqFromqq();
+        if ("481024974".equals(message.getMqFromid())) {
+            qq += SystemConstants.TEST;
+        }
+        String key = RedisConstant.DIVINATION + qq;
         if (redisTemplate.hasKey(key)) {
             return true;
         }
@@ -43,7 +48,7 @@ public class ZhanBu implements PlayStrategy {
         message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), ContentUtil.zhanbu(yun, message.getMqFromqq()));
         // 午夜过期,如果测试群就是5分钟过期
         redisTemplateInt.opsForValue().set(key, yun,
-                "481024974".equals(message.getMqFromid()) ? 300000 : DateUtil.getMidnightMillis(),
+                "481024974".equals(message.getMqFromid()) ? 60000 : DateUtil.getMidnightMillis(),
                 TimeUnit.MILLISECONDS);
         return true;
     }
