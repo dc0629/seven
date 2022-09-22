@@ -22,7 +22,7 @@ public class ZhanBu implements PlayStrategy {
     RedisTemplate<String, Integer> redisTemplateInt;
 
     @Override
-    @Permissions(groupNums = "423430656,954804208")
+    @Permissions(groupNums = "423430656,954804208,481024974")
     public boolean play(MyQQMessage message) {
         String key = RedisConstant.DIVINATION + message.getMqFromqq();
         if (redisTemplate.hasKey(key)) {
@@ -41,8 +41,10 @@ public class ZhanBu implements PlayStrategy {
         }
         //发送群消息
         message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), ContentUtil.zhanbu(yun, message.getMqFromqq()));
-        // 午夜过期
-        redisTemplateInt.opsForValue().set(key, yun, DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);
+        // 午夜过期,如果测试群就是5分钟过期
+        redisTemplateInt.opsForValue().set(key, yun,
+                "481024974".equals(message.getMqFromid()) ? 300000 : DateUtil.getMidnightMillis(),
+                TimeUnit.MILLISECONDS);
         return true;
     }
 }

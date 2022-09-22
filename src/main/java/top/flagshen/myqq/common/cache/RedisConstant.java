@@ -22,4 +22,6 @@ public class RedisConstant {
 
     public static final String STUDY_SCORE = "STUDY_SCORE";//学习积分
     public static final String GET_UP = "GET_UP";//起床
+
+    public static final String DAGONG = "DAGONG:";//打工
 }

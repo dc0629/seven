@@ -55,6 +55,7 @@ public class GaiMing implements PlayStrategy {
         message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), ContentUtil.zhanbu(yun, message.getMqFromqq()));
         // 午夜12点过期
         redisTemplateInt.opsForValue().set(key, yun, DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);
+        redisTemplateInt.opsForValue().set(oldKey, yun, DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);
         return true;
     }
 }

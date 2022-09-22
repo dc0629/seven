@@ -53,4 +53,9 @@ public interface IUserInfoService extends IService<UserInfoDO> {
      * @return
      */
     UserInfoResp createUser(CreateUserReq userReq);
+
+    /**
+     * 打工
+     */
+    String work(String qq, Integer isTest);
 }

@@ -6,14 +6,11 @@ import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.Permissions;
 import top.flagshen.myqq.common.constants.YesOrNoConstants;
 import top.flagshen.myqq.entity.common.MyQQMessage;
-import top.flagshen.myqq.entity.userinfo.enums.UserTypeEnum;
-import top.flagshen.myqq.entity.userinfo.req.CreateUserReq;
-import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.service.strategy.PlayStrategy;
 import top.flagshen.myqq.service.userinfo.IUserInfoService;
 
-@Service("开号")
-public class KaiHao implements PlayStrategy {
+@Service("打工")
+public class DaGong implements PlayStrategy {
 
     @Autowired
     private IUserInfoService userInfoService;
@@ -21,30 +18,23 @@ public class KaiHao implements PlayStrategy {
     @Override
     @Permissions(groupNums = "481024974")
     public boolean play(MyQQMessage message) {
-        CreateUserReq userReq = new CreateUserReq();
+        Integer isTest = 0;
         // 如果是测试群
         if ("481024974".equals(message.getMqFromid())) {
-            userReq.setIsTest(YesOrNoConstants.YES);
+            isTest = YesOrNoConstants.YES;
         }
-        userReq.setNickName(message.getMqFromqqName());
-        userReq.setQqNum(message.getMqFromqq());
-        userReq.setUserType(UserTypeEnum.getByDesc(message.getMqMsg()).getCode());
-        UserInfoResp user = new UserInfoResp();
+        String result;
         try {
-            user = userInfoService.createUser(userReq);
+            result = userInfoService.work(message.getMqFromqq(), isTest);
         } catch (Exception e) {
             return true;
         }
+
         CatCodeUtil util = CatCodeUtil.INSTANCE;
         // 构建at
         String at = util.toCat("at", "code="+message.getMqFromqq());
-        String msg = at + " 开号成功" +
-                "\r\n力量：" + user.getStrength() +
-                "\r\n敏捷：" + user.getAgile() +
-                "\r\n感知：" + user.getPerception() +
-                "\r\n智力：" + user.getIntelligence() +
-                "\r\n体质：" + user.getConstitution() +
-                "\n\n请好好为联盟添砖加瓦吧(ง •̀_•́)ง";
+        String msg = at + " " +
+                "\r\n" + result;
         //发送群消息
         message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), msg);
         return true;
