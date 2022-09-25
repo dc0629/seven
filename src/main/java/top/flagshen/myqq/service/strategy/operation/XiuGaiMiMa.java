@@ -8,8 +8,8 @@ import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.OperationStrategy;
 import top.flagshen.myqq.service.userinfo.IUserInfoService;
 
-@Service("添加账号")
-public class TianJiaZhangHao implements OperationStrategy {
+@Service("修改密码")
+public class XiuGaiMiMa implements OperationStrategy {
 
     @Autowired
     private IUserInfoService userInfoService;
@@ -33,14 +33,11 @@ public class TianJiaZhangHao implements OperationStrategy {
             user.setPassword(password);
             userInfoService.updateById(user);
         } else {
-            // 如果不存在，就添加
-            UserInfoDO addUser = new UserInfoDO();
-            addUser.setQqNum(qqNum);
-            addUser.setPassword(password);
-            userInfoService.save(addUser);
+            // 如果不存在，就提示
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "账号不存在，先开号");
         }
         //发送群消息
-        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "添加成功");
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), "修改成功");
         return true;
     }
 }

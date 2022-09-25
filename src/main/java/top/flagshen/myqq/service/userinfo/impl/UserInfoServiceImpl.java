@@ -20,12 +20,14 @@ import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
 import top.flagshen.myqq.dao.userinfo.entity.UserProficiencyDO;
 import top.flagshen.myqq.dao.userinfo.mapper.UserInfoMapper;
 import top.flagshen.myqq.dao.userinfo.mapper.UserProficiencyMapper;
+import top.flagshen.myqq.entity.log.enums.OperationTypeEnum;
 import top.flagshen.myqq.entity.userinfo.enums.ProficiencyTypeEnum;
 import top.flagshen.myqq.entity.userinfo.enums.UserTypeEnum;
 import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
 import top.flagshen.myqq.entity.userinfo.req.CreateUserReq;
 import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
+import top.flagshen.myqq.service.log.IOperationLogService;
 import top.flagshen.myqq.service.userinfo.IUserInfoService;
 import top.flagshen.myqq.util.AesUtils;
 import top.flagshen.myqq.util.ContentUtil;
@@ -53,6 +55,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
 
     @Autowired
     private UserProficiencyMapper userProficiencyMapper;
+
+    @Autowired
+    private IOperationLogService operationLogService;
 
     private static final List<String> workList = Arrays.asList(
             "搬砖收获银币：",
@@ -157,6 +162,12 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
         if (StringUtils.isBlank(qqNum) || StringUtils.isBlank(req.getUserType())
                 || UserTypeEnum.UNKNOWN.getCode().equals(UserTypeEnum.getByCode(req.getUserType()))) {
             throw new MyException("参数错误");
+        }
+        if (qqNum.length() > 16) {
+            throw new MyException("账号太长，不能超过16位");
+        }
+        if (req.getNickName() != null && req.getNickName().length() > 64) {
+            throw new MyException("账号太长，不能超过64个字符");
         }
         // 如果是测试，是在qq号后面直接拼接
         if (YesOrNoConstants.YES.equals(req.getIsTest())) {
@@ -380,6 +391,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
         redisTemplate.opsForValue().set(workKey, result,
                 YesOrNoConstants.YES.equals(isTest) ? 60000 : DateUtil.getMidnightMillis(),
                 TimeUnit.MILLISECONDS);
+        operationLogService.saveOperationLog(qq, OperationTypeEnum.ZHUANQIAN.getCode(), proficiencyType, String.valueOf(coin));
         return result;
     }
 }
