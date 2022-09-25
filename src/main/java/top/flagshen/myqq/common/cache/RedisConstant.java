@@ -14,6 +14,7 @@ public class RedisConstant {
     public static final String URL = "URL";//链接
     public static final String NUMBER = "NUMBER";//字数
     public static final String DIVINATION = "DIVINATION:";//占卜
+    public static final String DIVINATIONSTR = "DIVINATIONSTR:";//占卜结果文案
     public static final String GAIMING = "GAIMING:";//改命
     public static final String MENGZHU = "MENGZHU";//盟主列表
     public static final String JINYAN = "JINYAN:";//是否开启禁言功能

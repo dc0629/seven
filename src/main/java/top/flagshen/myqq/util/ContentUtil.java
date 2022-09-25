@@ -1,6 +1,5 @@
 package top.flagshen.myqq.util;
 
-import catcode.CatCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
@@ -29,7 +28,7 @@ public final class ContentUtil {
     private static final List<String> YIZHONG_LIST = Arrays.asList("异种序列-蜥蜴","异种序列-猫娘","异种序列-猪头人",
             "异种序列-老鼠","异种序列-大白熊","异种序列-蘑菇人","异种序列-狗头人","异种序列-变色龙");
 
-    public static String zhanbu(int yun, String fromQQ) {
+    public static String zhanbu(int yun) {
         Random random = new Random();
         String yi = ACTION_LIST.get(random.nextInt(ACTION_LIST.size()));
 
@@ -59,11 +58,8 @@ public final class ContentUtil {
         } else {
             ability = ABILITY_LIST.get(random.nextInt(ABILITY_LIST.size()));
         }
-        CatCodeUtil util = CatCodeUtil.INSTANCE;
-        // 构建at
-        String at = util.toCat("at", "code="+fromQQ);
-        String text = at +
-                "\r\n幸运值：" + yun +
+
+        String text = "幸运值：" + yun +
                 "\r\n幸运序列：" + ability +
                 "\r\n宜："+ yi + " 忌：" + ji;
 

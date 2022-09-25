@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import top.flagshen.myqq.common.constants.SystemConstants;
+import top.flagshen.myqq.common.constants.YesOrNoConstants;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
 import top.flagshen.myqq.service.userinfo.IUserInfoService;
 
@@ -38,8 +40,13 @@ public class InvocationContextSetupInterceptor extends HandlerInterceptorAdapter
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 		if (LocalInvocationContext.getContext() == null) {
-			String qqNum = null;
+			String qqNum = "";
 			String openId = request.getHeader(OPEN_ID_NAME);
+			String isTestStr = request.getHeader(IS_TEST);
+			Integer isTest = StringUtils.isBlank(isTestStr) ? 0 : Integer.valueOf(isTestStr);
+			if (YesOrNoConstants.YES.equals(isTest)) {
+				openId += SystemConstants.TEST;
+			}
 			if (StringUtils.isNotBlank(openId)) {
 				// 如果key不存在，就去数据库查一遍
 				if (!redisTemplate.hasKey(openId)) {
@@ -57,8 +64,7 @@ public class InvocationContextSetupInterceptor extends HandlerInterceptorAdapter
 				redisTemplate.opsForValue().set(openId, qqNum, 1, TimeUnit.DAYS);
 			}
 			String traceId = MDC.get("traceId");
-			String isTest = request.getHeader(IS_TEST);
-			InvocationContext context = new DefaultInvocationContext(traceId, qqNum, Integer.valueOf(isTest));
+			InvocationContext context = new DefaultInvocationContext(traceId, qqNum, isTest);
 			LocalInvocationContext.bindContext(context);
 		}
 		return true;

@@ -9,8 +9,8 @@ import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.service.strategy.PlayStrategy;
 import top.flagshen.myqq.service.userinfo.IUserInfoService;
 
-@Service("打工")
-public class DaGong implements PlayStrategy {
+@Service("赚钱")
+public class ZhuanQian implements PlayStrategy {
 
     @Autowired
     private IUserInfoService userInfoService;

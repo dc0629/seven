@@ -1,9 +1,6 @@
 package top.flagshen.myqq.entity.userinfo.resp;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-
-import java.util.Date;
 
 /**
  * <p>
@@ -20,6 +17,16 @@ public class UserInfoResp {
      * qq号
      */
     private String qqNum;
+
+    /**
+     * 昵称
+     */
+    private String nickName;
+
+    /**
+     * 类型，力量系,敏捷系,感知系,智力系,体质系
+     */
+    private String userType;
 
     /**
      * 力量
@@ -77,12 +84,13 @@ public class UserInfoResp {
     private Integer level;
 
     /**
-     * 创建时间
+     * 今日占卜结果
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date createTime;
+    private String zhanbuStr;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date modifyTime;
+    /**
+     * 今日赚钱结果
+     */
+    private String zhuanqianStr;
 
 }

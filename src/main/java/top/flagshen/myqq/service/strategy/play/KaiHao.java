@@ -44,7 +44,7 @@ public class KaiHao implements PlayStrategy {
                 "\r\n感知：" + user.getPerception() +
                 "\r\n智力：" + user.getIntelligence() +
                 "\r\n体质：" + user.getConstitution() +
-                "\n\n请好好为联盟添砖加瓦吧(ง •̀_•́)ง";
+                "\r\n请好好为联盟添砖加瓦吧(ง •̀_•́)ง";
         //发送群消息
         message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), msg);
         return true;

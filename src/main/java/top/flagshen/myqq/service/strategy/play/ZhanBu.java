@@ -1,5 +1,6 @@
 package top.flagshen.myqq.service.strategy.play;
 
+import catcode.CatCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -44,10 +45,17 @@ public class ZhanBu implements PlayStrategy {
             // 10%的概率幸运值是80-100
             yun = (int)(Math.random()*21 + 80);
         }
+        // 构建at
+        CatCodeUtil util = CatCodeUtil.INSTANCE;
+        String at = util.toCat("at", "code="+message.getMqFromqq());
+        String zhanbu = ContentUtil.zhanbu(yun);
         //发送群消息
-        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), ContentUtil.zhanbu(yun, message.getMqFromqq()));
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), at + "\r\n" + zhanbu);
         // 午夜过期,如果测试群就是5分钟过期
         redisTemplateInt.opsForValue().set(key, yun,
+                "481024974".equals(message.getMqFromid()) ? 60000 : DateUtil.getMidnightMillis(),
+                TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(RedisConstant.DIVINATIONSTR + qq, zhanbu,
                 "481024974".equals(message.getMqFromid()) ? 60000 : DateUtil.getMidnightMillis(),
                 TimeUnit.MILLISECONDS);
         return true;

@@ -2,8 +2,12 @@ package top.flagshen.myqq.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import top.flagshen.myqq.common.constants.SystemConstants;
+import top.flagshen.myqq.common.constants.YesOrNoConstants;
+import top.flagshen.myqq.common.context.InvocationContext;
 import top.flagshen.myqq.common.context.LocalInvocationContext;
 import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
+import top.flagshen.myqq.entity.userinfo.req.CreateUserReq;
 import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
 import top.flagshen.myqq.service.userinfo.IUserInfoService;
@@ -36,7 +40,12 @@ public class UserInfoController {
      */
     @GetMapping("/detail")
     public UserInfoResp getDetail() {
-        return userInfoService.getUserDetail(LocalInvocationContext.getContext().getQqNum());
+        InvocationContext context = LocalInvocationContext.getContext();
+        String qq = context.getQqNum();
+        if (YesOrNoConstants.YES.equals(context.getIsTest())) {
+            qq += SystemConstants.TEST;
+        }
+        return userInfoService.getUserDetail(qq);
     }
 
     /**
@@ -65,6 +74,43 @@ public class UserInfoController {
      */
     @PutMapping("/bind/qq")
     public void bingQQ(@RequestBody BindQQReq req) {
+        if (YesOrNoConstants.YES.equals(LocalInvocationContext.getContext().getIsTest())) {
+            req.setOpenId(req.getOpenId() + SystemConstants.TEST);
+        }
         userInfoService.bingQQ(req);
+    }
+
+    /**
+     * 开号
+     * @param req
+     */
+    @PutMapping("/create")
+    public void bingQQ(@RequestBody CreateUserReq req) {
+        InvocationContext context = LocalInvocationContext.getContext();
+        if (YesOrNoConstants.YES.equals(context.getIsTest())) {
+            req.setOpenId(req.getOpenId() + SystemConstants.TEST);
+        }
+        req.setIsTest(context.getIsTest());
+        userInfoService.createUser(req);
+    }
+
+    /**
+     * 微信小程序占卜
+     * @return
+     */
+    @GetMapping("/zhanbu")
+    public String zhanbu() {
+        InvocationContext context = LocalInvocationContext.getContext();
+        return userInfoService.zhanbu(context.getQqNum(), context.getIsTest());
+    }
+
+    /**
+     * 微信小程序赚钱
+     * @return
+     */
+    @GetMapping("/zhuanqian")
+    public String zhuanqian() {
+        InvocationContext context = LocalInvocationContext.getContext();
+        return userInfoService.work(context.getQqNum(), context.getIsTest());
     }
 }

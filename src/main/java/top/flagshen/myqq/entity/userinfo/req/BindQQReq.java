@@ -21,6 +21,11 @@ public class BindQQReq {
     private String password;
 
     /**
+     * 昵称
+     */
+    private String nickName;
+
+    /**
      * openId
      */
     private String openId;

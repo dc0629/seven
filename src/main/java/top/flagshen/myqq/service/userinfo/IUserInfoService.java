@@ -57,5 +57,10 @@ public interface IUserInfoService extends IService<UserInfoDO> {
     /**
      * 打工
      */
+    String zhanbu(String qq, Integer isTest);
+
+    /**
+     * 打工
+     */
     String work(String qq, Integer isTest);
 }

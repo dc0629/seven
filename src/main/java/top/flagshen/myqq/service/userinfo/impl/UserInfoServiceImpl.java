@@ -28,6 +28,7 @@ import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
 import top.flagshen.myqq.service.userinfo.IUserInfoService;
 import top.flagshen.myqq.util.AesUtils;
+import top.flagshen.myqq.util.ContentUtil;
 import top.flagshen.myqq.util.DateUtil;
 import top.flagshen.myqq.util.HttpApiUtil;
 
@@ -71,6 +72,17 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
             throw new MyException("账号异常");
         }
         BeanUtils.copyProperties(userInfoDO, userInfoResp);
+        // 今日占卜记录
+        String zhanbuKey = RedisConstant.DIVINATIONSTR + qqNum;
+        if (redisTemplate.hasKey(zhanbuKey)) {
+            userInfoResp.setZhanbuStr(redisTemplate.opsForValue().get(zhanbuKey));
+        }
+        // 今日赚钱记录
+        String workKey = RedisConstant.DAGONG + qqNum;
+        if (redisTemplate.hasKey(workKey)) {
+            userInfoResp.setZhuanqianStr(redisTemplate.opsForValue().get(workKey));
+        }
+        userInfoResp.setUserType(UserTypeEnum.getByCode(userInfoDO.getUserType()).getDesc());
         return userInfoResp;
     }
 
@@ -87,6 +99,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
             throw new MyException(ErrorCodeEnum.INVALID_QR_CODE);
         }
         BeanUtils.copyProperties(userInfoDO, userInfoResp);
+        userInfoResp.setUserType(UserTypeEnum.getByCode(userInfoDO.getUserType()).getDesc());
         return userInfoResp;
     }
 
@@ -232,6 +245,40 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
     }
 
     @Override
+    public String zhanbu(String qq, Integer isTest) {
+        if (StringUtils.isBlank(qq)) {
+            throw new MyException("参数错误");
+        }
+        if (YesOrNoConstants.YES.equals(isTest)) {
+            qq += SystemConstants.TEST;
+        }
+        String key = RedisConstant.DIVINATION + qq;
+        String strKey = RedisConstant.DIVINATIONSTR + qq;
+        if (redisTemplate.hasKey(strKey)) {
+            return redisTemplate.opsForValue().get(strKey);
+        }
+        int yun = (int) (Math.random()*100);
+        if (yun < 30) {
+            // 30%的概率幸运值是10-39
+            yun = (int)(Math.random()*30 + 10);
+        } else if  (yun < 90) {
+            // 60%的概率幸运值是40-79
+            yun = (int)(Math.random()*40 + 40);
+        } else {
+            // 10%的概率幸运值是80-100
+            yun = (int)(Math.random()*21 + 80);
+        }
+        String zhanbu = ContentUtil.zhanbu(yun);
+        redisTemplate.opsForValue().set(key, String.valueOf(yun),
+                YesOrNoConstants.YES.equals(isTest) ? 60000 : DateUtil.getMidnightMillis(),
+                TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(strKey, zhanbu,
+                YesOrNoConstants.YES.equals(isTest) ? 60000 : DateUtil.getMidnightMillis(),
+                TimeUnit.MILLISECONDS);
+        return zhanbu;
+    }
+
+    @Override
     public String work(String qq, Integer isTest) {
         if (StringUtils.isBlank(qq)) {
             throw new MyException("参数错误");
@@ -244,10 +291,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
             throw new MyException("账号异常");
         }
         String zhanbuKey = RedisConstant.DIVINATION + qq;
-        if (!redisTemplate.hasKey(zhanbuKey)) {
-            throw new MyException("请先占卜");
+        int yun = 50;
+        if (redisTemplate.hasKey(zhanbuKey)) {
+            yun = Integer.valueOf(redisTemplate.opsForValue().get(zhanbuKey));
         }
-        int yun = Integer.valueOf(redisTemplate.opsForValue().get(zhanbuKey));
         String workKey = RedisConstant.DAGONG + qq;
         if (redisTemplate.hasKey(workKey)) {
             throw new MyException("今日已打工");
@@ -311,19 +358,19 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
             userProficiencyMapper.insert(addUserProficiency);
         } else {
             proficiencyExperience = userProficiency.getProficiencyExperience() + proficiencyExperience;
-            if (proficiencyExperience <= 10) {
+            if (proficiencyExperience < 10) {
                 userProficiency.setProficiencyLevel(0);
-            } else if (proficiencyExperience <= 70) {
+            } else if (proficiencyExperience < 70) {
                 userProficiency.setProficiencyLevel(1);
-            } else if (proficiencyExperience <= 170) {
+            } else if (proficiencyExperience < 170) {
                 userProficiency.setProficiencyLevel(2);
-            } else if (proficiencyExperience <= 320) {
+            } else if (proficiencyExperience < 320) {
                 userProficiency.setProficiencyLevel(3);
-            } else if (proficiencyExperience <= 530) {
+            } else if (proficiencyExperience < 530) {
                 userProficiency.setProficiencyLevel(4);
             } else {
                 userProficiency.setProficiencyLevel(5);
-                proficiencyExperience = 540.00;
+                proficiencyExperience = 530.00;
             }
             userProficiency.setProficiencyExperience(proficiencyExperience);
             userProficiencyMapper.updateById(userProficiency);

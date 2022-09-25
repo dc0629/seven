@@ -1,5 +1,6 @@
 package top.flagshen.myqq.service.strategy.play;
 
+import catcode.CatCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -51,11 +52,16 @@ public class GaiMing implements PlayStrategy {
         } else {
             yun = (int) (Math.random()*(100-oldYun) + oldYun + 1);
         }
+        CatCodeUtil util = CatCodeUtil.INSTANCE;
+        // 构建at
+        String at = util.toCat("at", "code="+message.getMqFromqq());
+        String zhanbu = ContentUtil.zhanbu(yun);
         //发送群消息
-        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), ContentUtil.zhanbu(yun, message.getMqFromqq()));
+        message.getSender().SENDER.sendGroupMsg(message.getMqFromid(), at + "\r\n" + zhanbu);
         // 午夜12点过期
         redisTemplateInt.opsForValue().set(key, yun, DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);
         redisTemplateInt.opsForValue().set(oldKey, yun, DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(RedisConstant.DIVINATIONSTR + message.getMqFromqq(), zhanbu, DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);
         return true;
     }
 }
