@@ -35,7 +35,10 @@ public class GroupManageServiceImpl implements IGroupManageService {
     private static final String ftQQKey = "ftQQ:";//上一个发图的qq + 群号组成key
     private static final String qtNumKey = "qtNum:";//群体连图数量 + 群号组成key
     private static final String grNumKey = "grNum:";//个人连图数量 + 群号组成key
+    private static final String cyKey = "cyQQ:";//参与连图成员 + 群号组成key
     Map<String, Object> jymap = new HashMap<>();
+    // 参与发图的人
+    Map<String, Set<String>> cyMap = new HashMap<>();
 
     @Override
     public synchronized void jkjinyan(GroupMsg groupMsg, MsgSender sender) {
@@ -49,8 +52,11 @@ public class GroupManageServiceImpl implements IGroupManageService {
             String fk = ftQQKey + groupCode;
             String qk = qtNumKey + groupCode;
             String gk = grNumKey + groupCode;
+            String ck = cyKey + groupCode;
             MessageContent msgContent = groupMsg.getMsgContent();
-            if (msgContent != null && msgContent.getMsg().contains("image")) {
+            Set<String> cySet = cyMap.get(ck) == null ? new HashSet<>() : cyMap.get(groupCode);
+            if (msgContent != null && (msgContent.getMsg().contains("image") || msgContent.getMsg().contains("marketFace"))) {
+                cySet.add(accountCode);
                 String ftQQ = (String) jymap.get(fk);// 上一个发图的qq
                 Integer qtNumI = (Integer) jymap.get(qk);//群体连图数量
                 Integer grNumI = (Integer) jymap.get(gk);//个人连图数量
@@ -63,29 +69,43 @@ public class GroupManageServiceImpl implements IGroupManageService {
                     grNum += 1;
                     jymap.put(fk, accountCode);
                     jymap.put(gk, grNum);
+                    jymap.put(ck, cySet);
                 } else {
                     grNum = 1;
                     jymap.put(fk, accountCode);
                     jymap.put(gk, grNum);
+                    jymap.put(ck, cySet);
                 }
 
                 // 如果群发数量=5，就禁言现在的发图人
                 if (qtNum >= 5) {
-                    jinyan(accountCode, groupCode, "连续五张图最后一，二位会被禁言喔\r\n" +
-                            "（｡ò ∀ ó｡）", ftQQ, sender);
+                    // 发消息
+                    sender.SENDER.sendGroupMsg(groupCode, "连续五张图参与者都会被禁言喔\r\n" +
+                            "（｡ò ∀ ó｡）");
+                    cySet.forEach(qq -> {
+                        // 禁言
+                        sender.SETTER.setGroupBan(groupCode, accountCode, jyTime(groupCode, accountCode));
+                    });
                     // 清空个人和群体发的数量
                     jymap.put(gk, 0);
                     jymap.put(qk, 0);
-                    jymap.put(fk, "");
+                    cySet.clear();
+                    jymap.put(ck, cySet);
                     return;
                 }
                 // 如果个人连发=3，就禁言现在发图的人
                 else if (grNum >= 3) {
-                    jinyan(accountCode, groupCode, "个人三连图会被禁言喔\r\n（｡ò ∀ ó｡）", null, sender);
+                    // 发消息
+                    sender.SENDER.sendGroupMsg(groupCode, "个人三连图会被禁言喔\n" +
+                            "（｡ò ∀ ó｡）");
+                    // 禁言
+                    sender.SETTER.setGroupBan(groupCode, accountCode, jyTime(groupCode, accountCode));
                     // 清空个人和群体发的数量
                     jymap.put(gk, 0);
                     jymap.put(qk, 0);
                     jymap.put(fk, "");
+                    cySet.clear();
+                    jymap.put(ck, cySet);
                     return;
                 }
             } else {
@@ -93,6 +113,8 @@ public class GroupManageServiceImpl implements IGroupManageService {
                 jymap.put(gk, 0);
                 jymap.put(qk, 0);
                 jymap.put(fk, "");
+                cySet.clear();
+                jymap.put(ck, cySet);
             }
         }
         return;

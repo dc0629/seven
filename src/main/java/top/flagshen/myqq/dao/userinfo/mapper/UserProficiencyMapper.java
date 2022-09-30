@@ -1,7 +1,7 @@
 package top.flagshen.myqq.dao.userinfo.mapper;
 
-import top.flagshen.myqq.dao.userinfo.entity.UserProficiencyDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import top.flagshen.myqq.dao.userinfo.entity.UserProficiencyDO;
 
 /**
  * <p>

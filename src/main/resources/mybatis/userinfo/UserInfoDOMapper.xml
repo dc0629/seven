@@ -25,5 +25,8 @@
     <sql id="Base_Column_List">
         qq_num, strength, agile, perception, intelligence, constitution, contribution, silver_coin, good_opinion, game_understanding, empirical_value, level, create_time, modify_time, is_delete
     </sql>
+    <update id="unbind">
+        update user_info set open_id = NULL WHERE  qq_num = #{qq}
+    </update>
 
 </mapper>

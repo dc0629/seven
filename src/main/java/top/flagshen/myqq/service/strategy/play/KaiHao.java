@@ -19,7 +19,7 @@ public class KaiHao implements PlayStrategy {
     private IUserInfoService userInfoService;
 
     @Override
-    @Permissions(groupNums = "481024974")
+    @Permissions(groupNums = "423430656,481024974")
     public boolean play(MyQQMessage message) {
         CreateUserReq userReq = new CreateUserReq();
         // 如果是测试群

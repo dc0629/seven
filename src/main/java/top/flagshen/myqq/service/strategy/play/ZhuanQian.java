@@ -16,7 +16,7 @@ public class ZhuanQian implements PlayStrategy {
     private IUserInfoService userInfoService;
 
     @Override
-    @Permissions(groupNums = "481024974")
+    @Permissions(groupNums = "423430656,481024974")
     public boolean play(MyQQMessage message) {
         Integer isTest = 0;
         // 如果是测试群

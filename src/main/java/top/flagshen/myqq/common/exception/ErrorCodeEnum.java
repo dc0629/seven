@@ -9,6 +9,7 @@ public enum ErrorCodeEnum {
 
     PARAM_ILLEGAL("PARAM_ILLEGAL", 1, "请求参数异常!"),
     PASSWORD_ERROR("PASSWORD_ERROR", 2, "密码错误"),
+    USER_IS_NULL("USER_IS_NULL", 2, "账号不存在"),
     INVALID_QR_CODE("INVALID_QR_CODE", 3, "无效二维码"),
     UNKNOWN_EXCEPTION("UNKNOWN_EXCEPTION", 9999, "未知异常"),
 

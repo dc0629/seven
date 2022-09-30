@@ -45,6 +45,12 @@ public interface IUserInfoService extends IService<UserInfoDO> {
     void bingQQ(BindQQReq req);
 
     /**
+     * 解除绑定
+     * @param qq
+     */
+    void unbind(String qq);
+
+    /**
      * 创建用户信息
      * x系的五维  就是 x 7点 其他的在3-6之间随机
      * 总和等于25

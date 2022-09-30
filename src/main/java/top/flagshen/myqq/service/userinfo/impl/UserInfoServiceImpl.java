@@ -57,6 +57,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
     private UserProficiencyMapper userProficiencyMapper;
 
     @Autowired
+    private UserInfoMapper userInfoMapper;
+
+    @Autowired
     private IOperationLogService operationLogService;
 
     private static final List<String> workList = Arrays.asList(
@@ -136,24 +139,26 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
     @Override
     public void bingQQ(BindQQReq req) {
         ExceptionAssertUtil.notBlank(req.getOpenId(), ErrorCodeEnum.PARAM_ILLEGAL);
-        ExceptionAssertUtil.notBlank(req.getPassword(), ErrorCodeEnum.PARAM_ILLEGAL);
         ExceptionAssertUtil.notBlank(req.getQqNum(), ErrorCodeEnum.PARAM_ILLEGAL);
 
         UserInfoDO userInfoDO = this.getOne(new LambdaQueryWrapper<UserInfoDO>()
                 .eq(UserInfoDO::getQqNum, req.getQqNum())
-                .eq(UserInfoDO::getPassword, req.getPassword())
                 .last("limit 1"));
-        // 没有查到的话，都提示密码错误
-        ExceptionAssertUtil.notNull(userInfoDO, ErrorCodeEnum.PASSWORD_ERROR);
-        // 已经被绑定的话也提示密码错误
+        // 没有查到的话，提示用户不存在
+        ExceptionAssertUtil.notNull(userInfoDO, ErrorCodeEnum.USER_IS_NULL);
         if (StringUtils.isNotBlank(userInfoDO.getOpenId())) {
-            throw new MyException(ErrorCodeEnum.PASSWORD_ERROR);
+            throw new MyException("该账号已被绑定");
         }
 
         // 否则更新openId
         userInfoDO.setOpenId(req.getOpenId());
         this.updateById(userInfoDO);
         redisTemplate.opsForValue().set(req.getOpenId(), req.getQqNum(), 1, TimeUnit.DAYS);
+    }
+
+    @Override
+    public void unbind(String qq) {
+        userInfoMapper.unbind(qq);
     }
 
     @Override
