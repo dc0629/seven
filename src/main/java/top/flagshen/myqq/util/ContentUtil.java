@@ -79,7 +79,9 @@ public final class ContentUtil {
             NovelAttribute novelAttribute = new NovelAttribute();
             if (!CollectionUtils.isEmpty(select)) {
                 Element e = select.get(0);
-                novelAttribute.setFictionUrl(e.attr("abs:href"));
+                String fictionUrl = e.attr("abs:href");
+                String replaceUrl = fictionUrl.replace("m.qidian.com/book","vipreader.qidian.com/chapter");
+                novelAttribute.setFictionUrl(replaceUrl);
                 String fictionChapter = e.text();
                 if (fictionChapter.contains("最新章节 ")) {
                     fictionChapter = fictionChapter.substring(5);

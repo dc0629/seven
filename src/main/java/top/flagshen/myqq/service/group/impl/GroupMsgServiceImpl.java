@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -154,15 +155,24 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
 
     @Override
     public void ruqunMsg(GroupMemberIncrease groupMemberIncrease, MsgSender sender) {
-        if ("xxx".equals(groupMemberIncrease.getGroupInfo().getGroupCode())) {
+        String groupCode = groupMemberIncrease.getGroupInfo().getGroupCode();
+        String accountCode = groupMemberIncrease.getAccountInfo().getAccountCode();
+        if ("xxx".equals(groupCode)) {
             return;
         }
         CatCodeUtil util = CatCodeUtil.INSTANCE;
         // 构建at
-        String at = util.toCat("at", "code="+groupMemberIncrease.getAccountInfo().getAccountCode());
+        String at = util.toCat("at", "code="+accountCode);
         String s = at + " 尊敬的预约玩家，欢迎加入404避难所！(*≧▽≦)" +
                 "\r\n我是助理小柒，有什么不懂的不要问我，自己看群规哦o(≧v≦)o";
-        sender.SENDER.sendGroupMsg(groupMemberIncrease.getGroupInfo().getGroupCode(), s);
+        sender.SENDER.sendGroupMsg(groupCode, s);
+
+        String jinyanCountKey = RedisConstant.JINYAN_COUNT +  groupCode + ":" + accountCode;
+        // 判断在redis中是否有key值
+        if (redisTemplate.hasKey(jinyanCountKey)) {
+            redisTemplate.opsForValue().set(jinyanCountKey, "3", 1, TimeUnit.DAYS);
+            sender.SETTER.setGroupBan(groupCode, accountCode, 86400L);
+        }
     }
 
 }

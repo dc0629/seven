@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,7 +24,10 @@ import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
 import top.flagshen.myqq.util.HttpApiUtil;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Configuration      //1.主要用于标记配置类，兼备Component的效果。
 @EnableScheduling   // 2.开启定时任务
@@ -40,7 +42,6 @@ public class SaticScheduleTask {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-
 
     private static final List<String> GROUP_NUM = Arrays.asList("xxx");
 
@@ -66,7 +67,8 @@ public class SaticScheduleTask {
                 fictionChapter = fictionChapter.substring(5);
             }
             String fictionUrl = e.attr("abs:href");
-            novelAttribute.setFictionUrl(fictionUrl);// 链接
+            String replaceUrl = fictionUrl.replace("m.qidian.com/book","vipreader.qidian.com/chapter");
+            novelAttribute.setFictionUrl(replaceUrl);// 链接
             novelAttribute.setFictionChapter(fictionChapter);// 标题
             String fictionAlt = e.attr("abs:alt");
             fictionAlt = fictionAlt.substring(fictionAlt.lastIndexOf(": ") + 2);
@@ -101,54 +103,9 @@ public class SaticScheduleTask {
         }
     }
 
-    //每天早上7点早安
-    //@Scheduled(cron = "0 0 7 * * ?")
-    private void goodMorning() {
-        String content = getContent("https://api.tianapi.com/zaoan/index?key=xxx");
-        if (StringUtils.isBlank(content)) return;
-        if (!content.contains("早安")) {
-            content += "早安！";
-        }
-        //发送群消息
-        /*robotTemplate.sendMsgEx("1462152250",
-                0, TypeConstant.MSGTYPE_GROUP,
-                "531753196", null, content);*/
-
-    }
-
-    //每天晚上11点晚安
-    //@Scheduled(cron = "0 30 23 * * ?")
-    private void goodEvening() {
-        String content = getContent("https://api.tianapi.com/wanan/index?key=xxx");
-        if (StringUtils.isBlank(content)) return;
-        if (!content.contains("晚安")) {
-            content += "晚安！";
-        }
-
-        //发送群消息
-        /*robotTemplate.sendMsgEx("1462152250",
-                0, TypeConstant.MSGTYPE_GROUP,
-                "531753196", null, content);*/
-    }
-
-    //每天晚上12点清空占卜缓存
-    @Scheduled(cron = "0 0 0 * * ? ")
-    private void cleanDivination() {
-        Set<String> keys = redisTemplate.keys(RedisConstant.DIVINATION+"*");
-        if (CollectionUtils.isNotEmpty(keys)) {
-            redisTemplate.delete(keys);
-        }
-        Set<String> keys2 = redisTemplate.keys(RedisConstant.GAIMING+"*");
-        if (CollectionUtils.isNotEmpty(keys2)) {
-            redisTemplate.delete(keys2);
-        }
-    }
-
     //每天中午12点校验预约了更新提醒的人里哪些已经退群了，退群了的就移除
     @Scheduled(cron = "0 0 12 * * ? ")
     private void checkUpdateReminder() {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("c1", "xxx");
         for (String groupNum : GROUP_NUM) {
             // 查询该群预约了更新提醒的人
             List<UpdateReminderDO> updateReminderDOList = updateReminderService.list(new LambdaQueryWrapper<UpdateReminderDO>()
