@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -136,6 +137,17 @@ public class SaticScheduleTask {
             redisTemplate.opsForValue().set(RedisConstant.STUDY_SCORE, String.valueOf(scoreTotal));
             groupMsgService.sendMsg("531753196", "懒宝，9点啦还不起床，扣分扣分，扣5分\n" + "当前总分：" + scoreTotal);
         }
+    }
+
+    //每天早上7点早安
+    //@Scheduled(cron = "0 0 7 * * ?")
+    private void goodMorning() {
+        String content = getContent("https://api.tianapi.com/zaoan/index?key=5a8f9b5cc21c2edfc17562d4ac5a1019");
+        if (StringUtils.isBlank(content)) return;
+        if (!content.contains("早安")) {
+            content += "早安！";
+        }
+        groupMsgService.sendMsg("531753196", content);
     }
 
     //每天早上10点，查7日金价
