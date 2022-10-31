@@ -273,17 +273,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
         if (redisTemplate.hasKey(strKey)) {
             return redisTemplate.opsForValue().get(strKey);
         }
-        int yun = (int) (Math.random()*100);
-        if (yun < 30) {
-            // 30%的概率幸运值是10-39
-            yun = (int)(Math.random()*30 + 10);
-        } else if  (yun < 90) {
-            // 60%的概率幸运值是40-79
-            yun = (int)(Math.random()*40 + 40);
-        } else {
-            // 10%的概率幸运值是80-100
-            yun = (int)(Math.random()*21 + 80);
-        }
+        int yun = ContentUtil.getYun();
         String zhanbu = ContentUtil.zhanbu(yun);
         redisTemplate.opsForValue().set(key, String.valueOf(yun),
                 YesOrNoConstants.YES.equals(isTest) ? 60000 : DateUtil.getMidnightMillis(),

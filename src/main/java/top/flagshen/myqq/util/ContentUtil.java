@@ -69,6 +69,25 @@ public final class ContentUtil {
         return text;
     }
 
+    /**
+     * 获取运气值
+     * @return
+     */
+    public static int getYun() {
+        int yun = (int) (Math.random()*100);
+        if (yun < 30) {
+            // 30%的概率幸运值是10-39
+            yun = (int)(Math.random()*30 + 10);
+        } else if  (yun < 90) {
+            // 60%的概率幸运值是40-79
+            yun = (int)(Math.random()*40 + 40);
+        } else {
+            // 10%的概率幸运值是80-100
+            yun = (int)(Math.random()*21 + 80);
+        }
+        return yun;
+    }
+
     public static String getContent(String template, String name, String title, String url, String number) {
         Map valuesMap = new HashMap();
         valuesMap.put("name", name);

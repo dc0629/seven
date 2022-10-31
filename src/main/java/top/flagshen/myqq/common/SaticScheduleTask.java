@@ -1,9 +1,11 @@
 package top.flagshen.myqq.common;
 
+import catcode.CatCodeUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,17 +20,16 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import top.flagshen.myqq.common.cache.RedisConstant;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
+import top.flagshen.myqq.dao.userinfo.entity.UserJuedouDO;
 import top.flagshen.myqq.entity.common.NovelAttribute;
 import top.flagshen.myqq.entity.common.TianXingResult;
 import top.flagshen.myqq.service.group.IGroupMsgService;
 import top.flagshen.myqq.service.updatereminder.IUpdateReminderService;
+import top.flagshen.myqq.service.userinfo.IUserJuedouService;
 import top.flagshen.myqq.util.HttpApiUtil;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Configuration      //1.主要用于标记配置类，兼备Component的效果。
 @EnableScheduling   // 2.开启定时任务
@@ -42,9 +43,13 @@ public class SaticScheduleTask {
     private IUpdateReminderService updateReminderService;
 
     @Autowired
+    private IUserJuedouService userJuedouService;
+
+    @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
     private static final List<String> GROUP_NUM = Arrays.asList("xxx");
+    private static final List<String> GROUP_GL = Arrays.asList("xxx");
 
     //群发更新信息
     @Scheduled(cron = "0/5 * * * * ?")
@@ -140,9 +145,9 @@ public class SaticScheduleTask {
     }
 
     //每天早上7点早安
-    //@Scheduled(cron = "0 0 7 * * ?")
+    @Scheduled(cron = "0 0 7 * * ?")
     private void goodMorning() {
-        String content = getContent("https://api.tianapi.com/zaoan/index?key=5a8f9b5cc21c2edfc17562d4ac5a1019");
+        String content = getContent("https://api.tianapi.com/zaoan/index?key=xxx");
         if (StringUtils.isBlank(content)) return;
         if (!content.contains("早安")) {
             content += "早安！";
@@ -179,6 +184,74 @@ public class SaticScheduleTask {
                     .append(" 价格：").append(obj.get("q1"));
         }
         groupMsgService.sendMsg("531753196", sb.toString());
+    }
+
+    //每天凌晨12点评选决斗冠军
+    @Scheduled(cron = "0 0 0 * * ? ")
+    private void juedouWang() {
+        UserJuedouDO winner = userJuedouService.getOne(new LambdaQueryWrapper<UserJuedouDO>()
+                .ne(UserJuedouDO::getWinCount, 0)
+                .eq(UserJuedouDO::getGroupNum, "423430656")
+                .notIn(UserJuedouDO::getQq, GROUP_GL)
+                .orderByDesc(UserJuedouDO::getWinCount)
+                .orderByAsc(UserJuedouDO::getModifyTime)
+                .last("limit 1"));
+        if (winner == null) {
+            return;
+        }
+
+        CatCodeUtil util = CatCodeUtil.INSTANCE;
+        String at = util.toCat("at", "code="+winner.getQq());
+        groupMsgService.sendMsg("423430656", "〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n"
+                + at + " 以" + winner.getWinCount() + "场胜利的记录获得「决斗冠军」称号，恭喜恭喜！");
+
+        // 今日胜场不为0的，添加进周胜利场
+        List<UserJuedouDO> list = userJuedouService.list(new LambdaQueryWrapper<UserJuedouDO>()
+                .ne(UserJuedouDO::getWinCount, 0)
+                .eq(UserJuedouDO::getGroupNum, "423430656")
+                .orderByAsc(UserJuedouDO::getModifyTime));
+        list.forEach(userJuedouDO -> {
+            userJuedouDO.setWeekCount(userJuedouDO.getWinCount() + userJuedouDO.getWeekCount());
+            userJuedouService.updateById(userJuedouDO);
+        });
+
+        // 清空胜利场次
+        userJuedouService.update(new LambdaUpdateWrapper<UserJuedouDO>().set(UserJuedouDO::getWinCount, 0));
+
+    }
+
+    //每周结算
+    @Scheduled(cron = "5 0 0 * * 1")
+    private void weekJuedouWang() {
+        // 今日胜场不为0的，添加进周胜利场
+        List<UserJuedouDO> list = userJuedouService.list(new LambdaQueryWrapper<UserJuedouDO>()
+                .ne(UserJuedouDO::getWeekCount, 0)
+                .eq(UserJuedouDO::getGroupNum, "423430656")
+                .notIn(UserJuedouDO::getQq, GROUP_GL)
+                .orderByDesc(UserJuedouDO::getWeekCount)
+                .orderByAsc(UserJuedouDO::getModifyTime).last("limit 3"));
+
+        if (CollectionUtils.isEmpty(list)) {
+            return;
+        }
+
+        List<String> chenghao = Arrays.asList("「决斗王」\n", "「决斗宗师」\n", "「决斗大师」\n");
+        StringBuffer context = new StringBuffer();
+        CatCodeUtil util = CatCodeUtil.INSTANCE;
+        for (int i=0; i < list.size(); i++) {
+            UserJuedouDO userJuedouDO = list.get(i);
+            String at = util.toCat("at", "code="+userJuedouDO.getQq());
+            context.append(at).append(" 本周总胜场为:").append(userJuedouDO.getWeekCount())
+                    .append(" 获得称号").append(chenghao.get(i));
+        }
+
+        groupMsgService.sendMsg("423430656", "〓〓本周决斗大会结果公布!〓〓\n〓〓本周决斗大会结果公布!〓〓\n〓〓本周决斗大会结果公布!〓〓\n"
+                + context + "恭喜以上获奖玩家！祝福他们前程似锦，战无不胜，武运昌隆！");
+
+
+        // 清空周胜利场次
+        userJuedouService.update(new LambdaUpdateWrapper<UserJuedouDO>().set(UserJuedouDO::getWeekCount, 0));
+
     }
 
     /**

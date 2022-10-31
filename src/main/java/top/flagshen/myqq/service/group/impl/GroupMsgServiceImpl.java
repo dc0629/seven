@@ -173,6 +173,12 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
             redisTemplate.opsForValue().set(jinyanCountKey, "3", 1, TimeUnit.DAYS);
             sender.SETTER.setGroupBan(groupCode, accountCode, 86400L);
         }
+
+        String juedouloserKey = RedisConstant.JUEDOU_JINYAN +  groupCode + ":" + accountCode;
+        // 判断在redis中是否有key值
+        if (redisTemplate.hasKey(juedouloserKey)) {
+            sender.SETTER.setGroupBan(groupCode, accountCode, Long.valueOf(redisTemplate.opsForValue().get(juedouloserKey)));
+        }
     }
 
 }

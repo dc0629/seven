@@ -31,19 +31,17 @@ public class ZhanBu implements PlayStrategy {
             qq += SystemConstants.TEST;
         }
         String key = RedisConstant.DIVINATION + qq;
-        if (redisTemplate.hasKey(key)) {
+        String strKey = RedisConstant.DIVINATIONSTR + qq;
+        int yun = 0;
+        // 占卜过了结束
+        if (redisTemplate.hasKey(strKey)) {
             return true;
         }
-        int yun = (int) (Math.random()*100);
-        if (yun < 30) {
-            // 30%的概率幸运值是10-39
-            yun = (int)(Math.random()*30 + 10);
-        } else if  (yun < 90) {
-            // 60%的概率幸运值是40-79
-            yun = (int)(Math.random()*40 + 40);
+        // 已有运气就用已有的，没有就用新的
+        if (redisTemplate.hasKey(key)) {
+            yun = redisTemplateInt.opsForValue().get(key);
         } else {
-            // 10%的概率幸运值是80-100
-            yun = (int)(Math.random()*21 + 80);
+            yun = ContentUtil.getYun();
         }
         // 构建at
         CatCodeUtil util = CatCodeUtil.INSTANCE;
@@ -55,7 +53,7 @@ public class ZhanBu implements PlayStrategy {
         redisTemplateInt.opsForValue().set(key, yun,
                 "481024974".equals(message.getMqFromid()) ? 60000 : DateUtil.getMidnightMillis(),
                 TimeUnit.MILLISECONDS);
-        redisTemplate.opsForValue().set(RedisConstant.DIVINATIONSTR + qq, zhanbu,
+        redisTemplate.opsForValue().set(strKey, zhanbu,
                 "481024974".equals(message.getMqFromid()) ? 60000 : DateUtil.getMidnightMillis(),
                 TimeUnit.MILLISECONDS);
         return true;

@@ -1,5 +1,6 @@
 package top.flagshen.myqq.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.annotation.Listen;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.annotation.OnGroupMemberIncrease;
@@ -18,6 +19,7 @@ import top.flagshen.myqq.service.group.IGroupMsgService;
  * @author dengchao
  */
 @RestController
+@Slf4j
 public class MsgController {
 
     @Autowired
@@ -46,9 +48,14 @@ public class MsgController {
         // 敏感词信息进行撤回
         groupManageService.mgc(groupMsg, sender);
         message.setMqMsg(text);
+        text = StringUtils.trim(text);
         // 后面的内容就判断是不是/开头，不是就结束
         if (!"/".equals(text.substring(0, 1))) {
             return;
+        }
+        if ("954804208".equals(groupMsg.getGroupInfo().getGroupCode())) {
+            log.info("groupMsg.getText():{}", groupMsg.getText());
+            log.info("groupMsg.getMsg():{}", groupMsg.getMsg());
         }
         text = text.substring(1);
         if (StringUtils.isEmpty(text)) {
@@ -80,5 +87,7 @@ public class MsgController {
     public void onGroupMute(MuteGet muteGet) {
 
     }
+
+
 
 }
