@@ -299,7 +299,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
         String zhanbuKey = RedisConstant.DIVINATION + qq;
         int yun = 50;
         if (redisTemplate.hasKey(zhanbuKey)) {
-            yun = Integer.valueOf(redisTemplate.opsForValue().get(zhanbuKey));
+            yun = Integer.parseInt(redisTemplate.opsForValue().get(zhanbuKey));
         }
         String workKey = RedisConstant.DAGONG + qq;
         if (redisTemplate.hasKey(workKey)) {

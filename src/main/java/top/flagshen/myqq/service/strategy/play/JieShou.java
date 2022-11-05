@@ -47,14 +47,14 @@ public class JieShou implements PlayStrategy {
         String jieshouYunKey = RedisConstant.DIVINATION + jieshouQQ;
         String juedouYunKey = RedisConstant.DIVINATION + juedouQQ;
         if (redisTemplate.hasKey(jieshouYunKey)) {
-            jieshouYun = Integer.valueOf(redisTemplate.opsForValue().get(jieshouYunKey));
+            jieshouYun = Integer.parseInt(redisTemplate.opsForValue().get(jieshouYunKey));
         } else {
             jieshouYun = ContentUtil.getYun();
             redisTemplate.opsForValue().set(jieshouYunKey, String.valueOf(jieshouYun), DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);
         }
 
         if (redisTemplate.hasKey(juedouYunKey)) {
-            juedouYun = Integer.valueOf(redisTemplate.opsForValue().get(juedouYunKey));
+            juedouYun = Integer.parseInt(redisTemplate.opsForValue().get(juedouYunKey));
         } else {
             juedouYun = ContentUtil.getYun();
             redisTemplate.opsForValue().set(juedouYunKey, String.valueOf(juedouYun), DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);

@@ -15,5 +15,8 @@
     <sql id="Base_Column_List">
         qq, count, create_time, modify_time, is_delete
     </sql>
+    <update id="updateWeekWin">
+        UPDATE user_juedou SET week_count = (win_count + week_count) WHERE win_count != 0
+    </update>
 
 </mapper>

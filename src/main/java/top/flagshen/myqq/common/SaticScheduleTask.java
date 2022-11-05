@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
+import love.forte.simbot.api.message.results.GroupMemberInfo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
@@ -29,7 +30,12 @@ import top.flagshen.myqq.service.userinfo.IUserJuedouService;
 import top.flagshen.myqq.util.HttpApiUtil;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Configuration      //1.主要用于标记配置类，兼备Component的效果。
 @EnableScheduling   // 2.开启定时任务
@@ -86,7 +92,7 @@ public class SaticScheduleTask {
             if (di == 0 && zhang > 0) {
                 String newChapterNum = newChapter.substring(1, zhang);
                 // 如果最新章节数量小于等于老的章节数量，结束
-                if (chapterNum != null && Integer.valueOf(newChapterNum) <= Integer.valueOf(chapterNum)) {
+                if (chapterNum != null && Integer.parseInt(newChapterNum) <= Integer.parseInt(chapterNum)) {
                     return;
                 }
                 // 并且记录最新章节数
@@ -202,53 +208,94 @@ public class SaticScheduleTask {
 
         CatCodeUtil util = CatCodeUtil.INSTANCE;
         String at = util.toCat("at", "code="+winner.getQq());
-        groupMsgService.sendMsg("423430656", "〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n"
-                + at + " 以" + winner.getWinCount() + "场胜利的记录获得「决斗冠军」称号，恭喜恭喜！");
+        try {
+            groupMsgService.sendMsg("423430656", "〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n"
+                    + at + " 以" + winner.getWinCount() + "场胜利的记录获得「决斗冠军」称号，恭喜恭喜！");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
 
         // 今日胜场不为0的，添加进周胜利场
-        List<UserJuedouDO> list = userJuedouService.list(new LambdaQueryWrapper<UserJuedouDO>()
-                .ne(UserJuedouDO::getWinCount, 0)
-                .eq(UserJuedouDO::getGroupNum, "423430656")
-                .orderByAsc(UserJuedouDO::getModifyTime));
-        list.forEach(userJuedouDO -> {
-            userJuedouDO.setWeekCount(userJuedouDO.getWinCount() + userJuedouDO.getWeekCount());
-            userJuedouService.updateById(userJuedouDO);
-        });
+        userJuedouService.updateWeekWin();
 
         // 清空胜利场次
         userJuedouService.update(new LambdaUpdateWrapper<UserJuedouDO>().set(UserJuedouDO::getWinCount, 0));
 
+        // 发当日公告
+        List<UserJuedouDO> weekList = userJuedouService.list(new LambdaQueryWrapper<UserJuedouDO>()
+                .ne(UserJuedouDO::getWeekCount, 0)
+                .eq(UserJuedouDO::getGroupNum, "423430656")
+                .notIn(UserJuedouDO::getQq, GROUP_GL)
+                .orderByDesc(UserJuedouDO::getWeekCount)
+                .orderByAsc(UserJuedouDO::getModifyTime).last("limit 10"));
+        GroupMemberInfo memberInfo = groupMsgService.getMemberInfo("423430656", winner.getQq());
+        String title = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy年MM月dd日")) + "决斗结果公布";
+        StringBuilder text = new StringBuilder("〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n"
+                + memberInfo!=null ? memberInfo.getAccountRemarkOrNickname() : winner.getQq() + " 以" + winner.getWinCount() + "场胜利的记录获得「决斗冠军」称号，恭喜恭喜！\n");
+        text.append("当前周胜场排行\n");
+        for (int i = 0; i < weekList.size(); i++) {
+            text.append("第").append(i+1).append("位胜场数:").append(weekList.get(i).getWeekCount()).append("\n");
+        }
+        groupMsgService.sendGroupNotice("423430656", title, text.toString());
     }
 
     //每周结算
-    @Scheduled(cron = "5 0 0 * * 1")
+    @Scheduled(cron = "30 0 0 * * 1")
     private void weekJuedouWang() {
-        // 今日胜场不为0的，添加进周胜利场
+        // 获取周胜最多的人
         List<UserJuedouDO> list = userJuedouService.list(new LambdaQueryWrapper<UserJuedouDO>()
                 .ne(UserJuedouDO::getWeekCount, 0)
                 .eq(UserJuedouDO::getGroupNum, "423430656")
                 .notIn(UserJuedouDO::getQq, GROUP_GL)
                 .orderByDesc(UserJuedouDO::getWeekCount)
-                .orderByAsc(UserJuedouDO::getModifyTime).last("limit 3"));
+                .orderByAsc(UserJuedouDO::getModifyTime).last("limit 10"));
 
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
 
         List<String> chenghao = Arrays.asList("「决斗王」\n", "「决斗宗师」\n", "「决斗大师」\n");
-        StringBuffer context = new StringBuffer();
+        StringBuffer content = new StringBuffer();
         CatCodeUtil util = CatCodeUtil.INSTANCE;
-        for (int i=0; i < list.size(); i++) {
+
+        int size = list.size() < 3 ? list.size() : 3;
+        for (int i=0; i < size; i++) {
             UserJuedouDO userJuedouDO = list.get(i);
             String at = util.toCat("at", "code="+userJuedouDO.getQq());
-            context.append(at).append(" 本周总胜场为:").append(userJuedouDO.getWeekCount())
+            content.append(at).append(" 本周总胜场为:").append(userJuedouDO.getWeekCount())
                     .append(" 获得称号").append(chenghao.get(i));
         }
 
-        groupMsgService.sendMsg("423430656", "〓〓本周决斗大会结果公布!〓〓\n〓〓本周决斗大会结果公布!〓〓\n〓〓本周决斗大会结果公布!〓〓\n"
-                + context + "恭喜以上获奖玩家！祝福他们前程似锦，战无不胜，武运昌隆！");
+        try {
+            groupMsgService.sendMsg("423430656", "〓〓本周决斗大会结果公布!〓〓\n〓〓本周决斗大会结果公布!〓〓\n〓〓本周决斗大会结果公布!〓〓\n"
+                    + content.toString() + "恭喜以上获奖玩家！祝福他们前程似锦，战无不胜，武运昌隆！");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
 
-
+        StringBuilder text = new StringBuilder();
+        String title = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy年MM月dd日")) + "决斗大会总结果公布";
+        for (int i=0; i < list.size(); i++) {
+            UserJuedouDO userJuedouDO = list.get(i);
+            GroupMemberInfo memberInfo = groupMsgService.getMemberInfo("423430656", userJuedouDO.getQq());
+            if (i < 3) {
+                if (memberInfo != null) {
+                    text.append(memberInfo.getAccountRemarkOrNickname());
+                }
+                text.append("(").append(userJuedouDO.getQq()).append(")").append(" 本周总胜场为:").append(userJuedouDO.getWeekCount())
+                        .append(" 获得称号").append(chenghao.get(i));
+                if (i == 2) {
+                    text.append("恭喜以上获奖玩家！祝福他们前程似锦，战无不胜，武运昌隆！\n");
+                }
+            } else {
+                if (memberInfo != null) {
+                    text.append(memberInfo.getAccountRemarkOrNickname());
+                }
+                text.append("(").append(userJuedouDO.getQq()).append(")").append(" 本周总胜场为:").append(userJuedouDO.getWeekCount()).append("\n");
+            }
+        }
+        groupMsgService.sendGroupNotice("423430656", title, "〓〓本周决斗大会结果公布!〓〓\n〓〓本周决斗大会结果公布!〓〓\n〓〓本周决斗大会结果公布!〓〓\n"
+                + text.toString());
         // 清空周胜利场次
         userJuedouService.update(new LambdaUpdateWrapper<UserJuedouDO>().set(UserJuedouDO::getWeekCount, 0));
 

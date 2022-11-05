@@ -145,7 +145,7 @@ public class GroupManageServiceImpl implements IGroupManageService {
         // 如果没有key值，对他进行添加到redis中
         if (redisKey) {
             // 禁言次数
-            Integer count = Integer.valueOf(redisTemplate.opsForValue().get(jinyanCountKey));
+            int count = Integer.parseInt(redisTemplate.opsForValue().get(jinyanCountKey));
             count++;
             redisTemplate.opsForValue().set(jinyanCountKey, String.valueOf(count), 1, TimeUnit.DAYS);
             if (count == 2) {

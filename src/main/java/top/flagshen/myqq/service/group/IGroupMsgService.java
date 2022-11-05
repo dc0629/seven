@@ -1,6 +1,7 @@
 package top.flagshen.myqq.service.group;
 
 import love.forte.simbot.api.message.events.GroupMemberIncrease;
+import love.forte.simbot.api.message.results.GroupMemberInfo;
 import love.forte.simbot.api.sender.MsgSender;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.entity.common.NovelAttribute;
@@ -31,6 +32,21 @@ public interface IGroupMsgService {
      * @param content
      */
     void sendMsg(String groupId, String content);
+
+    /**
+     * 发公告
+     * @param groupId
+     * @param content
+     */
+    void sendGroupNotice(String groupId, String title, String content);
+
+    /**
+     * 获取群成员信息
+     * @param groupId
+     * @param qq
+     * @return
+     */
+    GroupMemberInfo getMemberInfo(String groupId, String qq);
 
     /**
      * 获取群成员

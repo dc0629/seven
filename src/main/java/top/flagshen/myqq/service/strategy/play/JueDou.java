@@ -104,9 +104,9 @@ public class JueDou implements PlayStrategy {
         String juedou7Key = RedisConstant.JUEDOU_7_COUNT + group + ":" + qq;
         int baseTime = 56;
         if (redisTemplate.hasKey(juedou7Key)) {
-            Integer integer = Integer.valueOf(redisTemplate.opsForValue().get(juedou7Key));
+            int integer = Integer.parseInt(redisTemplate.opsForValue().get(juedou7Key));
             baseTime = 60 * integer - 4;
-            if (integer.equals(7)) {
+            if (integer == 7) {
                 redisTemplate.opsForValue().set(juedou7Key, "1", 7, TimeUnit.DAYS);
             } else {
                 redisTemplate.opsForValue().set(juedou7Key, String.valueOf(integer + 1), 7, TimeUnit.DAYS);

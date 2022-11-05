@@ -43,7 +43,7 @@ public class InvocationContextSetupInterceptor extends HandlerInterceptorAdapter
 			String qqNum = "";
 			String openId = request.getHeader(OPEN_ID_NAME);
 			String isTestStr = request.getHeader(IS_TEST);
-			Integer isTest = StringUtils.isBlank(isTestStr) ? 0 : Integer.valueOf(isTestStr);
+			int isTest = StringUtils.isBlank(isTestStr) ? 0 : Integer.parseInt(isTestStr);
 			if (YesOrNoConstants.YES.equals(isTest)) {
 				openId += SystemConstants.TEST;
 			}

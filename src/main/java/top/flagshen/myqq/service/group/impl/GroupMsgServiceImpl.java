@@ -4,14 +4,15 @@ import catcode.CatCodeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.api.message.events.GroupMemberIncrease;
+import love.forte.simbot.api.message.results.GroupMemberInfo;
 import love.forte.simbot.api.sender.MsgSender;
 import org.apache.commons.text.StringSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import top.flagshen.myqq.common.cache.RedisConstant;
 import top.flagshen.myqq.common.RobotTemplate;
+import top.flagshen.myqq.common.cache.RedisConstant;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
 import top.flagshen.myqq.entity.common.MyQQMessage;
 import top.flagshen.myqq.entity.common.NovelAttribute;
@@ -116,6 +117,16 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
     @Override
     public void sendMsg(String groupId, String content) {
         robotTemplate.sendMsgEx("xxx", groupId, content);
+    }
+
+    @Override
+    public void sendGroupNotice(String groupId, String title, String content) {
+        robotTemplate.sendGroupNotice("1462152250", groupId, title, content);
+    }
+
+    @Override
+    public GroupMemberInfo getMemberInfo(String groupId, String qq) {
+        return robotTemplate.getMemberInfo(groupId, qq);
     }
 
     @Override

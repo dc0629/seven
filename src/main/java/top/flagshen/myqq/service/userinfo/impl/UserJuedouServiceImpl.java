@@ -1,5 +1,6 @@
 package top.flagshen.myqq.service.userinfo.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import top.flagshen.myqq.dao.userinfo.entity.UserJuedouDO;
 import top.flagshen.myqq.dao.userinfo.mapper.UserJuedouMapper;
 import top.flagshen.myqq.service.userinfo.IUserJuedouService;
@@ -17,4 +18,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserJuedouServiceImpl extends ServiceImpl<UserJuedouMapper, UserJuedouDO> implements IUserJuedouService {
 
+    @Autowired
+    private UserJuedouMapper userJuedouMapper;
+
+    @Override
+    public void updateWeekWin() {
+        userJuedouMapper.updateWeekWin();
+    }
 }

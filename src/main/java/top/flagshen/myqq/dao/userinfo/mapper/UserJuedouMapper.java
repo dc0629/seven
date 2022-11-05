@@ -13,4 +13,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface UserJuedouMapper extends BaseMapper<UserJuedouDO> {
 
+    public void updateWeekWin();
+
 }
