@@ -30,5 +30,13 @@
         </where>
         GROUP BY props_name
     </select>
+    <select id="getBloodCount" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM props
+        WHERE qq_num = #{qq}
+        AND is_delete = 0
+        AND is_used = 0
+        AND props_name = '医疗包'
+        AND DATE_SUB(CURDATE(), INTERVAL 14 DAY) &lt; date(create_time)
+    </select>
 
 </mapper>

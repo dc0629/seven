@@ -65,6 +65,16 @@ public class JueDou implements PlayStrategy {
                     at1 +" 对方在决斗中受伤住院了，需要明天才能出院哦");
             return true;
         }
+        if (redisTemplate.hasKey(RedisConstant.YILIAO_CD + group + ":" + qq)) {
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(),
+                    at1 +" 你正在使用修复液进行恢复中");
+            return true;
+        }
+        if (redisTemplate.hasKey(RedisConstant.YILIAO_CD + group + ":" + targetQQ)) {
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(),
+                    at1 +" 对方正在使用修复液进行恢复中");
+            return true;
+        }
         if (redisTemplate.hasKey(juedouJinYanKey)) {
             message.getSender().SENDER.sendGroupMsg(message.getMqFromid(),
                     at1 +" 对方正在坐牢(禁言中)，请稍后再来");

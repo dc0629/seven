@@ -23,4 +23,22 @@ public interface IPropsService extends IService<PropsDO> {
      * @return
      */
     List<PropsTotal>  getPropsCount(String qq, Integer isUsed);
+
+    /**
+     * 获取qq在14天内未使用的血包数量
+     * @param qq
+     * @return
+     */
+    int getBloodCount(String qq);
+
+    /**
+     * 新增血包
+     * @param num
+     */
+    void addBlood(String qq, int num);
+
+    /**
+     * 使用血包
+     */
+    void useBlood(String qq);
 }

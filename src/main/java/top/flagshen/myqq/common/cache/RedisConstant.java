@@ -30,6 +30,7 @@ public class RedisConstant {
     public static final String JIESHOU = "JIESHOU:";//决斗接受人
     public static final String JUEDOU_JINYAN = "JUEDOU_JINYAN:";//决斗需要禁言的人
     public static final String JUEDOU_CD = "JUEDOU_CD:";//决斗发起失败的人要cd1天
+    public static final String YILIAO_CD = "YILIAO_CD:";//使用医疗包cd10分钟
     public static final String JUEDOU_OPEN_SET = "JUEDOU_OPEN_SET";//决斗开启成员
     public static final String JUEDOU_7_COUNT = "JUEDOU_7_COUNT:";//决斗小七次数
 }

@@ -188,7 +188,7 @@ public class GroupMsgServiceImpl implements IGroupMsgService {
         String juedouloserKey = RedisConstant.JUEDOU_JINYAN +  groupCode + ":" + accountCode;
         // 判断在redis中是否有key值
         if (redisTemplate.hasKey(juedouloserKey)) {
-            sender.SETTER.setGroupBan(groupCode, accountCode, Long.valueOf(redisTemplate.opsForValue().get(juedouloserKey)));
+            sender.SETTER.setGroupBan(groupCode, accountCode, Long.parseLong(redisTemplate.opsForValue().get(juedouloserKey)));
         }
     }
 

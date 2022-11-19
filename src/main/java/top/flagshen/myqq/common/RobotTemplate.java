@@ -1,5 +1,6 @@
 package top.flagshen.myqq.common;
 
+import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.message.results.GroupMemberInfo;
 import love.forte.simbot.bot.Bot;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
  * @author dengchao
  */
 @Component
+@Slf4j
 public class RobotTemplate {
 
     @Autowired
@@ -30,13 +32,23 @@ public class RobotTemplate {
     }
 
     public void sendMsgEx(String botCode, String group, String msg) {
-        Bot bot = manager.getBot(botCode);
-        bot.getSender().SENDER.sendGroupMsg(group, msg);
+        try {
+            Bot bot = manager.getBot(botCode);
+            bot.getSender().SENDER.sendGroupMsg(group, msg);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            log.info(msg);
+        }
     }
 
     public void sendGroupNotice(String botCode, String group, String title, String content) {
-        Bot bot = manager.getBot(botCode);
-        bot.getSender().SENDER.sendGroupNotice(group, title, content, false, false, false, false);
+        try {
+            Bot bot = manager.getBot(botCode);
+            bot.getSender().SENDER.sendGroupNotice(group, title, content, false, false, false, false);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            log.info(content);
+        }
     }
 
     public GroupMemberInfo getMemberInfo(String groupId, String qq) {

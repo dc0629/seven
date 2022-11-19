@@ -18,4 +18,6 @@ import java.util.List;
 public interface PropsMapper extends BaseMapper<PropsDO> {
 
     List<PropsTotal> getPropsCount(@Param("qq") String qq, @Param("isUsed") Integer isUsed);
+
+    int getBloodCount(@Param("qq") String qq);
 }

@@ -3,6 +3,7 @@ package top.flagshen.myqq.dao.props.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -18,6 +19,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("props")
+@Accessors(chain = true)
 public class PropsDO implements Serializable {
 
     private static final long serialVersionUID = 1L;

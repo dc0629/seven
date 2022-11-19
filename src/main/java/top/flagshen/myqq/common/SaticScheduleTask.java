@@ -230,8 +230,9 @@ public class SaticScheduleTask {
                 .orderByAsc(UserJuedouDO::getModifyTime).last("limit 10"));
         GroupMemberInfo memberInfo = groupMsgService.getMemberInfo("423430656", winner.getQq());
         String title = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy年MM月dd日")) + "决斗结果公布";
-        StringBuilder text = new StringBuilder("〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n"
-                + memberInfo!=null ? memberInfo.getAccountRemarkOrNickname() : winner.getQq() + " 以" + winner.getWinCount() + "场胜利的记录获得「决斗冠军」称号，恭喜恭喜！\n");
+        StringBuilder text = new StringBuilder("〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n〓〓今日决斗冠军已经诞生!〓〓\n");
+        text.append(memberInfo!=null ? memberInfo.getAccountRemarkOrNickname() : winner.getQq()).append(" 以").append(winner.getWinCount())
+                .append("场胜利的记录获得「决斗冠军」称号，恭喜恭喜！\n");
         text.append("当前周胜场排行\n");
         for (int i = 0; i < weekList.size(); i++) {
             text.append("第").append(i+1).append("位胜场数:").append(weekList.get(i).getWeekCount()).append("\n");
