@@ -102,7 +102,7 @@ public class SaticScheduleTask {
             if (!newChapter.equals(oldChapter)) {
                 if (newChapter.contains("不是请假")) {
                     groupMsgService.batchSendMsg(novelAttribute, RedisConstant.LATER_TEMPLATE);
-                } else if (newChapter.contains("请假")) {
+                } else if (newChapter.contains("请假") || newChapter.contains("请一天假")) {
                     groupMsgService.batchSendMsg(novelAttribute, RedisConstant.VACATION_TEMPLATE);
                 } else {
                     groupMsgService.batchSendMsg(novelAttribute, RedisConstant.TEMPLATE);
@@ -154,7 +154,9 @@ public class SaticScheduleTask {
     @Scheduled(cron = "0 0 7 * * ?")
     private void goodMorning() {
         String content = getContent("https://api.tianapi.com/zaoan/index?key=xxx");
-        if (StringUtils.isBlank(content)) return;
+        if (StringUtils.isBlank(content)) {
+            return;
+        }
         if (!content.contains("早安")) {
             content += "早安！";
         }

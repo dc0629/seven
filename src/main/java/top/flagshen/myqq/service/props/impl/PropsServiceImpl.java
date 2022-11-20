@@ -1,13 +1,12 @@
 package top.flagshen.myqq.service.props.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import top.flagshen.myqq.dao.props.dto.PropsTotal;
 import top.flagshen.myqq.dao.props.entity.PropsDO;
 import top.flagshen.myqq.dao.props.mapper.PropsMapper;
 import top.flagshen.myqq.service.props.IPropsService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +47,7 @@ public class PropsServiceImpl extends ServiceImpl<PropsMapper, PropsDO> implemen
 
     @Override
     public void useBlood(String qq) {
-        PropsDO blood = propsMapper.selectOne(new LambdaQueryWrapper<PropsDO>()
-                .eq(PropsDO::getQqNum, qq).eq(PropsDO::getPropsName, "医疗包")
-                .orderByAsc(PropsDO::getCreateTime).last("limit 1"));
+        PropsDO blood = propsMapper.getFirstBlood(qq);
         blood.setIsUsed(1);
         propsMapper.updateById(blood);
     }

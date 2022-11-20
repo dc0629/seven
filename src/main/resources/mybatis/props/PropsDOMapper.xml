@@ -36,7 +36,16 @@
         AND is_delete = 0
         AND is_used = 0
         AND props_name = '医疗包'
-        AND DATE_SUB(CURDATE(), INTERVAL 14 DAY) &lt; date(create_time)
+        AND DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt; date(create_time)
+    </select>
+    <select id="getFirstBlood" resultType="top.flagshen.myqq.dao.props.entity.PropsDO">
+        select * from props
+        WHERE qq_num = #{qq}
+        AND is_delete = 0
+        AND is_used = 0
+        AND props_name = '医疗包'
+        AND DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt; date(create_time)
+        limit 1
     </select>
 
 </mapper>
