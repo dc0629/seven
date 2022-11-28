@@ -64,8 +64,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
     @Override
     public WeiXinResp getOpenId(String code) {
         WeiXinResp resp = new WeiXinResp();
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=wxb387723fb3d81e28&secret=c7a4bb062c2a9cbf152f91f06a705271&grant_type=authorization_code&js_code="
-                + code;
+        String url = "https://api.weixin.qq.com/sns/jscode2session?;
         String result = HttpApiUtil.httpClientCommon(HttpMethodConstants.HTTP_GET, url, null);
         JSONObject jsonObject = JSON.parseObject(result);
         if (jsonObject == null) {
