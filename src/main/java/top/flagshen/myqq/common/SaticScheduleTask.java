@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.api.message.results.GroupMemberInfo;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,6 +21,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import top.flagshen.myqq.common.cache.RedisConstant;
 import top.flagshen.myqq.dao.updatereminder.entity.UpdateReminderDO;
 import top.flagshen.myqq.dao.userinfo.entity.UserJuedouDO;
+import top.flagshen.myqq.entity.common.Content;
 import top.flagshen.myqq.entity.common.NovelAttribute;
 import top.flagshen.myqq.entity.common.TianXingResult;
 import top.flagshen.myqq.service.group.IGroupMsgService;
@@ -153,14 +153,15 @@ public class SaticScheduleTask {
     //每天早上7点早安
     @Scheduled(cron = "0 0 7 * * ?")
     private void goodMorning() {
-        String content = getContent("https://api.tianapi.com/zaoan/index?key=xxx");
-        if (StringUtils.isBlank(content)) {
+        Content content = getContent("https://apis.tianapi.com/tianqi/index?key=xxx&city=101250101&type=1");
+        if (content == null) {
             return;
         }
-        if (!content.contains("早安")) {
-            content += "早安！";
-        }
-        groupMsgService.sendMsg("531753196", content);
+        String msg = "今日天气:" + content.getWeather()
+                + "\n气温:" + content.getLowest() + "~" + content.getHighest()
+                + "\n" + content.getWind() + content.getWindsc()
+                + "\n" + content.getTips();
+        groupMsgService.sendMsg("531753196", msg);
     }
 
     //每天早上10点，查7日金价
@@ -243,7 +244,7 @@ public class SaticScheduleTask {
     }
 
     //每周结算
-    @Scheduled(cron = "30 0 0 * * 1")
+    @Scheduled(cron = "10 0 0 * * 1")
     private void weekJuedouWang() {
         // 获取周胜最多的人
         List<UserJuedouDO> list = userJuedouService.list(new LambdaQueryWrapper<UserJuedouDO>()
@@ -309,14 +310,14 @@ public class SaticScheduleTask {
      * @param url
      * @return
      */
-    private String getContent(String url) {
+    private static Content getContent(String url) {
         String result = HttpApiUtil.httpClientCommon(HttpMethodConstants.HTTP_GET,
                 url, null);
         JSONObject jsonObject = JSON.parseObject(result);
         if (jsonObject != null) {
             TianXingResult goodMorningResult = jsonObject.toJavaObject(TianXingResult.class);
             if (goodMorningResult.getCode().equals(200)) {
-                return goodMorningResult.getNewslist().get(0).getContent();
+                return goodMorningResult.getResult();
             }
         }
         return null;

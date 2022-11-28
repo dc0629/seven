@@ -2,8 +2,6 @@ package top.flagshen.myqq.entity.common;
 
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class TianXingResult {
 
@@ -11,5 +9,5 @@ public class TianXingResult {
 
     private String msg;
 
-    private List<Content> newslist;
+    private Content result;
 }

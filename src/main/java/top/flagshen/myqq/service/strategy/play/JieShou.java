@@ -2,6 +2,7 @@ package top.flagshen.myqq.service.strategy.play;
 
 import catcode.CatCodeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,12 @@ import top.flagshen.myqq.service.userinfo.IUserJuedouService;
 import top.flagshen.myqq.util.ContentUtil;
 import top.flagshen.myqq.util.DateUtil;
 
+import javax.annotation.PreDestroy;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 @Service("接受")
@@ -39,6 +46,17 @@ public class JieShou implements PlayStrategy {
      * 用药次数key
      */
     private static final String BLOOD_COUNT = "BLOOD_COUNT:";
+
+    private static final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1,
+            new BasicThreadFactory.Builder().namingPattern("schedule-pool-%d").daemon(true).build());
+
+    /**
+     * Close.
+     */
+    @PreDestroy
+    public void close() {
+        executorService.shutdown();
+    }
 
     @Override
     @Permissions(groupNums = "423430656,954804208,903959441")
@@ -75,7 +93,7 @@ public class JieShou implements PlayStrategy {
         if (redisTemplate.hasKey(jieshouBloodKey)) {
             jieshouBloodCount = Integer.parseInt(redisTemplate.opsForValue().get(jieshouBloodKey));
         }
-        String juedouBloodKey = LIANSHEN + group + ":" + juedouQQ;
+        String juedouBloodKey = BLOOD_COUNT + group + ":" + juedouQQ;
         if (redisTemplate.hasKey(juedouBloodKey)) {
             juedouBloodCount = Integer.parseInt(redisTemplate.opsForValue().get(juedouBloodKey));
         }
@@ -100,13 +118,21 @@ public class JieShou implements PlayStrategy {
             redisTemplate.opsForValue().set(juedouYunKey, String.valueOf(juedouYun), DateUtil.getMidnightMillis(), TimeUnit.MILLISECONDS);
         }
 
-        jieshouYun = handleYun(jieshouYun, jieshouLianShenCount, jieshouBloodCount);
-        juedouYun = handleYun(juedouYun, juedouLianShenCount, juedouBloodCount);
-
-        int juedou = (int)(Math.random()*(jieshouYun+juedouYun+40));
-        log.info("juedou:{},juedouYun{},jieshouYun:{}",juedou,juedouYun,jieshouYun);
+        jieshouYun = handleYun(jieshouYun, jieshouLianShenCount, jieshouBloodCount) + 20;
+        juedouYun = handleYun(juedouYun, juedouLianShenCount, juedouBloodCount) + 20;
+        log.info("jieshouYun:{}:{},juedouYun:{}:{}",jieshouQQ,jieshouYun,juedouQQ,juedouYun);
+        int cont = jieshouYun + juedouYun;
+        List<Boolean> list = new ArrayList<>(cont);
+        for (int i = 0; i < jieshouYun; i++) {
+            list.add(true);
+        }
+        for (int i = 0; i < juedouYun; i++) {
+            list.add(false);
+        }
+        // 打乱数组
+        Collections.shuffle(list);
         // 20加今日幸运值 的比为获胜概率 例如接受人运气100,发起人运气20 接受人获胜概率：发起人获胜概率为120：40
-        if (juedou < (jieshouYun+20)) {
+        if (list.get((int)(Math.random()*cont))) {
             loserQQ = juedouQQ;
             winQQ = jieshouQQ;
             winLianShenCount = jieshouLianShenCount;
@@ -115,7 +141,7 @@ public class JieShou implements PlayStrategy {
             winLianShenCount = juedouLianShenCount;
             loserBloodCount = jieshouBloodCount;
         }
-
+        log.info("winQQ:{},loserQQ:{}",winQQ,loserQQ);
         UserJuedouDO win = juedouService.getById(winQQ + ":" + group);
         UserJuedouDO loser = juedouService.getById(loserQQ + ":" + group);
 
@@ -125,10 +151,10 @@ public class JieShou implements PlayStrategy {
         redisTemplate.delete(juedouKey);
 
         // 禁言时长
-        int jinyantime = (int)(Math.random()*6 + 5);
+        int jinyantime = (int)(Math.random()*6 + 3);
         // 设置决斗禁言key，防止有人逃课
         String juedouJinYanKey = RedisConstant.JUEDOU_JINYAN + group + ":" + winQQ;
-        redisTemplate.opsForValue().set(juedouJinYanKey, String.valueOf(jinyantime * 60), jinyantime, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(juedouJinYanKey, String.valueOf(jinyantime * 60), jinyantime*60+30, TimeUnit.SECONDS);
 
         CatCodeUtil util = CatCodeUtil.INSTANCE;
         String atLoser = util.toCat("at", "code="+loserQQ);
@@ -149,11 +175,11 @@ public class JieShou implements PlayStrategy {
             userJuedouDO.setGroupNum(group);
             juedouService.save(userJuedouDO);
             winCount = 1;
-            winMsg.append(winCount).append("」场，同时被关进大牢，时长").append(jinyantime).append("分钟");
+            winMsg.append(winCount).append("」场，巡捕30秒后到达，关进大牢").append(jinyantime).append("分钟");
         } else {
             winCount = win.getWinCount() + 1;
             win.setWinCount(winCount);
-            winMsg.append(winCount).append("」场，同时被关进大牢，时长").append(jinyantime).append("分钟");
+            winMsg.append(winCount).append("」场，巡捕30秒后到达，关进大牢").append(jinyantime).append("分钟");
             // 连胜3  6  9胜利给  1  2  3份修复液,总胜场10，20.30分别获得1，2，3份
             int getBloodCount = 0;
             if (winLianShenCount == 3) {
@@ -209,7 +235,12 @@ public class JieShou implements PlayStrategy {
         }
         String msg = loserMsg.toString() + winMsg.toString();
         message.getSender().SENDER.sendGroupMsg(group, msg);
-        message.getSender().SETTER.setGroupBan(group, winQQ, Long.valueOf(jinyantime) * 60);
+
+        // 延迟1分钟后禁言，用来放狠话
+        String winQQ1 = winQQ;
+        executorService.schedule(() -> {
+            message.getSender().SETTER.setGroupBan(group, winQQ1, Long.valueOf(jinyantime) * 60);
+        }, 30, TimeUnit.SECONDS);
 
         return true;
     }
@@ -234,5 +265,4 @@ public class JieShou implements PlayStrategy {
         }
         return yun;
     }
-
 }

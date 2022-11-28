@@ -35,8 +35,12 @@ public class JueDou implements PlayStrategy {
         String at1 = util.toCat("at", "code="+qq);
         // 发起决斗的人默认开启功能
         redisTemplate.opsForSet().add(RedisConstant.JUEDOU_OPEN_SET, qq);
-        // 如果此人发起决斗中，或者被挑战人正在被挑战，禁言中，就没反应
         if(StringUtils.isBlank(targetQQ)) {
+            return true;
+        }
+        if (redisTemplate.hasKey(RedisConstant.JUEDOU_JINYAN +  group + ":" + qq)) {
+            message.getSender().SENDER.sendGroupMsg(message.getMqFromid(),
+                    at1 +" 好好蹲着，不要打架");
             return true;
         }
         if ("1462152250".equals(targetQQ)) {
