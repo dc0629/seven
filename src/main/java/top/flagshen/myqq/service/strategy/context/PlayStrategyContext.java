@@ -18,7 +18,7 @@ public class PlayStrategyContext {
         strategyMap.forEach((k, v)-> this.strategyMap.put(k, v));
     }
 
-    public boolean play(MyQQMessage message, String operation) {
+    public synchronized boolean play(MyQQMessage message, String operation) {
         PlayStrategy playStrategy = strategyMap.get(operation);
         return playStrategy != null ? playStrategy.play(message) : false;
     }
