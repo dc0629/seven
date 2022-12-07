@@ -67,7 +67,7 @@ public class SaticScheduleTask {
             // 最新章节数
             String chapterNum = redisTemplate.opsForValue().get(RedisConstant.CHAPTER_NUM);
             document = Jsoup.connect("https://m.qidian.com/book/1029391348.html").get();
-            Elements select = document.select("a[class='charpter-link auto-report']");
+            Elements select = document.select("a[class='chapter-link auto-report']");
             if (CollectionUtils.isEmpty(select)) {
                 return;
             }
