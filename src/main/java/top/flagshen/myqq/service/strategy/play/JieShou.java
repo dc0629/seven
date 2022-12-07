@@ -211,7 +211,7 @@ public class JieShou implements PlayStrategy {
         // 如果输的人有血包，并且今日使用血包数量不超过3，就可以扣除一个血包不清0胜场
         if (loser != null) {
             int blood = propsService.getBloodCount(loserQQ);
-            if (blood > 0 && loserBloodCount <=3) {
+            if (blood > 0 && loserBloodCount < 3) {
                 blood = blood - 1;
                 propsService.useBlood(loserQQ);
                 loserMsg.append("，使用修复液疗伤，十分钟后恢复，当前剩余修复液").append(blood).append("份\n");;
