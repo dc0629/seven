@@ -192,13 +192,10 @@ public class GroupManageServiceImpl implements IGroupManageService {
             return;
         }
         try {
-            Set<String> strings = MgcUtil.loadFile();
-            strings.forEach(s -> {
-                if (StringUtils.isNotBlank(s) && groupMsg.getText().contains(s)) {
-                    log.info("撤回消息:{}",groupMsg.getText());
-                    sender.SETTER.setMsgRecall(groupMsg.getFlag());
-                }
-            });
+            if (MgcUtil.haveMgc(groupMsg.getText())) {
+                log.info("撤回消息:{}",groupMsg.getText());
+                sender.SETTER.setMsgRecall(groupMsg.getFlag());
+            }
         } catch (Exception e) {
             log.info("撤回出错:{}", e.getMessage());
         }
