@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.api.message.MessageContent;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.MsgSender;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -122,23 +121,8 @@ public class GroupManageServiceImpl implements IGroupManageService {
         return;
     }
 
-    /**
-     * 满足条件就禁言
-     * @param context
-     */
-    private void jinyan(String accountCode, String groupCode, String context, String ftQQ, MsgSender sender) {
-        // 发消息
-        sender.SENDER.sendGroupMsg(groupCode, context);
-        // 禁言
-        sender.SETTER.setGroupBan(groupCode, accountCode, jyTime(groupCode, accountCode));
-        // 当倒数第二个人和倒数第一个人不是同一个人时 禁言倒数第二个人
-        if (StringUtils.isNotBlank(ftQQ) && !accountCode.equals(ftQQ)) {
-            // 禁言
-            sender.SETTER.setGroupBan(groupCode, ftQQ, jyTime(groupCode, ftQQ));
-        }
-    }
-
     public Long jyTime(String id, String qq) {
+        redisTemplate.opsForValue().set(RedisConstant.JINYAN_FLAG +  id + ":" + qq, "1", 40, TimeUnit.SECONDS);
         String jinyanCountKey = RedisConstant.JINYAN_COUNT +  id + ":" + qq;
         // 判断在redis中是否有key值
         Boolean redisKey = redisTemplate.hasKey(jinyanCountKey);

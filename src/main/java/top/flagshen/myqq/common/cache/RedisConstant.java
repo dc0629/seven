@@ -20,6 +20,7 @@ public class RedisConstant {
     public static final String JINYAN = "JINYAN:";//是否开启禁言功能
     public static final String CHEHUI = "CHEHUI:";//是否开启撤回功能
     public static final String JINYAN_COUNT = "JINYAN_COUNT:";//24小时内连图禁言次数
+    public static final String JINYAN_FLAG = "JINYAN_FLAG:";//因为连图禁言的标识，存在30秒
 
     public static final String STUDY_SCORE = "STUDY_SCORE";//学习积分
     public static final String GET_UP = "GET_UP";//起床

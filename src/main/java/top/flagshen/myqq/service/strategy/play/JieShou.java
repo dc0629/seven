@@ -239,7 +239,10 @@ public class JieShou implements PlayStrategy {
         // 延迟1分钟后禁言，用来放狠话
         String winQQ1 = winQQ;
         executorService.schedule(() -> {
-            message.getSender().SETTER.setGroupBan(group, winQQ1, Long.valueOf(jinyantime) * 60);
+            // 校验是否因为3连图被禁言了，防止后一次禁言覆盖前一次禁言，逃课
+            if (!redisTemplate.hasKey(RedisConstant.JINYAN_FLAG +  group + ":" + winQQ1)) {
+                message.getSender().SETTER.setGroupBan(group, winQQ1, Long.valueOf(jinyantime) * 60);
+            }
         }, 30, TimeUnit.SECONDS);
 
         return true;
