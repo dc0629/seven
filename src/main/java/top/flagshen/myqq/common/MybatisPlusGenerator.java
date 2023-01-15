@@ -1,22 +1,5 @@
 package top.flagshen.myqq.common;
 
-import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
-import com.baomidou.mybatisplus.core.toolkit.StringPool;
-import com.baomidou.mybatisplus.generator.AutoGenerator;
-import com.baomidou.mybatisplus.generator.InjectionConfig;
-import com.baomidou.mybatisplus.generator.config.*;
-import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
-import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import com.baomidou.mybatisplus.generator.config.rules.DateType;
-import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 /**
  * mybatis-plus逆向工程：代码生成工具
  */
@@ -27,7 +10,7 @@ public class MybatisPlusGenerator {
      *
      * @param tip the tip
      * @return the string
-     */
+     *//*
     public static String scanner(String tip) {
         Scanner scanner = new Scanner(System.in);
         StringBuilder help = new StringBuilder();
@@ -42,22 +25,22 @@ public class MybatisPlusGenerator {
         throw new MybatisPlusException("请输入正确的" + tip + "！");
     }
 
-    /**
+    *//**
      * The entry point of application.
      *
      * @param args the input arguments
-     */
+     *//*
     public static void main(String[] args) {
-        /**
+        *//**
          * 代码生成器
-         */
+         *//*
         AutoGenerator mpg = new AutoGenerator();
 
         String parentPackageName = "top.flagshen.myqq";
 
-        /**
+        *//**
          * 全局配置
-         */
+         *//*
         GlobalConfig globalConfig = new GlobalConfig();
         //生成文件的输出目录
         final String projectPath = System.getProperty("user.dir");
@@ -80,9 +63,9 @@ public class MybatisPlusGenerator {
 
         mpg.setGlobalConfig(globalConfig);
 
-        /**
+        *//**
          * 数据源配置
-         */
+         *//*
         DataSourceConfig dataSourceConfig = new DataSourceConfig();
         // 数据库类型,默认MYSQL
         dataSourceConfig.setDbType(DbType.MYSQL);
@@ -97,9 +80,9 @@ public class MybatisPlusGenerator {
         mpg.setDataSource(dataSourceConfig);
 
 
-        /**
+        *//**
          * 包配置
-         */
+         *//*
         final PackageConfig pc = new PackageConfig();
         pc.setModuleName(scanner("模块名"));
         //父包名。如果为空，将下面子包名必须写全部， 否则就只需写子包名
@@ -107,9 +90,9 @@ public class MybatisPlusGenerator {
         mpg.setPackageInfo(pc);
 
 
-        /**
+        *//**
          * 自定义配置
-         */
+         *//*
         InjectionConfig cfg = new InjectionConfig() {
             @Override
             public void initMap() {
@@ -117,18 +100,18 @@ public class MybatisPlusGenerator {
             }
         };
 
-        /**
+        *//**
          * 模板
-         */
+         *//*
         //如果模板引擎是 freemarker
         String templatePath = "/templates/mapper.xml.ftl";
         // 如果模板引擎是 velocity
         // String templatePath = "/templates/mapper.xml.vm";
 
 
-        /**
+        *//**
          * 自定义输出配置
-         */
+         *//*
         List<FileOutConfig> focList = new ArrayList<>();
         // 自定义配置会被优先输出
         focList.add(new FileOutConfig(templatePath) {
@@ -142,16 +125,16 @@ public class MybatisPlusGenerator {
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
 
-        /**
+        *//**
          * 配置模板
-         */
+         *//*
         TemplateConfig templateConfig = new TemplateConfig();
         templateConfig.setXml(null);
         mpg.setTemplate(templateConfig);
 
-        /**
+        *//**
          * 策略配置
-         */
+         *//*
         StrategyConfig strategy = new StrategyConfig();
         //设置命名格式
         strategy.setNaming(NamingStrategy.underline_to_camel);
@@ -172,5 +155,5 @@ public class MybatisPlusGenerator {
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         mpg.execute();
-    }
+    }*/
 }

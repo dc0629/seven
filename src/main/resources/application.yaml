@@ -1,6 +1,24 @@
 spring:
   profiles:
     active: prod
+  application:
+    name: myqq
+  nacos:
+    server-addr: localhost:8848
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+      datasource:
+        flow:
+          nacos:
+            server-addr: localhost:8848
+            dataId: myqq
+            groupId: DEFAULT_GROUP
+            data-type: json
+            rule-type: flow
+    compatibility-verifier:
+      enabled: false
 
 simbot:
   component:

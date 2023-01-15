@@ -6,7 +6,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 import top.flagshen.myqq.common.constants.SystemConstants;
 import top.flagshen.myqq.common.constants.YesOrNoConstants;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author dengchao
  */
-public class InvocationContextSetupInterceptor extends HandlerInterceptorAdapter implements Ordered {
+public class InvocationContextSetupInterceptor implements Ordered, HandlerInterceptor {
 
 	private static final String OPEN_ID_NAME = "open-id";
 	private static final String IS_TEST = "is-test";
@@ -73,7 +73,6 @@ public class InvocationContextSetupInterceptor extends HandlerInterceptorAdapter
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		super.afterCompletion(request, response, handler, ex);
 		LocalInvocationContext.unbindContext();
 	}
 

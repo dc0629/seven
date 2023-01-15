@@ -199,12 +199,6 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.5.1</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>mybatis-plus-extension</artifactId>
-                    <groupId>com.baomidou</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -220,7 +214,12 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
-            <version>3.3.2</version>
+            <version>3.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-core</artifactId>
+            <version>3.5.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.velocity</groupId>
@@ -235,6 +234,16 @@
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
             <version>3.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+            <version>2021.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-nacos</artifactId>
+            <version>1.8.6</version>
         </dependency>
     </dependencies>
     <build>

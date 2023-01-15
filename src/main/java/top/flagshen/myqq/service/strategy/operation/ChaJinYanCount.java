@@ -25,7 +25,7 @@ public class ChaJinYanCount implements OperationStrategy {
             return true;
         }
         int j = message.getMqMsg().indexOf(" ");
-        String qqNum = null;// qq号
+        String qqNum;// qq号
         String groupNum = null;// 群号
         if (j > 0) {
             qqNum = message.getMqMsg().substring(0, j);// qq号
@@ -36,7 +36,7 @@ public class ChaJinYanCount implements OperationStrategy {
         if (StringUtils.isEmpty(qqNum)) {
             return true;
         }
-        int count = forbiddenLogService.count(new LambdaQueryWrapper<ForbiddenLogDO>()
+        long count = forbiddenLogService.count(new LambdaQueryWrapper<ForbiddenLogDO>()
                 .eq(ForbiddenLogDO::getQqNum, qqNum)
                 .eq(StringUtils.isNotBlank(groupNum), ForbiddenLogDO::getGroupNum, groupNum));
         //发送群消息

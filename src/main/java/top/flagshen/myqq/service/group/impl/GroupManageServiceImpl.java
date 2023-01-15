@@ -158,7 +158,7 @@ public class GroupManageServiceImpl implements IGroupManageService {
         forbiddenLogDO.setGroupNum(message.getMqFromid());
         forbiddenLogService.save(forbiddenLogDO);
 
-        int count = forbiddenLogService.count(new LambdaQueryWrapper<ForbiddenLogDO>()
+        long count = forbiddenLogService.count(new LambdaQueryWrapper<ForbiddenLogDO>()
                 .eq(ForbiddenLogDO::getQqNum, message.getMqFromqq()));
         CatCodeUtil util = CatCodeUtil.INSTANCE;
         // 构建at
