@@ -8,9 +8,12 @@ import top.flagshen.myqq.common.context.InvocationContext;
 import top.flagshen.myqq.common.context.LocalInvocationContext;
 import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
 import top.flagshen.myqq.entity.userinfo.req.CreateUserReq;
+import top.flagshen.myqq.entity.userinfo.resp.RankResp;
 import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
 import top.flagshen.myqq.service.userinfo.IUserInfoService;
+
+import java.util.List;
 
 /**
  * @author dc
@@ -112,5 +115,10 @@ public class UserInfoController {
     public String zhuanqian() {
         InvocationContext context = LocalInvocationContext.getContext();
         return userInfoService.work(context.getQqNum(), context.getIsTest());
+    }
+
+    @GetMapping("/rank")
+    public List<RankResp> getRank() {
+        return userInfoService.getRank();
     }
 }

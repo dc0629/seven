@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.flagshen.myqq.common.HttpMethodConstants;
+import top.flagshen.myqq.common.cache.CacheFind;
 import top.flagshen.myqq.common.cache.RedisConstant;
 import top.flagshen.myqq.common.constants.SystemConstants;
 import top.flagshen.myqq.common.constants.YesOrNoConstants;
@@ -25,6 +26,7 @@ import top.flagshen.myqq.entity.userinfo.enums.ProficiencyTypeEnum;
 import top.flagshen.myqq.entity.userinfo.enums.UserTypeEnum;
 import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
 import top.flagshen.myqq.entity.userinfo.req.CreateUserReq;
+import top.flagshen.myqq.entity.userinfo.resp.RankResp;
 import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
 import top.flagshen.myqq.service.log.IOperationLogService;
@@ -388,5 +390,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
                 TimeUnit.MILLISECONDS);
         operationLogService.saveOperationLog(qq, OperationTypeEnum.ZHUANQIAN.getCode(), proficiencyType, String.valueOf(coin));
         return result;
+    }
+
+    @Override
+    @CacheFind(prefixKeyName="rank",expireTime=300L)
+    public List<RankResp> getRank() {
+        return userInfoMapper.getRankCoin();
     }
 }

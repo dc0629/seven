@@ -28,5 +28,12 @@
     <update id="unbind">
         update user_info set open_id = NULL WHERE  qq_num = #{qq}
     </update>
+    <select id="getRankCoin" resultType="top.flagshen.myqq.entity.userinfo.resp.RankResp">
+        SELECT qq_num,nick_name,silver_coin as number
+        from user_info
+        WHERE is_delete = 0
+        ORDER BY silver_coin DESC,modify_time ASC
+        LIMIT 30
+    </select>
 
 </mapper>

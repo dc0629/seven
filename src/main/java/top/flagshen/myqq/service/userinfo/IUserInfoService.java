@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
 import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
 import top.flagshen.myqq.entity.userinfo.req.CreateUserReq;
+import top.flagshen.myqq.entity.userinfo.resp.RankResp;
 import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
+
+import java.util.List;
 
 /**
  * <p>
@@ -69,4 +72,10 @@ public interface IUserInfoService extends IService<UserInfoDO> {
      * 打工
      */
     String work(String qq, Integer isTest);
+
+    /**
+     * 获取排行榜
+     * @return
+     */
+    List<RankResp> getRank();
 }

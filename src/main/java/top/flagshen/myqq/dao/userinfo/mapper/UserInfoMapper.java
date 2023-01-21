@@ -1,8 +1,11 @@
 package top.flagshen.myqq.dao.userinfo.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import top.flagshen.myqq.entity.userinfo.resp.RankResp;
+
+import java.util.List;
 
 /**
  * <p>
@@ -19,5 +22,11 @@ public interface UserInfoMapper extends BaseMapper<UserInfoDO> {
      * @param qq
      */
     void unbind(@Param("qq") String qq);
+
+    /**
+     * 获取银币排行
+     * @return
+     */
+    List<RankResp> getRankCoin();
 
 }
