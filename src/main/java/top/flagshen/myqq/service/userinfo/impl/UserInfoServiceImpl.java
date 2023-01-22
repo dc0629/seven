@@ -3,6 +3,7 @@ package top.flagshen.myqq.service.userinfo.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -31,10 +32,7 @@ import top.flagshen.myqq.entity.userinfo.resp.UserInfoResp;
 import top.flagshen.myqq.entity.userinfo.resp.WeiXinResp;
 import top.flagshen.myqq.service.log.IOperationLogService;
 import top.flagshen.myqq.service.userinfo.IUserInfoService;
-import top.flagshen.myqq.util.AesUtils;
-import top.flagshen.myqq.util.ContentUtil;
-import top.flagshen.myqq.util.DateUtil;
-import top.flagshen.myqq.util.HttpApiUtil;
+import top.flagshen.myqq.util.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -414,5 +412,18 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
         }
         return userInfoMapper.getMyRankCoin(qqNum);
 
+    }
+
+    @Override
+    public void updateName(BindQQReq req) {
+        if (StringUtils.isBlank(req.getNickName())) {
+            throw new MyException("昵称不能为空");
+        }
+        if (MgcUtil.haveMgc(req.getNickName())) {
+            throw new MyException("昵称中包含敏感词");
+        }
+        userInfoMapper.update(new UserInfoDO(), new LambdaUpdateWrapper<UserInfoDO>()
+                .set(UserInfoDO::getNickName, req.getNickName())
+                .eq(UserInfoDO::getQqNum, req.getQqNum()));
     }
 }

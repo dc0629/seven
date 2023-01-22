@@ -84,4 +84,10 @@ public interface IUserInfoService extends IService<UserInfoDO> {
      * @return
      */
     String getMyRank(String qqNum);
+
+    /**
+     * 修改昵称
+     * @param req
+     */
+    void updateName(BindQQReq req);
 }

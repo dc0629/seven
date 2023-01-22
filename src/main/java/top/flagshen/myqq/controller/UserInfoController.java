@@ -127,4 +127,11 @@ public class UserInfoController {
         InvocationContext context = LocalInvocationContext.getContext();
         return userInfoService.getMyRank(context.getQqNum());
     }
+
+    @PutMapping("/name")
+    public void updateName(@RequestBody BindQQReq req) {
+        InvocationContext context = LocalInvocationContext.getContext();
+        req.setQqNum(context.getQqNum());
+        userInfoService.updateName(req);
+    }
 }
