@@ -78,4 +78,10 @@ public interface IUserInfoService extends IService<UserInfoDO> {
      * @return
      */
     List<RankResp> getRank();
+
+    /**
+     * 获取我的排名
+     * @return
+     */
+    String getMyRank(String qqNum);
 }

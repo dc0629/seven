@@ -35,5 +35,11 @@
         ORDER BY silver_coin DESC,modify_time ASC
         LIMIT 30
     </select>
+    <select id="getMyRankCoin" resultType="java.lang.String">
+        SELECT num FROM
+        (select qq_num ,ROW_NUMBER() OVER(ORDER BY silver_coin DESC,modify_time ASC) as num
+        from user_info WHERE is_delete = 0) a
+        WHERE qq_num = #{qqNum}
+    </select>
 
 </mapper>

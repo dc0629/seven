@@ -121,4 +121,10 @@ public class UserInfoController {
     public List<RankResp> getRank() {
         return userInfoService.getRank();
     }
+
+    @GetMapping("/myRank")
+    public String getMyRank() {
+        InvocationContext context = LocalInvocationContext.getContext();
+        return userInfoService.getMyRank(context.getQqNum());
+    }
 }

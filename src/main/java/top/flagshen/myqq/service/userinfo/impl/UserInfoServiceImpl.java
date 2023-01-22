@@ -395,6 +395,24 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
     @Override
     @CacheFind(prefixKeyName="rank",expireTime=300L)
     public List<RankResp> getRank() {
-        return userInfoMapper.getRankCoin();
+        List<RankResp> rankCoin = userInfoMapper.getRankCoin();
+        int i = 1;
+        for (RankResp rankResp : rankCoin) {
+            if (i < 10) {
+                rankResp.setNo("0" + (i++));
+            } else {
+                rankResp.setNo(String.valueOf(i++));
+            }
+        }
+        return rankCoin;
+    }
+
+    @Override
+    public String getMyRank(String qqNum) {
+        if (StringUtils.isBlank(qqNum)) {
+            return StringUtils.EMPTY;
+        }
+        return userInfoMapper.getMyRankCoin(qqNum);
+
     }
 }

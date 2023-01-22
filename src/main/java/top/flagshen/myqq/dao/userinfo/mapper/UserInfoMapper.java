@@ -29,4 +29,10 @@ public interface UserInfoMapper extends BaseMapper<UserInfoDO> {
      */
     List<RankResp> getRankCoin();
 
+    /**
+     * 获取我的银币排行
+     * @return
+     */
+    String getMyRankCoin(@Param("qqNum") String qqNum);
+
 }

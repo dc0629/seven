@@ -32,4 +32,9 @@ public class RankResp {
      */
     private Integer number;
 
+    /**
+     * 排名
+     */
+    private String no;
+
 }
