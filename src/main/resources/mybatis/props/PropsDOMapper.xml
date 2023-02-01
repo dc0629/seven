@@ -47,5 +47,27 @@
         AND DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt; date(create_time)
         limit 1
     </select>
+    <select id="getRankUsedBlood" resultType="top.flagshen.myqq.entity.userinfo.resp.RankResp">
+        SELECT qq_num,COUNT(1) as NUMBER
+        from props
+        WHERE is_delete = 0
+        AND props_name = '医疗包'
+        AND is_used = 1
+        GROUP BY qq_num
+        ORDER BY NUMBER DESC,qq_num asc
+        LIMIT 30
+    </select>
+    <select id="getMyRankBlood" resultType="java.lang.String">
+        SELECT num FROM
+        (select qq_num, NUMBER ,ROW_NUMBER() OVER(ORDER BY NUMBER DESC) as num
+        FROM (SELECT qq_num, COUNT(1) as NUMBER
+        from props
+        WHERE is_delete = 0
+        AND props_name = '医疗包'
+        AND is_used = 1
+        GROUP BY qq_num
+        ORDER BY NUMBER DESC,qq_num asc) t ) a
+        WHERE qq_num = #{qqNum}
+    </select>
 
 </mapper>

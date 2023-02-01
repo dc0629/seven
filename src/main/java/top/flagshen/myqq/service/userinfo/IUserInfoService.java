@@ -77,13 +77,13 @@ public interface IUserInfoService extends IService<UserInfoDO> {
      * 获取排行榜
      * @return
      */
-    List<RankResp> getRank();
+    List<RankResp> getRank(String rankType);
 
     /**
      * 获取我的排名
      * @return
      */
-    String getMyRank(String qqNum);
+    String getMyRank(String qqNum, String rankType);
 
     /**
      * 修改昵称

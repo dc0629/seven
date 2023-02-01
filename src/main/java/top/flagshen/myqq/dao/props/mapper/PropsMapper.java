@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import io.lettuce.core.dynamic.annotation.Param;
 import top.flagshen.myqq.dao.props.dto.PropsTotal;
 import top.flagshen.myqq.dao.props.entity.PropsDO;
+import top.flagshen.myqq.entity.userinfo.resp.RankResp;
 
 import java.util.List;
 
@@ -22,4 +23,16 @@ public interface PropsMapper extends BaseMapper<PropsDO> {
     int getBloodCount(@Param("qq") String qq);
 
     PropsDO getFirstBlood(@Param("qq") String qq);
+
+    /**
+     * 获取使用了的医疗包排行
+     * @return
+     */
+    List<RankResp> getRankUsedBlood();
+
+    /**
+     * 获取我的使用医疗包排行
+     * @return
+     */
+    String getMyRankBlood(@Param("qqNum") String qqNum);
 }

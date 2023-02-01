@@ -118,14 +118,14 @@ public class UserInfoController {
     }
 
     @GetMapping("/rank")
-    public List<RankResp> getRank() {
-        return userInfoService.getRank();
+    public List<RankResp> getRank(String rankType) {
+        return userInfoService.getRank(rankType);
     }
 
     @GetMapping("/myRank")
-    public String getMyRank() {
+    public String getMyRank(String rankType) {
         InvocationContext context = LocalInvocationContext.getContext();
-        return userInfoService.getMyRank(context.getQqNum());
+        return userInfoService.getMyRank(context.getQqNum(), rankType);
     }
 
     @PutMapping("/name")

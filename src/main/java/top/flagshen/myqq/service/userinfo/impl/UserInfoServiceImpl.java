@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import top.flagshen.myqq.common.HttpMethodConstants;
 import top.flagshen.myqq.common.cache.CacheFind;
 import top.flagshen.myqq.common.cache.RedisConstant;
@@ -18,12 +19,14 @@ import top.flagshen.myqq.common.constants.YesOrNoConstants;
 import top.flagshen.myqq.common.exception.ErrorCodeEnum;
 import top.flagshen.myqq.common.exception.ExceptionAssertUtil;
 import top.flagshen.myqq.common.exception.MyException;
+import top.flagshen.myqq.dao.props.mapper.PropsMapper;
 import top.flagshen.myqq.dao.userinfo.entity.UserInfoDO;
 import top.flagshen.myqq.dao.userinfo.entity.UserProficiencyDO;
 import top.flagshen.myqq.dao.userinfo.mapper.UserInfoMapper;
 import top.flagshen.myqq.dao.userinfo.mapper.UserProficiencyMapper;
 import top.flagshen.myqq.entity.log.enums.OperationTypeEnum;
 import top.flagshen.myqq.entity.userinfo.enums.ProficiencyTypeEnum;
+import top.flagshen.myqq.entity.userinfo.enums.RankTypeEnum;
 import top.flagshen.myqq.entity.userinfo.enums.UserTypeEnum;
 import top.flagshen.myqq.entity.userinfo.req.BindQQReq;
 import top.flagshen.myqq.entity.userinfo.req.CreateUserReq;
@@ -34,10 +37,9 @@ import top.flagshen.myqq.service.log.IOperationLogService;
 import top.flagshen.myqq.service.userinfo.IUserInfoService;
 import top.flagshen.myqq.util.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -58,6 +60,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
 
     @Autowired
     private UserInfoMapper userInfoMapper;
+
+    @Autowired
+    private PropsMapper propsMapper;
 
     @Autowired
     private IOperationLogService operationLogService;
@@ -391,9 +396,20 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
     }
 
     @Override
-    @CacheFind(prefixKeyName="rank",expireTime=300L)
-    public List<RankResp> getRank() {
-        List<RankResp> rankCoin = userInfoMapper.getRankCoin();
+    @CacheFind(prefixKeyName="rank",key="':rankType:'+#rankType",expireTime=300L)
+    public List<RankResp> getRank(String rankType) {
+        List<RankResp> rankCoin = new ArrayList<>(30);
+        RankTypeEnum rankTypeEnum = RankTypeEnum.getByCode(rankType);
+        switch (rankTypeEnum) {
+            case COIN :
+                rankCoin = userInfoMapper.getRankCoin();
+                break;
+            case USED_BLOOD :
+                rankCoin = this.getRankUsedBlood();
+                break;
+            default:
+                break;
+        }
         int i = 1;
         for (RankResp rankResp : rankCoin) {
             if (i < 10) {
@@ -405,25 +421,61 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfoDO>
         return rankCoin;
     }
 
+    /**
+     * 获取使用医疗包数量排行
+     * @return
+     */
+    private List<RankResp> getRankUsedBlood() {
+        List<RankResp> rankCoin = propsMapper.getRankUsedBlood();
+        if (CollectionUtils.isEmpty(rankCoin)) {
+            return new ArrayList<>();
+        }
+        // 根据qqNum获取用户昵称
+        List<String> qqNums = rankCoin.stream().map(RankResp::getQqNum).collect(Collectors.toList());
+        List<UserInfoDO> infoDOS = userInfoMapper.selectList(
+                new LambdaQueryWrapper<UserInfoDO>().in(UserInfoDO::getQqNum, qqNums));
+        Map<String, String> nameMap = new HashMap<>(infoDOS.size());
+        infoDOS.forEach(info -> nameMap.put(info.getQqNum(), info.getNickName()));
+
+        rankCoin.forEach(rankResp -> rankResp.setNickName(StringUtils.defaultString(nameMap.get(rankResp.getQqNum()), "未注册账号")));
+        return rankCoin;
+    }
+
     @Override
-    public String getMyRank(String qqNum) {
+    public String getMyRank(String qqNum, String rankType) {
         if (StringUtils.isBlank(qqNum)) {
             return StringUtils.EMPTY;
         }
-        return userInfoMapper.getMyRankCoin(qqNum);
-
+        RankTypeEnum rankTypeEnum = RankTypeEnum.getByCode(rankType);
+        String rank = StringUtils.EMPTY;
+        switch (rankTypeEnum) {
+            case COIN :
+                rank = userInfoMapper.getMyRankCoin(qqNum);
+                break;
+            case USED_BLOOD :
+                rank = propsMapper.getMyRankBlood(qqNum);
+                break;
+            default:
+                break;
+        }
+        return StringUtils.defaultString(rank);
     }
 
     @Override
     public void updateName(BindQQReq req) {
-        if (StringUtils.isBlank(req.getNickName())) {
+        String nickName = req.getNickName();
+        if (StringUtils.isBlank(nickName)) {
             throw new MyException("昵称不能为空");
         }
-        if (MgcUtil.haveMgc(req.getNickName())) {
+        if (MgcUtil.haveMgc(nickName)) {
             throw new MyException("昵称中包含敏感词");
         }
+        nickName = nickName.trim();
+        if (nickName.length() > 32) {
+            throw new MyException("昵称过长");
+        }
         userInfoMapper.update(new UserInfoDO(), new LambdaUpdateWrapper<UserInfoDO>()
-                .set(UserInfoDO::getNickName, req.getNickName())
+                .set(UserInfoDO::getNickName, nickName)
                 .eq(UserInfoDO::getQqNum, req.getQqNum()));
     }
 }
