@@ -6,7 +6,7 @@
     <property name="APP_NAME" value="myqq"/>
     <property name="LOG_PATH" value="C:/logs/${APP_NAME}"/>
     <property name="FILE_LOG_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS,Asia/Shanghai} [%thread] [%-5level] [%logger{56}.%method:%L] - %msg%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS,Asia/Shanghai} [%X{traceId}] [%thread] [%-5level] [%logger{56}.%method:%L] - %msg%n"/>
 
     <appender name="INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/info.log</file>

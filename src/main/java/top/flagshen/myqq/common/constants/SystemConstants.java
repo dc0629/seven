@@ -12,4 +12,6 @@ public class SystemConstants {
      * 测试账号统一后缀
      */
     public static final String TEST = "test";
+
+    public static final String MDC_TRACE_KEY = "traceId";
 }

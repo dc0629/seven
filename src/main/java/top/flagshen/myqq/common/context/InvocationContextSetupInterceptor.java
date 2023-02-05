@@ -63,7 +63,7 @@ public class InvocationContextSetupInterceptor implements Ordered, HandlerInterc
 				// 续一天的缓存，证明这个人活跃着
 				redisTemplate.opsForValue().set(openId, qqNum, 1, TimeUnit.DAYS);
 			}
-			String traceId = MDC.get("traceId");
+			String traceId = MDC.get(SystemConstants.MDC_TRACE_KEY);
 			InvocationContext context = new DefaultInvocationContext(traceId, qqNum, isTest);
 			LocalInvocationContext.bindContext(context);
 		}

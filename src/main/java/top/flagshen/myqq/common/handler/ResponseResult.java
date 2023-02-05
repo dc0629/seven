@@ -2,6 +2,8 @@ package top.flagshen.myqq.common.handler;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.slf4j.MDC;
+import top.flagshen.myqq.common.constants.SystemConstants;
 
 /**
  * 统一格式返回
@@ -11,6 +13,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Data
 public class ResponseResult<T>  {
+
+    private String traceId;
 
     private boolean success;
 
@@ -25,6 +29,7 @@ public class ResponseResult<T>  {
         this.errCode = errCode;
         this.errMsg = errMsg;
         this.datas = datas;
+        this.traceId = MDC.get(SystemConstants.MDC_TRACE_KEY);
     }
 
     public static <T> ResponseResult<T> success() {
